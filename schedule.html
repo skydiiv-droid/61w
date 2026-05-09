@@ -1,3011 +1,1480 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="61병동 근무">
-<meta name="theme-color" content="#F8F4ED" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#1F1D2B" media="(prefers-color-scheme: dark)">
-<title>61병동 근무</title>
-<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
-<style>
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{overscroll-behavior:none}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>61w 듀티</title>
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#FAF7F0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="61w">
+  <link rel="apple-touch-icon" href="./icon-192.png">
 
-  :root {
-    --bg-1: #FAF7F0;
-    --bg-2: #F5EFE5;
-    --bg-3: #F8F2E8;
-    --surface: #FFFFFF;
-    --surface-soft: rgba(255,255,255,0.7);
-    --surface-softer: rgba(255,255,255,0.55);
-    --surface-card: #FFFFFF;
-    --surface-faint: #F5EFE5;
-    --surface-divider: #EFE6D5;
-    --text: #2D2D3A;
-    --text-soft: #3A3A4A;
-    --text-sub: #7C7060;
-    --text-faint: #9C8F7C;
-    --text-fainter: #B0A496;
-    --text-extrafaint: #D5C9B0;
-    --border: #EFE6D5;
-    --border-soft: #E0D5BD;
-    --shift-d: #7EC8E3;
-    --shift-d-light: #E8F4FA;
-    --shift-e: #8FD5A6;
-    --shift-e-light: #EAFAF0;
-    --shift-n: #F5D76E;
-    --shift-n-light: #FDF8E8;
-    --shift-o: #D4A0D0;
-    --shift-o-light: #F5EAF4;
-    --shift-custom-light: #F0EAD9;
-    --memo: #FF5C5C;
-    --birthday: #F5A623;
-    --sun: #E8746E;
-    --sat: #5B9BD5;
-    --modal-bg: rgba(40,30,20,0.5);
-    --neutral: #B8AB91;
-    --neutral-light: #E8DFCD;
-  }
+  <link rel="stylesheet" type="text/css"
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
 
-  @media (prefers-color-scheme: dark) {
+  <style>
     :root {
-      --bg-1: #1F1D2B;
-      --bg-2: #2A2638;
-      --bg-3: #25223A;
-      --surface: #2F2C3D;
-      --surface-soft: rgba(60,55,80,0.65);
-      --surface-softer: rgba(60,55,80,0.45);
-      --surface-card: #2F2C3D;
-      --surface-faint: #3A3548;
-      --surface-divider: #3A3548;
-      --text: #F0EAD9;
-      --text-soft: #E0D9C8;
-      --text-sub: #B5A990;
-      --text-faint: #9990A8;
-      --text-fainter: #7A7388;
-      --text-extrafaint: #5A5468;
-      --border: #3A3548;
-      --border-soft: #4A4358;
-      --shift-d: #6BA9C0;
-      --shift-d-light: #2C3942;
-      --shift-e: #7AB590;
-      --shift-e-light: #2D3D34;
-      --shift-n: #D4B85A;
-      --shift-n-light: #3D3A2C;
-      --shift-o: #B888B5;
-      --shift-o-light: #3A2D3A;
-      --shift-custom-light: #3A3548;
-      --memo: #FF7878;
-      --birthday: #E0A050;
-      --sun: #E89490;
-      --sat: #7BB0DD;
-      --modal-bg: rgba(0,0,0,0.6);
-      --neutral: #6B6378;
-      --neutral-light: #3A3548;
+      --bg: #FAF7F0;
+      --surface: #FFFFFF;
+      --surface-alt: #F4F0E5;
+      --border: rgba(0,0,0,0.08);
+      --border-strong: rgba(0,0,0,0.18);
+      --text: #2A2826;
+      --text-mute: #7A766F;
+      --text-soft: #A8A39A;
+      --accent: #5F5BAA;
+
+      --c-full: #1F1B17;
+      --c-morning: #2C5BB0;
+      --c-closed: #C73E3E;
+
+      --t-main-bg: #EEEDFE;  --t-main-text: #26215C;  --t-main-edge: #7F77DD;
+      --t-A-bg:    #FAECE7;  --t-A-text:    #4A1B0C;  --t-A-edge:    #D85A30;
+      --t-B-bg:    #EAF3DE;  --t-B-text:    #173404;  --t-B-edge:    #639922;
+      --t-C-bg:    #FAEEDA;  --t-C-text:    #412402;  --t-C-edge:    #BA7517;
+      --t-D-bg:    #FBEAF0;  --t-D-text:    #4B1528;  --t-D-edge:    #D4537E;
+      --t-S-bg:    #E1F5EE;  --t-S-text:    #04342C;  --t-S-edge:    #1D9E75;
     }
-  }
 
-  body{
-    min-height:100vh;min-height:100dvh;
-    background:linear-gradient(168deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-3) 100%);
-    font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;
-    color: var(--text-soft);
-    -webkit-user-select:none;user-select:none;
-    padding-top:max(0px,env(safe-area-inset-top));
-    padding-bottom:max(0px,env(safe-area-inset-bottom));
-  }
-  button{font-family:inherit;-webkit-tap-highlight-color:transparent;border:none;background:none;cursor:pointer;color:inherit;font-size:inherit}
-  input,select,textarea{font-family:inherit;-webkit-appearance:none;outline:none;border:none;background:none;color:inherit}
-  ::-webkit-scrollbar{display:none}
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-  @keyframes slideUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
-  @keyframes slideDown{from{transform:translateY(-12px);opacity:0}to{transform:translateY(0);opacity:1}}
-  @keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      overscroll-behavior-y: contain;
+      -webkit-font-smoothing: antialiased;
+    }
 
-  .anim-fade{animation:fadeIn 0.2s ease}
-  .anim-up{animation:slideUp 0.28s cubic-bezier(0.2,0.85,0.25,1)}
-  .anim-down{animation:slideDown 0.22s ease}
-</style>
+    button { font-family: inherit; cursor: pointer; }
+    input, select, textarea { font-family: inherit; font-size: 15px; }
+
+    #root {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+    }
+
+    /* ====== auth ====== */
+    .auth-wrap {
+      padding: 64px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .auth-title {
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      margin: 0 0 4px;
+    }
+    .auth-sub {
+      color: var(--text-mute);
+      font-size: 14px;
+      margin: 0 0 20px;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field label {
+      font-size: 13px;
+      color: var(--text-mute);
+      font-weight: 500;
+    }
+    .field input, .field select {
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .field input:focus, .field select:focus {
+      border-color: var(--accent);
+    }
+    .btn-primary {
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: var(--text);
+      color: var(--bg);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+    .btn-primary:active { opacity: 0.8; }
+    .btn-primary:disabled { opacity: 0.4; }
+    .btn-ghost {
+      padding: 12px;
+      border: none;
+      background: transparent;
+      color: var(--text-mute);
+      font-size: 14px;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .auth-error {
+      padding: 10px 14px;
+      background: #FCEBEB;
+      color: #791F1F;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    /* ====== top bar ====== */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .top-bar-title {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .top-bar-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 50%;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--text);
+    }
+    .icon-btn:active { background: var(--surface-alt); }
+
+    .month-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .month-nav button {
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--text-mute);
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .month-nav button:active { background: var(--surface-alt); }
+
+    /* ====== calendar ====== */
+    .cal-wrap {
+      padding: 6px 8px 24px;
+    }
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      padding: 8px 4px 4px;
+    }
+    .cal-weekdays div {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-soft);
+      letter-spacing: 0.4px;
+    }
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+    }
+    .cal-cell {
+      aspect-ratio: 1 / 1.15;
+      border-radius: 8px;
+      padding: 4px 4px 3px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      background: transparent;
+      transition: background 0.1s;
+      position: relative;
+    }
+    .cal-cell.today {
+      background: var(--surface);
+      box-shadow: inset 0 0 0 1.5px var(--accent);
+    }
+    .cal-cell:active {
+      background: var(--surface-alt);
+    }
+    .cal-cell.empty {
+      visibility: hidden;
+    }
+    .cal-date {
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+      letter-spacing: -0.2px;
+    }
+    .cal-date.full    { color: var(--c-full); }
+    .cal-date.morning { color: var(--c-morning); }
+    .cal-date.closed  { color: var(--c-closed); }
+    .holiday-dot {
+      position: absolute;
+      top: 4px;
+      right: 6px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--c-closed);
+      opacity: 0.7;
+    }
+    .duty-stack {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 2px;
+    }
+    .duty-pill {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 4px 0;
+      width: 100%;
+      text-align: center;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ====== modal ====== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 100;
+      animation: fadeIn 0.15s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal {
+      background: var(--bg);
+      border-radius: 18px 18px 0 0;
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 18px 22px 32px;
+      animation: slideUp 0.2s ease;
+      padding-bottom: calc(32px + env(safe-area-inset-bottom));
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .modal-title {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 0;
+    }
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      font-size: 20px;
+      color: var(--text-mute);
+    }
+    .modal-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* ====== duty input modal ====== */
+    .duty-help {
+      background: var(--surface-alt);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: var(--text-mute);
+      line-height: 1.6;
+    }
+    .duty-help code {
+      background: var(--surface);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      font-size: 11px;
+      color: var(--text);
+    }
+    .duty-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      font-size: 16px;
+      letter-spacing: 2px;
+      line-height: 1.6;
+      outline: none;
+      resize: vertical;
+      text-transform: uppercase;
+    }
+    .duty-textarea:focus { border-color: var(--accent); }
+    .day-counter {
+      font-size: 12px;
+      color: var(--text-mute);
+      text-align: right;
+    }
+
+    /* ====== profile ====== */
+    .profile-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .profile-row:last-child { border-bottom: none; }
+    .profile-label {
+      color: var(--text-mute);
+      font-size: 14px;
+    }
+    .profile-value {
+      font-weight: 500;
+    }
+    .team-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .seg {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      padding: 4px;
+      background: var(--surface-alt);
+      border-radius: 10px;
+    }
+    .seg button {
+      padding: 10px 6px;
+      border: none;
+      background: transparent;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-mute);
+      transition: all 0.1s;
+    }
+    .seg button.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+    .seg.team-seg {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    /* ====== loading & empty ====== */
+    .center-msg {
+      padding: 80px 24px;
+      text-align: center;
+      color: var(--text-mute);
+      font-size: 14px;
+    }
+
+    /* ====== fab ====== */
+    .fab {
+      position: fixed;
+      bottom: calc(20px + env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 13px 22px;
+      background: var(--text);
+      color: var(--bg);
+      border: none;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+      z-index: 50;
+    }
+    .fab:active { transform: translateX(-50%) scale(0.96); }
+
+    /* ====== profile menu ====== */
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      background: transparent;
+      border-left: none;
+      border-right: none;
+      border-top: none;
+      width: 100%;
+      text-align: left;
+      font-size: 15px;
+      color: var(--text);
+    }
+    .menu-item:active { color: var(--text-mute); }
+    .menu-item.danger { color: var(--c-closed); }
+    .menu-section-title {
+      font-size: 12px;
+      color: var(--text-soft);
+      letter-spacing: 0.4px;
+      margin: 18px 0 4px;
+      font-weight: 500;
+    }
+  </style>
 </head>
 <body>
-<div id="app"></div>
+  <div id="root"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getDatabase, ref, set, get, update, push, remove, onValue } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+  <script type="text/babel" data-type="module" data-presets="react">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import {
+      getDatabase, ref, set, get, onValue, update, remove, child
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-// ───── Firebase ─────
-const firebaseConfig = {
-  apiKey: "AIzaSyBoWEww6yUb9bjSTy5oyNPTFTuHT07ppTQ",
-  authDomain: "our-schedule-ee491.firebaseapp.com",
-  databaseURL: "https://our-schedule-ee491-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "our-schedule-ee491",
-  storageBucket: "our-schedule-ee491.firebasestorage.app",
-  messagingSenderId: "397619973905",
-  appId: "1:397619973905:web:ef54d6ff04d16e6ac0c6b0"
-};
-const fbApp = initializeApp(firebaseConfig);
-const db = getDatabase(fbApp);
-const ROOT = "61w_v1";
-
-// ───── 상수 ─────
-const el = React.createElement;
-const {useState, useEffect, useMemo, useRef, useCallback} = React;
-
-const WEEKDAYS = ["일","월","화","수","목","금","토"];
-const SHIFT = {
-  D:{label:"D",full:"데이",color:"var(--shift-d)",light:"var(--shift-d-light)"},
-  E:{label:"E",full:"이브닝",color:"var(--shift-e)",light:"var(--shift-e-light)"},
-  N:{label:"N",full:"나이트",color:"var(--shift-n)",light:"var(--shift-n-light)"},
-  O:{label:"O",full:"오프",color:"var(--shift-o)",light:"var(--shift-o-light)"},
-};
-const RESERVED_CODES = ["D","E","N","O"];
-
-const MEMBER_COLORS = [
-  // 블루 계열
-  "var(--sat)","#3D7AB8","#7AB8E0","#4A6FA5","#6BA8C7",
-  // 퍼플 계열
-  "#9B6FB5","#C07ABC","#7E5BA0","#B58FCB","#8B6FA8",
-  // 레드/핑크 계열
-  "var(--sun)","#D85A8E","#C66575","#E89399","#B85770",
-  // 오렌지/옐로우 계열
-  "#F5A623","#E8954D","#D8A85C","#C99060","#E0B870",
-  // 그린 계열
-  "#6FB89B","#7BA98F","#8FBE73","#5A9B8A","#9BC78E",
-  // 브라운/얼스 계열
-  "#B89B6E","#B47B5C","#A88660","#9C7050","#C49475"
-];
-
-const MEMO_COLOR = "var(--memo)";
-const NEUTRAL_COLOR = "var(--neutral)";
-const NEUTRAL_LIGHT = "var(--neutral-light)";
-const MAX_MEMBERS = 14;
-
-const dKey = (y,m,d) => `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-
-// 전화번호 자동 하이픈
-function formatPhone(digits){
-  const d = (digits||"").replace(/\D/g,"");
-  if(d.length<4) return d;
-  if(d.length<7) return `${d.slice(0,3)}-${d.slice(3)}`;
-  if(d.length<11) return `${d.slice(0,3)}-${d.slice(3,6)}-${d.slice(6)}`;
-  return `${d.slice(0,3)}-${d.slice(3,7)}-${d.slice(7,11)}`;
-}
-
-// ───── 메인 앱 ─────
-function App(){
-  const [view,setView] = useState("loading"); // loading | auth | main
-  const [authMode,setAuthMode] = useState("login"); // login | signup
-  const [me,setMe] = useState(null); // 인증된 memberId (수정 모드일 때만 값 있음)
-  const [members,setMembers] = useState({});
-  const [schedules,setSchedules] = useState({});
-  const [memos,setMemos] = useState({});
-  const [notices,setNotices] = useState({});
-  const [perspective,setPerspective] = useState(null); // 보는 시점 memberId
-  const today = new Date();
-  const [year,setYear] = useState(today.getFullYear());
-  const [month,setMonth] = useState(today.getMonth());
-
-  const [showLoginModal,setShowLoginModal] = useState(false); // 수정 모드 진입 모달
-
-  // ?view=이름 URL 파라미터 처리 + sessionStorage 복원
-  useEffect(()=>{
-    const params = new URLSearchParams(window.location.search);
-    const viewParam = params.get("view");
-
-    // sessionStorage에서 인증 상태 복원
-    const savedId = sessionStorage.getItem("group_duty_me");
-
-    if(savedId){
-      // 이전에 수정 모드로 인증한 상태 (창 닫지 않음)
-      setMe(savedId);
-      if(!viewParam) setPerspective(savedId);
-      setView("main");
-    } else if(viewParam){
-      // 위젯 등에서 ?view=이름 으로 진입 → 게스트 모드로 캘린더 직진입
-      // perspective는 members 로드 후 설정 (아래 effect에서)
-      setView("main");
-    } else {
-      // 직접 링크 진입 → 로그인 강제
-      setView("auth");
-    }
-  },[]);
-
-  // ?view= 파라미터로 진입한 경우, members 로드되면 해당 사람으로 시점 설정
-  useEffect(()=>{
-    if(view!=="main" || perspective) return;
-    const params = new URLSearchParams(window.location.search);
-    const viewParam = params.get("view");
-    if(!viewParam) return;
-    const matchId = Object.entries(members).find(([id,m])=>m.name===viewParam.trim())?.[0];
-    if(matchId){
-      setPerspective(matchId);
-    } else if(Object.keys(members).length > 0){
-      // 이름 매칭 안 되면 첫 멤버로
-      const firstId = Object.entries(members).sort((a,b)=>(a[1].joinedAt||0)-(b[1].joinedAt||0))[0]?.[0];
-      if(firstId) setPerspective(firstId);
-    }
-  },[members,view,perspective]);
-
-  // Firebase 리스너
-  useEffect(()=>{
-    const unsubM = onValue(ref(db,`${ROOT}/members`), s=>{
-      setMembers(s.val()||{});
-    });
-    const unsubS = onValue(ref(db,`${ROOT}/schedules`), s=>{
-      setSchedules(s.val()||{});
-    });
-    const unsubMe = onValue(ref(db,`${ROOT}/memos`), s=>{
-      setMemos(s.val()||{});
-    });
-    const unsubN = onValue(ref(db,`${ROOT}/notices`), s=>{
-      setNotices(s.val()||{});
-    });
-    return ()=>{ unsubM(); unsubS(); unsubMe(); unsubN(); };
-  },[]);
-
-  // 수정 모드 진입 (auth 화면에서 가입/로그인 또는 본 화면에서 잠금 해제)
-  const handleLogin = useCallback((memberId)=>{
-    sessionStorage.setItem("group_duty_me", memberId);
-    setMe(memberId);
-    setPerspective(p => p || memberId);
-    setView("main");
-    setShowLoginModal(false);
-  },[]);
-
-  // 수정 모드 종료 = 잠금 (게스트로 복귀, 시점은 유지)
-  const handleLockMode = useCallback(()=>{
-    sessionStorage.removeItem("group_duty_me");
-    setMe(null);
-    // perspective는 그대로 유지 (보기는 가능)
-  },[]);
-
-  // 완전 로그아웃 (auth 화면으로 — 거의 안 쓰임, 비상시용)
-  const handleFullLogout = useCallback(()=>{
-    sessionStorage.removeItem("group_duty_me");
-    setMe(null);
-    setPerspective(null);
-    setView("auth");
-  },[]);
-
-  if(view==="loading"){
-    return el("div",{style:{display:"flex",alignItems:"center",justifyContent:"center",height:"100dvh",color:"var(--text-faint)"}},"...");
-  }
-  if(view==="auth"){
-    return el(AuthScreen,{
-      mode:authMode, setMode:setAuthMode,
-      members, onLogin:handleLogin
-    });
-  }
-  return el(React.Fragment, null,
-    el(CalendarScreen,{
-      me, members, schedules, memos, notices,
-      perspective, setPerspective,
-      year, month, setYear, setMonth,
-      onLockMode:handleLockMode,
-      onFullLogout:handleFullLogout,
-      onRequestEdit:()=>setShowLoginModal(true)
-    }),
-    showLoginModal && el(EditModeLoginModal,{
-      members,
-      onLogin:handleLogin,
-      onClose:()=>setShowLoginModal(false)
-    })
-  );
-}
-
-// ───── 수정 모드 진입 모달 (수정 모드로 들어가려고 비번 입력) ─────
-function EditModeLoginModal({members,onLogin,onClose}){
-  const [selectedId,setSelectedId] = useState("");
-  const [pw,setPw] = useState("");
-  const [err,setErr] = useState("");
-  const memberList = Object.entries(members).sort((a,b)=>(a[1].joinedAt||0)-(b[1].joinedAt||0));
-
-  const handleSubmit = ()=>{
-    if(!selectedId) return setErr("이름을 선택해");
-    if(pw.length!==4) return setErr("비번 4자리");
-    if(members[selectedId].password!==pw) return setErr("비번 틀림");
-    setErr("");
-    onLogin(selectedId);
-  };
-
-  return el("div",{className:"anim-fade",
-    onClick:onClose,
-    style:{
-      position:"fixed",inset:0,background:"var(--modal-bg)",
-      zIndex:90,display:"flex",alignItems:"flex-end"
-    }
-  },
-    el("div",{className:"anim-up",
-      onClick:e=>e.stopPropagation(),
-      style:{
-        width:"100%",background:"var(--bg-1)",
-        borderRadius:"22px 22px 0 0",
-        padding:"22px 18px 28px",
-        maxHeight:"80vh",overflowY:"auto"
-      }
-    },
-      el("div",{style:{width:36,height:4,background:"var(--border-soft)",borderRadius:2,margin:"0 auto 14px"}}),
-      el("div",{style:{fontSize:18,fontWeight:800,marginBottom:6,color:"var(--text)"}},"🔓 수정 모드 진입"),
-      el("div",{style:{fontSize:12,color:"var(--text-faint)",marginBottom:14,lineHeight:1.5}},
-        "본인 인증 후 듀티 입력, 메모 작성, 정보 수정이 가능해져요."),
-      el("div",{style:{background:"var(--surface-softer)",borderRadius:14,padding:"4px 6px",marginBottom:12}},
-        el("div",{style:{padding:"4px 12px 0",fontSize:11,color:"var(--text-faint)",fontWeight:600}},"이름"),
-        memberList.length===0
-          ? el("div",{style:{padding:"14px 12px",fontSize:14,color:"var(--text-fainter)"}},"가입된 멤버가 없어요.")
-          : el("div",{style:{display:"flex",flexWrap:"wrap",gap:6,padding:"8px 8px 10px"}},
-            memberList.map(([id,m])=>
-              el("button",{key:id,onClick:()=>setSelectedId(id),
-                style:{
-                  padding:"7px 12px",borderRadius:20,
-                  background:selectedId===id?m.color:"var(--surface)",
-                  color:selectedId===id?"var(--surface)":"var(--text-soft)",
-                  fontSize:13,fontWeight:selectedId===id?700:500,
-                  border:`1.5px solid ${selectedId===id?m.color:"var(--border)"}`
-                }
-              },m.name)
-            )
-          )
-      ),
-      el("div",{style:{background:"var(--surface-softer)",borderRadius:14,padding:"14px 16px",marginBottom:10}},
-        el("div",{style:{fontSize:11,color:"var(--text-faint)",fontWeight:600,marginBottom:8}},"비밀번호 4자리"),
-        el("input",{
-          type:"tel",inputMode:"numeric",pattern:"[0-9]*",maxLength:4,
-          value:pw,onChange:e=>setPw(e.target.value.replace(/\D/g,"").slice(0,4)),
-          placeholder:"••••",
-          style:{width:"100%",fontSize:22,letterSpacing:"0.5em",fontWeight:700,textAlign:"center",color:"var(--text-soft)",padding:"4px 0"}
-        })
-      ),
-      err && el("div",{style:{fontSize:13,color:MEMO_COLOR,textAlign:"center",marginBottom:8}},err),
-      el("div",{style:{display:"flex",gap:8,marginTop:8}},
-        el("button",{onClick:onClose,
-          style:{flex:1,padding:"14px 0",borderRadius:12,background:"var(--surface)",border:"1px solid #EFE6D5",color:"var(--text-sub)",fontSize:14,fontWeight:600}
-        },"취소"),
-        el("button",{onClick:handleSubmit,
-          style:{flex:2,padding:"14px 0",borderRadius:12,background:"var(--text)",color:"var(--surface)",fontSize:14,fontWeight:700}
-        },"잠금 해제")
-      )
-    )
-  );
-}
-
-// ───── 인증 화면 ─────
-function AuthScreen({mode,setMode,members,onLogin}){
-  const memberCount = Object.keys(members).length;
-  return el("div",{style:{minHeight:"100dvh",padding:"56px 24px 32px",display:"flex",flexDirection:"column"}},
-    el("div",{style:{textAlign:"center",marginBottom:48}},
-      el("div",{style:{fontSize:52,marginBottom:8}},"🍳"),
-      el("h1",{style:{fontSize:24,fontWeight:800,letterSpacing:"-0.02em",color:"var(--text)"}},"61병동 근무"),
-      el("p",{style:{fontSize:13,color:"var(--text-faint)",marginTop:6,letterSpacing:"-0.01em"}},`현재 ${memberCount}명 / 최대 ${MAX_MEMBERS}명`)
-    ),
-    el("div",{style:{display:"flex",gap:8,padding:4,background:"var(--surface-softer)",borderRadius:14,marginBottom:24}},
-      ["login","signup"].map(m=>
-        el("button",{key:m,onClick:()=>setMode(m),
-          style:{
-            flex:1,padding:"12px 0",borderRadius:10,
-            background:mode===m?"var(--surface)":"transparent",
-            color:mode===m?"var(--text)":"var(--text-faint)",
-            fontWeight:mode===m?700:500,
-            fontSize:14,
-            boxShadow:mode===m?"0 2px 8px rgba(180,160,130,0.15)":"none",
-            transition:"all 0.2s"
-          }
-        }, m==="login"?"로그인":"가입")
-      )
-    ),
-    mode==="login"
-      ? el(LoginForm,{members,onLogin})
-      : el(SignupForm,{members,memberCount,onLogin})
-  );
-}
-
-function LoginForm({members,onLogin}){
-  const [selectedId,setSelectedId] = useState("");
-  const [pw,setPw] = useState("");
-  const [err,setErr] = useState("");
-  const memberList = Object.entries(members).sort((a,b)=>(a[1].joinedAt||0)-(b[1].joinedAt||0));
-
-  const handleSubmit = ()=>{
-    if(!selectedId) return setErr("이름을 선택해");
-    if(pw.length!==4) return setErr("비번 4자리");
-    if(members[selectedId].password!==pw) return setErr("비번 틀림");
-    setErr("");
-    onLogin(selectedId);
-  };
-
-  return el("div",{className:"anim-down",style:{display:"flex",flexDirection:"column",gap:14}},
-    el("div",{style:{background:"var(--surface-softer)",borderRadius:14,padding:"4px 6px"}},
-      el("div",{style:{padding:"4px 12px 0",fontSize:11,color:"var(--text-faint)",fontWeight:600}},"이름"),
-      memberList.length===0
-        ? el("div",{style:{padding:"14px 12px",fontSize:14,color:"var(--text-fainter)"}},"아직 가입한 사람이 없어. 가입 탭으로 가서 첫 멤버가 되어줘.")
-        : el("div",{style:{display:"flex",flexWrap:"wrap",gap:6,padding:"8px 8px 10px"}},
-          memberList.map(([id,m])=>
-            el("button",{key:id,onClick:()=>setSelectedId(id),
-              style:{
-                padding:"7px 12px",borderRadius:20,
-                background:selectedId===id?m.color:"var(--surface)",
-                color:selectedId===id?"var(--surface)":"var(--text-soft)",
-                fontSize:13,fontWeight:selectedId===id?700:500,
-                border:`1.5px solid ${selectedId===id?m.color:"var(--border)"}`,
-                transition:"all 0.15s"
-              }
-            },m.name)
-          )
-        )
-    ),
-    el("div",{style:{background:"var(--surface-softer)",borderRadius:14,padding:"14px 16px"}},
-      el("div",{style:{fontSize:11,color:"var(--text-faint)",fontWeight:600,marginBottom:8}},"비밀번호 4자리"),
-      el("input",{
-        type:"tel",inputMode:"numeric",pattern:"[0-9]*",maxLength:4,
-        value:pw,onChange:e=>setPw(e.target.value.replace(/\D/g,"").slice(0,4)),
-        placeholder:"••••",
-        style:{width:"100%",fontSize:22,letterSpacing:"0.5em",fontWeight:700,textAlign:"center",color:"var(--text-soft)",padding:"4px 0"}
-      })
-    ),
-    err && el("div",{style:{fontSize:13,color:MEMO_COLOR,textAlign:"center"}},err),
-    el("button",{onClick:handleSubmit,
-      style:{
-        marginTop:8,padding:"16px 0",borderRadius:14,
-        background:"var(--text)",color:"var(--surface)",
-        fontSize:15,fontWeight:700,letterSpacing:"-0.01em"
-      }
-    },"들어가기")
-  );
-}
-
-function SignupForm({members,memberCount,onLogin}){
-  const [name,setName] = useState("");
-  const [bMonth,setBMonth] = useState("");
-  const [bDay,setBDay] = useState("");
-  const [phone,setPhone] = useState("");
-  const [pw,setPw] = useState("");
-  const [pw2,setPw2] = useState("");
-  const [color,setColor] = useState(MEMBER_COLORS[0]);
-  const [err,setErr] = useState("");
-
-  const usedColors = new Set(Object.values(members).map(m=>m.color));
-  const usedNames = new Set(Object.values(members).map(m=>m.name));
-
-  const handleSubmit = async()=>{
-    if(memberCount>=MAX_MEMBERS) return setErr(`최대 ${MAX_MEMBERS}명`);
-    if(!name.trim()) return setErr("이름");
-    if(usedNames.has(name.trim())) return setErr("이미 있는 이름");
-    const m=parseInt(bMonth),d=parseInt(bDay);
-    if(!(m>=1&&m<=12)||!(d>=1&&d<=31)) return setErr("생일 확인");
-    const phoneDigits = phone.replace(/\D/g,"");
-    if(!/^\d{10,11}$/.test(phoneDigits)) return setErr("전화번호 10~11자리");
-    if(pw.length!==4) return setErr("비번 4자리");
-    if(pw!==pw2) return setErr("비번 확인 불일치");
-    setErr("");
-
-    const newRef = push(ref(db,`${ROOT}/members`));
-    const id = newRef.key;
-    await set(newRef,{
-      name:name.trim(),
-      birthMonth:m,birthDay:d,
-      phone:formatPhone(phoneDigits),
-      password:pw,
-      color,
-      joinedAt:Date.now()
-    });
-    onLogin(id);
-  };
-
-  return el("div",{className:"anim-down",style:{display:"flex",flexDirection:"column",gap:12}},
-    field("이름", el("input",{
-      type:"text",value:name,onChange:e=>setName(e.target.value.slice(0,8)),
-      placeholder:"이름",maxLength:8,
-      style:inputStyle()
-    })),
-    field("생일 (양력)", el("div",{style:{display:"flex",gap:8,alignItems:"center"}},
-      el("input",{type:"tel",inputMode:"numeric",value:bMonth,onChange:e=>setBMonth(e.target.value.replace(/\D/g,"").slice(0,2)),placeholder:"월",style:{...inputStyle(),width:60,textAlign:"center"}}),
-      el("span",{style:{color:"var(--text-fainter)"}},"/"),
-      el("input",{type:"tel",inputMode:"numeric",value:bDay,onChange:e=>setBDay(e.target.value.replace(/\D/g,"").slice(0,2)),placeholder:"일",style:{...inputStyle(),width:60,textAlign:"center"}})
-    )),
-    field("전화번호", el("input",{
-      type:"tel",inputMode:"numeric",value:phone,
-      onChange:e=>setPhone(formatPhone(e.target.value.replace(/\D/g,"").slice(0,11))),
-      placeholder:"010-0000-0000",
-      style:{...inputStyle(),fontVariantNumeric:"tabular-nums"}
-    })),
-    field("비밀번호 4자리", el("div",{style:{display:"flex",gap:8}},
-      el("input",{type:"tel",inputMode:"numeric",maxLength:4,value:pw,onChange:e=>setPw(e.target.value.replace(/\D/g,"").slice(0,4)),placeholder:"••••",style:{...inputStyle(),flex:1,letterSpacing:"0.4em",textAlign:"center"}}),
-      el("input",{type:"tel",inputMode:"numeric",maxLength:4,value:pw2,onChange:e=>setPw2(e.target.value.replace(/\D/g,"").slice(0,4)),placeholder:"확인",style:{...inputStyle(),flex:1,letterSpacing:"0.4em",textAlign:"center"}})
-    )),
-    field("내 색상", el("div",{style:{display:"grid",gridTemplateColumns:"repeat(8,1fr)",gap:8,paddingTop:4}},
-      MEMBER_COLORS.map(c=>{
-        const used = usedColors.has(c) && c!==color;
-        return el("button",{key:c,onClick:()=>!used&&setColor(c),
-          style:{
-            aspectRatio:"1",borderRadius:"50%",
-            background:used?"var(--surface-faint)":c,
-            border:color===c?"3px solid #2D2D3A":"3px solid transparent",
-            opacity:used?0.4:1,
-            cursor:used?"not-allowed":"pointer",
-            transition:"all 0.15s"
-          }
-        });
-      })
-    )),
-    err && el("div",{style:{fontSize:13,color:MEMO_COLOR,textAlign:"center",marginTop:4}},err),
-    el("button",{onClick:handleSubmit,
-      style:{
-        marginTop:8,padding:"16px 0",borderRadius:14,
-        background:"var(--text)",color:"var(--surface)",
-        fontSize:15,fontWeight:700
-      }
-    },"가입하기")
-  );
-}
-
-const inputStyle = ()=>({
-  width:"100%",fontSize:15,padding:"10px 12px",
-  background:"var(--surface)",borderRadius:10,
-  border:"1px solid #EFE6D5",color:"var(--text-soft)"
-});
-function field(label,child){
-  return el("div",{style:{display:"flex",flexDirection:"column",gap:6}},
-    el("div",{style:{fontSize:11,color:"var(--text-faint)",fontWeight:600,paddingLeft:2}},label),
-    child
-  );
-}
-
-// ───── 메인 캘린더 ─────
-function CalendarScreen(props){
-  const {me,members,schedules,memos,notices,perspective,setPerspective,year,month,setYear,setMonth,onLockMode,onFullLogout,onRequestEdit} = props;
-  const [showPicker,setShowPicker] = useState(false);
-  const [showInputDrawer,setShowInputDrawer] = useState(false);
-  const [showContacts,setShowContacts] = useState(false);
-  const [showSettings,setShowSettings] = useState(false);
-  const [modalDay,setModalDay] = useState(null); // {day, scrollToAll:bool}
-  const [quickEditDay,setQuickEditDay] = useState(null); // 빠른 듀티 변경용
-  const [showHelp,setShowHelp] = useState(false);
-  const [planMode,setPlanMode] = useState(false); // 약속 잡기 모드 ON/OFF
-  const [planSelectedIds,setPlanSelectedIds] = useState([]); // 약속 잡기 - 선택된 동기 ID들
-  const [showPlanSheet,setShowPlanSheet] = useState(false);
-  const [showNotices,setShowNotices] = useState(false);
-
-  const isEditMode = !!me;
-  const meData = me ? members[me] : null;
-  const pData = perspective ? members[perspective] : null;
-
-  // 시점 멤버가 사라졌으면 본인 또는 첫 멤버로
-  useEffect(()=>{
-    if(perspective && !members[perspective]){
-      if(me && members[me]) setPerspective(me);
-      else {
-        const firstId = Object.keys(members)[0];
-        setPerspective(firstId || null);
-      }
-    }
-  },[members,perspective,me,setPerspective]);
-
-  // 시점 좌우 스와이프
-  const orderedIds = useMemo(()=>{
-    return Object.entries(members)
-      .sort((a,b)=>(a[1].joinedAt||0)-(b[1].joinedAt||0))
-      .map(([id])=>id);
-  },[members]);
-
-  const swipePerspective = (dir)=>{
-    if(orderedIds.length===0) return;
-    const idx = orderedIds.indexOf(perspective);
-    const next = (idx + dir + orderedIds.length) % orderedIds.length;
-    setPerspective(orderedIds[next]);
-  };
-
-  // 월 이동
-  const moveMonth = (dir)=>{
-    let y=year, m=month+dir;
-    if(m<0){y--;m=11;}
-    if(m>11){y++;m=0;}
-    setYear(y); setMonth(m);
-  };
-
-  // 캘린더 셀 데이터
-  const daysInMonth = new Date(year,month+1,0).getDate();
-  const firstDow = new Date(year,month,1).getDay();
-  const cells = [];
-  for(let i=0;i<firstDow;i++) cells.push(null);
-  for(let d=1;d<=daysInMonth;d++) cells.push(d);
-  while(cells.length%7!==0) cells.push(null);
-
-  // ───── 스와이프 핸들러 (캘린더 본체: 월 이동) ─────
-  const swipeRef = useRef({x:0,y:0,active:false});
-  const onTouchStart = (e)=>{
-    swipeRef.current = {
-      x:e.touches[0].clientX, y:e.touches[0].clientY, active:true
+    // ============================================================
+    // Firebase 설정
+    // ============================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyDPdMQPm3CRpEWaRpg45FD5KYThZTkH9_E",
+      authDomain: "duty-db3c7.firebaseapp.com",
+      databaseURL: "https://duty-db3c7-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "duty-db3c7",
+      storageBucket: "duty-db3c7.firebasestorage.app",
+      messagingSenderId: "464184579710",
+      appId: "1:464184579710:web:2290c68519753dc3a16a2f"
     };
-  };
-  const onTouchEnd = (e)=>{
-    if(!swipeRef.current.active) return;
-    const dx = e.changedTouches[0].clientX - swipeRef.current.x;
-    const dy = e.changedTouches[0].clientY - swipeRef.current.y;
-    if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)*1.5){
-      moveMonth(dx<0 ? 1 : -1);
-    }
-    swipeRef.current.active = false;
-  };
+    const fbApp = initializeApp(firebaseConfig);
+    const db = getDatabase(fbApp);
 
-  // ───── 헤더 시점 카드 스와이프 핸들러 ─────
-  const headerSwipeRef = useRef({x:0,y:0,active:false});
-  const onHeaderTouchStart = (e)=>{
-    headerSwipeRef.current = {
-      x:e.touches[0].clientX, y:e.touches[0].clientY, active:true
+    // ============================================================
+    // 상수
+    // ============================================================
+    const ADMIN_SABUN = "224051";
+    const TEAMS = ["main", "A", "B", "C", "D", "S-616", "S-617", "S-act"];
+    const SHIFT_CODES = ["D", "E", "N", "O", "T", "M", "V"];
+    const SHIFT_LABELS = {
+      D: "Day", E: "Evening", N: "Night", O: "Off",
+      T: "Top", M: "Mid", V: "반차"
     };
-  };
-  const onHeaderTouchEnd = (e)=>{
-    if(!headerSwipeRef.current.active) return;
-    const dx = e.changedTouches[0].clientX - headerSwipeRef.current.x;
-    const dy = e.changedTouches[0].clientY - headerSwipeRef.current.y;
-    if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)*1.5){
-      swipePerspective(dx<0 ? 1 : -1);
-      headerSwipeRef.current.active = false;
-      return "swiped";
+
+    function teamColor(team) {
+      if (team === "main") return { bg: "var(--t-main-bg)", text: "var(--t-main-text)", edge: "var(--t-main-edge)" };
+      if (team === "A")    return { bg: "var(--t-A-bg)",    text: "var(--t-A-text)",    edge: "var(--t-A-edge)" };
+      if (team === "B")    return { bg: "var(--t-B-bg)",    text: "var(--t-B-text)",    edge: "var(--t-B-edge)" };
+      if (team === "C")    return { bg: "var(--t-C-bg)",    text: "var(--t-C-text)",    edge: "var(--t-C-edge)" };
+      if (team === "D")    return { bg: "var(--t-D-bg)",    text: "var(--t-D-text)",    edge: "var(--t-D-edge)" };
+      return { bg: "var(--t-S-bg)", text: "var(--t-S-text)", edge: "var(--t-S-edge)" };
     }
-    headerSwipeRef.current.active = false;
-  };
 
-  if(!perspective || !pData) return el("div",{style:{padding:40,textAlign:"center",color:"var(--text-faint)"}},"로딩...");
-
-  return el("div",{style:{minHeight:"100dvh",display:"flex",flexDirection:"column"}},
-    // 헤더
-    el(Header,{
-      meData, pData, members, perspective, me,
-      year, month,
-      isEditMode,
-      planMode,
-      onMoveMonth:moveMonth,
-      onPickPerson:()=>setShowPicker(true),
-      onGoHome:()=>{ if(me) setPerspective(me); },
-      onGoToday:()=>{
-        const t = new Date();
-        setYear(t.getFullYear());
-        setMonth(t.getMonth());
-      },
-      onPlan:()=>setShowPlanSheet(true),
-      onSettings:()=>setShowSettings(true),
-      onLockMode, onRequestEdit,
-      onHeaderTouchStart, onHeaderTouchEnd,
-      noticeSlot: el(NoticeBar, {
-        notices, members,
-        onOpen: ()=>setShowNotices(true)
-      })
-    }),
-
-    // 캘린더 본체 (스와이프 영역)
-    el("div",{
-      style:{flex:1,padding:"4px 10px 12px",touchAction:"pan-y"},
-      onTouchStart, onTouchEnd
-    },
-      el(WeekdayRow),
-      el(CalendarGrid,{
-        cells, year, month, today:new Date(),
-        members, schedules, memos,
-        perspective, me,
-        planSelectedIds,
-        onCellTap:(d)=>setModalDay({day:d,scrollToAll:false}),
-        onCellLongPress:(d)=>{
-          if(isEditMode && perspective===me){
-            setQuickEditDay(d);
-          } else {
-            setModalDay({day:d,scrollToAll:true});
-          }
-        }
-      })
-    ),
-
-    // 다음 OFF 한줄평 (시점 사람 기준)
-    el(NextOffPreview, { perspective, members, schedules, year, month }),
-
-    // 입력 버튼: 수정 모드 + 본인 시점일 때만
-    isEditMode && perspective===me && el("div",{style:{padding:"4px 16px 8px"}},
-      el("button",{onClick:()=>setShowInputDrawer(true),
-        style:{
-          width:"100%",padding:"14px 16px",borderRadius:14,
-          background:"var(--surface-soft)",
-          color:"var(--text)",fontSize:14,fontWeight:600,
-          border:"1.5px dashed #D9CCB0",
-          letterSpacing:"-0.01em"
-        }
-      },`📝 ${year}년 ${month+1}월 듀티 한 줄 입력`)
-    ),
-
-    // 게스트 모드 안내 (본인 시점이 아닐 때는 안 띄움 - 공간 절약)
-    !isEditMode && el("div",{style:{padding:"4px 16px 8px"}},
-      el("button",{onClick:onRequestEdit,
-        style:{
-          width:"100%",padding:"12px 16px",borderRadius:14,
-          background:"var(--surface-softer)",
-          color:"var(--text-sub)",fontSize:13,fontWeight:600,
-          border:"1px solid #EFE6D5",
-          letterSpacing:"-0.01em",
-          display:"flex",alignItems:"center",justifyContent:"center",gap:6
-        }
-      },"🔒 보기 모드 · 탭하여 수정 모드로")
-    ),
-
-    // 연락처 패널
-    el(ContactsPanel,{
-      open:showContacts, onToggle:()=>setShowContacts(!showContacts),
-      members, me
-    }),
-
-    // 모달들
-    showPicker && el(PersonPicker,{
-      members, me, perspective,
-      onSelect:(id)=>{setPerspective(id); setShowPicker(false);},
-      onClose:()=>setShowPicker(false)
-    }),
-    showInputDrawer && el(InputDrawer,{
-      year, month, me, members, schedules,
-      onClose:()=>setShowInputDrawer(false)
-    }),
-    modalDay && el(DayModal,{
-      day:modalDay.day, scrollToAll:modalDay.scrollToAll,
-      year, month,
-      members, schedules, memos,
-      perspective, me, isEditMode,
-      onRequestEdit,
-      onChangeDay: (newY, newM, newD)=>{
-        // 월/년 바뀌면 함께 업데이트
-        if(newY !== year) setYear(newY);
-        if(newM !== month) setMonth(newM);
-        setModalDay({ day: newD, scrollToAll: false });
-      },
-      onClose:()=>setModalDay(null)
-    }),
-    showSettings && el(SettingsModal,{
-      me, members, schedules, isEditMode,
-      onClose:()=>setShowSettings(false),
-      onLockMode, onFullLogout, onRequestEdit,
-      onOpenNotices: ()=>setShowNotices(true)
-    }),
-    quickEditDay && el(QuickEditPopup,{
-      day:quickEditDay, year, month, me, members, schedules,
-      onClose:()=>setQuickEditDay(null)
-    }),
-    showPlanSheet && el(PlanSheet,{
-      members, schedules, year, month, me, perspective,
-      selectedIds: planSelectedIds,
-      onChange: (ids)=>{
-        setPlanSelectedIds(ids);
-        setPlanMode(ids.length > 0);
-      },
-      onClose: ()=>setShowPlanSheet(false)
-    }),
-    showNotices && el(NoticesModal, {
-      notices, members, me, isEditMode, onRequestEdit,
-      onClose: ()=>setShowNotices(false)
-    })
-  );
-}
-
-// ───── 일별 공유 (SVG → PNG → Web Share) ─────
-async function shareDayAsImage({day, year, month, members, schedules, memos}){
-  const dow = new Date(year, month, day).getDay();
-  const dowKor = ["일","월","화","수","목","금","토"];
-
-  // 듀티별 그룹
-  const groups = { D:[], E:[], N:[], O:[], custom:[] };
-  Object.entries(members).forEach(([id,m])=>{
-    const k = `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
-    const s = schedules?.[id]?.[k];
-    if(!s) return;
-    if(["D","E","N","O"].includes(s)) groups[s].push({m, code:s});
-    else groups.custom.push({m, code:s});
-  });
-
-  // 메모
-  const memoEntries = Object.entries(memos||{}).sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
-
-  // SVG 디자인
-  const W = 720, padX = 40;
-  const SHIFT_INFO = {
-    D: { color:"#7EC8E3", light:"#E8F4FA", full:"Day", emoji:"☀️" },
-    E: { color:"#8FD5A6", light:"#EAFAF0", full:"Evening", emoji:"🌆" },
-    N: { color:"#F5D76E", light:"#FDF8E8", full:"Night", emoji:"🌙" },
-    O: { color:"#D4A0D0", light:"#F5EAF4", full:"Off", emoji:"💤" }
-  };
-
-  let y = 56;
-  let svgChunks = [];
-
-  // 헤더
-  svgChunks.push(`<text x="${padX}" y="${y}" font-family="Pretendard, -apple-system, sans-serif" font-size="22" font-weight="800" fill="#9C8F7C">🍳 monjayaki</text>`);
-  y += 50;
-  svgChunks.push(`<text x="${padX}" y="${y}" font-family="Pretendard, -apple-system, sans-serif" font-size="38" font-weight="800" fill="#2D2D3A">${month+1}월 ${day}일 <tspan fill="${dow===0?"#E8746E":dow===6?"#5B9BD5":"#9C8F7C"}">(${dowKor[dow]})</tspan></text>`);
-  y += 24;
-  svgChunks.push(`<line x1="${padX}" y1="${y}" x2="${W-padX}" y2="${y}" stroke="#E8DFCD" stroke-width="1"/>`);
-  y += 30;
-
-  // 듀티 그룹별
-  ["D","E","N","O"].forEach(code=>{
-    const list = groups[code];
-    if(list.length===0) return;
-    const info = SHIFT_INFO[code];
-    const groupH = 30 + Math.ceil(list.length / 4) * 40 + 16;
-
-    // 배경 카드
-    svgChunks.push(`<rect x="${padX}" y="${y}" width="${W-padX*2}" height="${groupH}" rx="14" fill="${info.light}"/>`);
-
-    // 헤더
-    svgChunks.push(`<circle cx="${padX+22}" cy="${y+24}" r="11" fill="${info.color}"/>`);
-    svgChunks.push(`<text x="${padX+22}" y="${y+29}" font-family="Pretendard, -apple-system, sans-serif" font-size="13" font-weight="800" fill="#FFFFFF" text-anchor="middle">${code}</text>`);
-    svgChunks.push(`<text x="${padX+42}" y="${y+29}" font-family="Pretendard, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#5C5040">${info.full} · ${list.length}명</text>`);
-
-    // 이름들
-    let nameY = y + 56;
-    list.forEach((item, idx)=>{
-      const col = idx % 4;
-      const row = Math.floor(idx / 4);
-      const cx = padX + 20 + col * ((W - padX*2 - 40) / 4);
-      const cy = nameY + row * 40;
-      svgChunks.push(`<rect x="${cx-8}" y="${cy-22}" width="${(W-padX*2-40)/4 - 8}" height="32" rx="16" fill="#FFFFFF"/>`);
-      svgChunks.push(`<circle cx="${cx+8}" cy="${cy-6}" r="6" fill="${item.m.color || "#B8AB91"}"/>`);
-      svgChunks.push(`<text x="${cx+22}" y="${cy-1}" font-family="Pretendard, -apple-system, sans-serif" font-size="14" font-weight="600" fill="#3A3A4A">${escapeXml(item.m.name)}</text>`);
-    });
-
-    y += groupH + 10;
-  });
-
-  // 커스텀 그룹
-  if(groups.custom.length > 0){
-    const list = groups.custom;
-    const groupH = 30 + Math.ceil(list.length / 3) * 44 + 16;
-    svgChunks.push(`<rect x="${padX}" y="${y}" width="${W-padX*2}" height="${groupH}" rx="14" fill="#F0EAD9"/>`);
-    svgChunks.push(`<text x="${padX+22}" y="${y+28}" font-family="Pretendard, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#5C5040">기타 · ${list.length}명</text>`);
-    let nameY = y + 56;
-    list.forEach((item, idx)=>{
-      const col = idx % 3;
-      const row = Math.floor(idx / 3);
-      const cx = padX + 20 + col * ((W - padX*2 - 40) / 3);
-      const cy = nameY + row * 44;
-      svgChunks.push(`<rect x="${cx-8}" y="${cy-22}" width="${(W-padX*2-40)/3 - 8}" height="36" rx="18" fill="#FFFFFF"/>`);
-      svgChunks.push(`<circle cx="${cx+10}" cy="${cy-4}" r="10" fill="${item.m.color || "#B8AB91"}"/>`);
-      svgChunks.push(`<text x="${cx+10}" y="${cy}" font-family="Pretendard, -apple-system, sans-serif" font-size="11" font-weight="800" fill="#FFFFFF" text-anchor="middle">${item.code}</text>`);
-      svgChunks.push(`<text x="${cx+26}" y="${cy+1}" font-family="Pretendard, -apple-system, sans-serif" font-size="14" font-weight="600" fill="#3A3A4A">${escapeXml(item.m.name)}</text>`);
-    });
-    y += groupH + 10;
-  }
-
-  // 메모
-  if(memoEntries.length > 0){
-    y += 8;
-    svgChunks.push(`<text x="${padX}" y="${y}" font-family="Pretendard, -apple-system, sans-serif" font-size="13" font-weight="700" fill="#9C8F7C">📝 메모</text>`);
-    y += 12;
-    memoEntries.forEach(([mid,memo])=>{
-      const author = members[memo.authorId];
-      const text = `${memo.emoji||"📌"} ${memo.text}`;
-      svgChunks.push(`<rect x="${padX}" y="${y}" width="${W-padX*2}" height="48" rx="12" fill="#FFFFFF"/>`);
-      svgChunks.push(`<text x="${padX+16}" y="${y+22}" font-family="Pretendard, -apple-system, sans-serif" font-size="14" font-weight="600" fill="#3A3A4A">${escapeXml(text.slice(0,40))}</text>`);
-      svgChunks.push(`<text x="${padX+16}" y="${y+40}" font-family="Pretendard, -apple-system, sans-serif" font-size="11" font-weight="500" fill="#9C8F7C">— ${escapeXml(author?.name||"?")}</text>`);
-      y += 56;
-    });
-  }
-
-  y += 30;
-  const H = y;
-
-  const svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-<rect width="${W}" height="${H}" fill="#FAF7F0"/>
-${svgChunks.join("\n")}
-</svg>`;
-
-  // SVG → PNG (Canvas 변환)
-  try {
-    const blob = await svgToPngBlob(svg, W, H);
-    const file = new File([blob], `monjayaki-${month+1}-${day}.png`, { type:"image/png" });
-
-    if(navigator.canShare && navigator.canShare({ files:[file] })){
-      await navigator.share({ files:[file] });
-    } else if(navigator.share){
-      // 파일 공유 미지원 → 텍스트 폴백
-      const text = makeDayShareText({day, year, month, members, schedules, memos});
-      await navigator.share({ text });
-    } else {
-      // Web Share 자체 미지원 → PNG 다운로드
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `monjayaki-${month+1}-${day}.png`;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-  } catch(e){
-    console.error("share failed", e);
-    // 폴백: 텍스트 복사
-    const text = makeDayShareText({day, year, month, members, schedules, memos});
-    try {
-      await navigator.clipboard.writeText(text);
-      alert("이미지 공유 실패. 텍스트로 클립보드에 복사됨.");
-    } catch(e2){
-      alert("공유 실패: " + e.message);
-    }
-  }
-}
-
-function escapeXml(s){
-  return String(s||"").replace(/[<>&'"]/g, c => ({
-    "<":"&lt;",">":"&gt;","&":"&amp;","'":"&apos;",'"':"&quot;"
-  })[c]);
-}
-
-function svgToPngBlob(svg, w, h){
-  return new Promise((resolve,reject)=>{
-    const blob = new Blob([svg], { type:"image/svg+xml;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const img = new Image();
-    img.onload = ()=>{
-      const canvas = document.createElement("canvas");
-      const scale = 2;
-      canvas.width = w * scale;
-      canvas.height = h * scale;
-      const ctx = canvas.getContext("2d");
-      ctx.fillStyle = "#FAF7F0";
-      ctx.fillRect(0,0,canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      URL.revokeObjectURL(url);
-      canvas.toBlob(b => b ? resolve(b) : reject(new Error("toBlob failed")), "image/png");
+    // ============================================================
+    // 공휴일 (2026-2030 한국 공휴일, 음력 환산 포함)
+    // ※ 임시공휴일/대체공휴일 일부는 누락 가능. 설정에서 수동 추가/수정 가능.
+    // ============================================================
+    const HOLIDAYS = {
+      // 2026
+      "2026-01-01": "신정",
+      "2026-02-16": "설날",
+      "2026-02-17": "설날",
+      "2026-02-18": "설날",
+      "2026-03-01": "삼일절",
+      "2026-03-02": "삼일절 대체",
+      "2026-05-05": "어린이날",
+      "2026-05-24": "부처님오신날",
+      "2026-05-25": "부처님오신날 대체",
+      "2026-06-06": "현충일",
+      "2026-08-15": "광복절",
+      "2026-08-17": "광복절 대체",
+      "2026-09-24": "추석",
+      "2026-09-25": "추석",
+      "2026-09-26": "추석",
+      "2026-09-28": "추석 대체",
+      "2026-10-03": "개천절",
+      "2026-10-05": "개천절 대체",
+      "2026-10-09": "한글날",
+      "2026-12-25": "성탄절",
+      // 2027
+      "2027-01-01": "신정",
+      "2027-02-06": "설날",
+      "2027-02-07": "설날",
+      "2027-02-08": "설날",
+      "2027-02-09": "설날 대체",
+      "2027-03-01": "삼일절",
+      "2027-05-05": "어린이날",
+      "2027-05-13": "부처님오신날",
+      "2027-06-07": "현충일 대체",
+      "2027-06-06": "현충일",
+      "2027-08-15": "광복절",
+      "2027-08-16": "광복절 대체",
+      "2027-09-14": "추석",
+      "2027-09-15": "추석",
+      "2027-09-16": "추석",
+      "2027-10-03": "개천절",
+      "2027-10-04": "개천절 대체",
+      "2027-10-09": "한글날",
+      "2027-10-11": "한글날 대체",
+      "2027-12-25": "성탄절",
     };
-    img.onerror = (e)=>{ URL.revokeObjectURL(url); reject(new Error("img load failed")); };
-    img.src = url;
-  });
-}
 
-function makeDayShareText({day, year, month, members, schedules, memos}){
-  const dowKor = ["일","월","화","수","목","금","토"];
-  const dow = new Date(year, month, day).getDay();
-  const groups = { D:[], E:[], N:[], O:[], custom:[] };
-  Object.entries(members).forEach(([id,m])=>{
-    const k = `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
-    const s = schedules?.[id]?.[k];
-    if(!s) return;
-    if(["D","E","N","O"].includes(s)) groups[s].push(m.name);
-    else groups.custom.push(`${m.name}(${s})`);
-  });
-  const labels = { D:"☀️ Day", E:"🌆 Evening", N:"🌙 Night", O:"💤 Off" };
-  let text = `📅 ${month+1}월 ${day}일 (${dowKor[dow]})\n\n`;
-  ["D","E","N","O"].forEach(c=>{
-    if(groups[c].length>0){
-      text += `${labels[c]} (${groups[c].length})\n${groups[c].join(", ")}\n\n`;
-    }
-  });
-  if(groups.custom.length>0){
-    text += `기타 (${groups.custom.length})\n${groups.custom.join(", ")}\n\n`;
-  }
-  return text.trim();
-}
-
-// ───── 다음 OFF 한줄평 ─────
-function NextOffPreview({perspective,members,schedules,year,month}){
-  const info = useMemo(()=>{
-    if(!perspective) return null;
-    const mySchedule = schedules?.[perspective] || {};
-    const today = new Date();
-    today.setHours(0,0,0,0);
-
-    // 이번 달 끝까지 검색
-    const lastDay = new Date(year, month+1, 0);
-    let nextOffDate = null;
-    let cursor = new Date(today);
-    if(cursor.getFullYear()!==year || cursor.getMonth()!==month){
-      // 다른 월 보고 있으면 그 월 1일부터
-      cursor = new Date(year, month, 1);
-    }
-    while(cursor <= lastDay){
-      const k = dKey(cursor.getFullYear(), cursor.getMonth(), cursor.getDate());
-      if(mySchedule[k]==="O"){
-        nextOffDate = new Date(cursor);
-        break;
-      }
-      cursor.setDate(cursor.getDate()+1);
+    // ============================================================
+    // 진료시간 추론
+    // 우선순위: clinicHours override > holiday(closed) > 요일 기본값
+    // 결과: "full" | "morning" | "closed"
+    // ============================================================
+    function getClinicStatus(dateISO, dayOfWeek, overrides) {
+      if (overrides && overrides[dateISO]) return overrides[dateISO];
+      if (HOLIDAYS[dateISO]) return "closed";
+      if (dayOfWeek === 0) return "closed";   // 일
+      if (dayOfWeek === 6) return "morning";  // 토
+      return "full";                            // 월~금
     }
 
-    if(!nextOffDate) return { type:"none" };
-
-    // 그날 같이 OFF인 다른 사람들
-    const k = dKey(nextOffDate.getFullYear(), nextOffDate.getMonth(), nextOffDate.getDate());
-    const sameOff = [];
-    Object.entries(members).forEach(([id,m])=>{
-      if(id===perspective) return;
-      if(schedules?.[id]?.[k]==="O") sameOff.push(m.name);
-    });
-
-    return {
-      type: sameOff.length===0 ? "alone"
-          : sameOff.length<=3 ? "few"
-          : "many",
-      date: `${nextOffDate.getMonth()+1}/${nextOffDate.getDate()}`,
-      names: sameOff,
-      count: sameOff.length
-    };
-  },[perspective,members,schedules,year,month]);
-
-  if(!info) return null;
-
-  let text = "";
-  if(info.type==="none") text = "이번 달 남은 OFF가 없어요";
-  else if(info.type==="alone") text = `다음 오프(${info.date})에는 혼자 쉬는 날이에요`;
-  else if(info.type==="few") text = `다음 오프(${info.date})에 ${info.names.join(", ")}도 같이 쉬네요`;
-  else text = `다음 오프(${info.date})에 ${info.count}명이나 같이 쉬네요`;
-
-  return el("div",{style:{
-    padding:"8px 18px 4px",
-    fontSize:12, color:"var(--text-faint)", fontWeight:600,
-    letterSpacing:"-0.01em", textAlign:"center"
-  }}, text);
-}
-
-// ───── 공지 (헤더 슬롯에 표시되는 줄) ─────
-function NoticeBar({notices,members,onOpen}){
-  const list = useMemo(()=>
-    Object.entries(notices||{}).sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0))
-  ,[notices]);
-
-  // 접힘 상태 (localStorage)
-  const [collapsed,setCollapsed] = useState(()=>{
-    try { return localStorage.getItem("notice_collapsed") === "1"; }
-    catch(e){ return false; }
-  });
-
-  // 안 읽은 공지 수
-  const unreadCount = useMemo(()=>{
-    let n = 0;
-    list.forEach(([nid])=>{
-      try { if(!localStorage.getItem(`notice_read_${nid}`)) n++; }
-      catch(e){}
-    });
-    return n;
-  },[list]);
-
-  if(list.length===0){
-    // 공지 0개 — 작은 진입 버튼만
-    return el("div",{style:{padding:"2px 14px 8px"}},
-      el("button",{onClick:onOpen,
-        style:{
-          display:"inline-flex",alignItems:"center",gap:6,
-          padding:"5px 12px",borderRadius:14,
-          background:"var(--surface-soft)",
-          border:"1px dashed var(--border-soft)",
-          fontSize:11,fontWeight:600,color:"var(--text-fainter)"
-        }
-      }, "📢 공지 없음")
-    );
-  }
-
-  const [latestId, latest] = list[0];
-  const author = members[latest.authorId];
-
-  const toggleCollapse = (e)=>{
-    e.stopPropagation();
-    const next = !collapsed;
-    setCollapsed(next);
-    try { localStorage.setItem("notice_collapsed", next?"1":"0"); } catch(e2){}
-  };
-
-  if(collapsed){
-    // 접힌 상태 — 작은 알약만
-    return el("div",{style:{padding:"2px 14px 8px"}},
-      el("button",{onClick:onOpen,
-        style:{
-          display:"inline-flex",alignItems:"center",gap:6,
-          padding:"5px 12px",borderRadius:14,
-          background:"var(--surface-soft)",
-          border:"1px solid var(--border)",
-          fontSize:11,fontWeight:600,color:"var(--text-sub)"
-        }
-      },
-        "📢",
-        el("span",null, `공지 ${list.length}`),
-        unreadCount>0 && el("span",{style:{
-          width:6,height:6,borderRadius:"50%",background:"var(--memo)"
-        }}),
-        el("span",{onClick:toggleCollapse,style:{padding:"0 4px",color:"var(--text-faint)"}},"▾")
-      )
-    );
-  }
-
-  // 펼쳐진 상태 — 최신 공지 한 줄 표시
-  return el("div",{style:{padding:"2px 14px 8px"}},
-    el("button",{onClick:onOpen,
-      style:{
-        width:"100%",display:"flex",alignItems:"center",gap:8,
-        padding:"10px 12px",borderRadius:12,
-        background:"var(--shift-n-light)",
-        border:"1px solid var(--shift-n)",
-        textAlign:"left"
-      }
-    },
-      el("div",{style:{fontSize:14,flexShrink:0}},"📢"),
-      el("div",{style:{flex:1,minWidth:0}},
-        el("div",{style:{
-          fontSize:12,fontWeight:600,color:"var(--text)",
-          overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"
-        }}, latest.text),
-        el("div",{style:{fontSize:10,color:"var(--text-faint)",marginTop:1}},
-          `${author?.name||"?"} · ${formatNoticeDate(latest.createdAt)}${list.length>1?` · 공지 ${list.length}개`:""}`
-        )
-      ),
-      unreadCount>0 && el("div",{style:{
-        width:7,height:7,borderRadius:"50%",background:"var(--memo)",flexShrink:0
-      }}),
-      el("button",{onClick:toggleCollapse,
-        style:{
-          padding:"4px 6px",fontSize:14,color:"var(--text-faint)",flexShrink:0
-        }
-      },"▴")
-    )
-  );
-}
-
-function formatNoticeDate(ts){
-  if(!ts) return "";
-  const d = new Date(ts);
-  const now = new Date();
-  const diffMs = now - d;
-  const diffMin = Math.floor(diffMs / 60000);
-  if(diffMin < 1) return "방금";
-  if(diffMin < 60) return `${diffMin}분 전`;
-  if(diffMin < 60*24) return `${Math.floor(diffMin/60)}시간 전`;
-  if(diffMin < 60*24*7) return `${Math.floor(diffMin/60/24)}일 전`;
-  return d.toLocaleDateString("ko-KR",{month:"numeric",day:"numeric"});
-}
-
-// ───── 공지 목록 모달 ─────
-function NoticesModal({notices,members,me,isEditMode,onRequestEdit,onClose}){
-  const list = useMemo(()=>
-    Object.entries(notices||{}).sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0))
-  ,[notices]);
-
-  const [adding,setAdding] = useState(false);
-  const [text,setText] = useState("");
-  const [saving,setSaving] = useState(false);
-
-  // 모달 열 때 모든 공지 읽음 처리
-  useEffect(()=>{
-    list.forEach(([nid])=>{
-      try { localStorage.setItem(`notice_read_${nid}`, "1"); } catch(e){}
-    });
-  },[list]);
-
-  const handleAdd = async()=>{
-    if(!text.trim()) return;
-    if(!me) { onRequestEdit && onRequestEdit(); return; }
-    setSaving(true);
-    const newRef = push(ref(db,`${ROOT}/notices`));
-    const meData = members[me];
-    await set(newRef,{
-      text: text.trim(),
-      authorId: me,
-      authorName: meData?.name || "?",
-      createdAt: Date.now()
-    });
-    setText("");
-    setAdding(false);
-    setSaving(false);
-  };
-
-  const handleDelete = async(nid)=>{
-    if(!confirm("이 공지를 삭제할까요?")) return;
-    await remove(ref(db,`${ROOT}/notices/${nid}`));
-  };
-
-  return el("div",{className:"anim-fade",
-    onClick:onClose,
-    style:{
-      position:"fixed",inset:0,background:"var(--modal-bg)",
-      zIndex:60,display:"flex",alignItems:"flex-end"
+    // ============================================================
+    // 해시 (SHA-256, salt = 사번)
+    // ============================================================
+    async function hashPassword(sabun, password) {
+      const data = new TextEncoder().encode(sabun + ":" + password);
+      const buf = await crypto.subtle.digest("SHA-256", data);
+      return Array.from(new Uint8Array(buf))
+        .map(b => b.toString(16).padStart(2, "0"))
+        .join("");
     }
-  },
-    el("div",{className:"anim-up",
-      onClick:e=>e.stopPropagation(),
-      style:{
-        width:"100%",background:"var(--bg-1)",
-        borderRadius:"22px 22px 0 0",
-        maxHeight:"86vh",overflowY:"auto",
-        padding:"20px 18px 32px"
-      }
-    },
-      el("div",{style:{width:36,height:4,background:"var(--border-soft)",borderRadius:2,margin:"0 auto 14px"}}),
-      el("div",{style:{display:"flex",alignItems:"baseline",gap:8,marginBottom:14}},
-        el("div",{style:{fontSize:20,fontWeight:800,color:"var(--text)"}},"📢 공지"),
-        el("div",{style:{fontSize:13,color:"var(--text-faint)",fontWeight:600}}, `${list.length}개`)
-      ),
 
-      // 작성 영역 (수정 모드만)
-      !isEditMode ? el("button",{onClick:onRequestEdit,
-        style:{
-          width:"100%",padding:"12px",borderRadius:12,
-          background:"transparent",border:"1.5px dashed var(--border-soft)",
-          fontSize:12,color:"var(--text-fainter)",fontWeight:600,marginBottom:14
+    // ============================================================
+    // 듀티 입력 파서
+    // 입력: "DENNOOD T M V O" (공백/줄바꿈 무시, 대소문자 무시)
+    // 출력: ["D","E","N","N","O","O","D","T","M","V","O"]
+    // 잘못된 문자가 있으면 throw
+    // ============================================================
+    function parseDutyString(raw) {
+      const cleaned = raw.toUpperCase().replace(/\s+/g, "");
+      const valid = new Set(SHIFT_CODES);
+      const result = [];
+      for (let i = 0; i < cleaned.length; i++) {
+        const ch = cleaned[i];
+        if (!valid.has(ch)) {
+          throw new Error(`'${ch}' (${i + 1}번째 글자)는 사용할 수 없는 코드. 가능: ${SHIFT_CODES.join(", ")}`);
         }
-      },"🔒 공지 작성하려면 수정 모드로")
-      : adding ? el("div",{style:{background:"var(--surface)",borderRadius:12,padding:"12px",marginBottom:14}},
-        el("textarea",{
-          value:text, onChange:e=>setText(e.target.value.slice(0,200)),
-          placeholder:"공지 내용 (최대 200자)",
-          rows:3, autoFocus:true,
-          style:{width:"100%",fontSize:14,padding:"6px 0",borderBottom:"1px solid var(--border)",resize:"none",lineHeight:1.5}
-        }),
-        el("div",{style:{fontSize:10,color:"var(--text-fainter)",textAlign:"right",marginTop:4}}, `${text.length}/200`),
-        el("div",{style:{display:"flex",gap:6,marginTop:10}},
-          el("button",{onClick:()=>{setAdding(false);setText("");},
-            style:{flex:1,padding:"10px 0",borderRadius:10,background:"var(--surface-faint)",fontSize:13,color:"var(--text-sub)",fontWeight:600}
-          },"취소"),
-          el("button",{onClick:handleAdd,disabled:saving||!text.trim(),
-            style:{flex:1,padding:"10px 0",borderRadius:10,background:"var(--text)",color:"var(--bg-1)",fontSize:13,fontWeight:700,opacity:(saving||!text.trim())?0.5:1}
-          },saving?"등록 중...":"등록")
-        )
-      ) : el("button",{onClick:()=>setAdding(true),
-        style:{
-          width:"100%",padding:"12px 0",borderRadius:12,
-          background:"transparent",border:"1.5px dashed var(--border-soft)",
-          fontSize:13,color:"var(--text-faint)",fontWeight:600,marginBottom:14
-        }
-      },"+ 공지 작성"),
-
-      // 공지 목록
-      list.length===0 && el("div",{style:{
-        padding:"30px 0",textAlign:"center",
-        fontSize:13,color:"var(--text-fainter)"
-      }},"아직 공지가 없어요"),
-
-      list.map(([nid,notice])=>{
-        const author = members[notice.authorId];
-        const isMine = isEditMode && notice.authorId===me;
-        return el("div",{key:nid,style:{
-          background:"var(--surface)",borderRadius:12,
-          padding:"12px 14px",marginBottom:8
-        }},
-          el("div",{style:{
-            fontSize:14,color:"var(--text)",lineHeight:1.5,
-            whiteSpace:"pre-wrap",wordBreak:"break-word",marginBottom:6
-          }},notice.text),
-          el("div",{style:{display:"flex",alignItems:"center",gap:6}},
-            el("div",{style:{width:6,height:6,borderRadius:"50%",background:author?.color||"var(--text-fainter)"}}),
-            el("span",{style:{fontSize:11,color:"var(--text-faint)",fontWeight:600}},author?.name||"?"),
-            el("span",{style:{fontSize:11,color:"var(--text-fainter)"}},"·"),
-            el("span",{style:{fontSize:11,color:"var(--text-fainter)"}},formatNoticeDate(notice.createdAt)),
-            el("div",{style:{flex:1}}),
-            isMine && el("button",{onClick:()=>handleDelete(nid),
-              style:{fontSize:12,color:"var(--text-fainter)",padding:"2px 6px"}
-            },"삭제")
-          )
-        );
-      }),
-
-      el("button",{onClick:onClose,
-        style:{
-          width:"100%",padding:"14px 0",borderRadius:12,
-          background:"var(--surface)",border:"1px solid var(--border)",
-          color:"var(--text-sub)",fontSize:14,fontWeight:600,marginTop:14
-        }
-      },"닫기")
-    )
-  );
-}
-
-// ───── 약속 잡기 시트 ─────
-function PlanSheet({members,schedules,year,month,me,perspective,selectedIds,onChange,onClose}){
-  // 시점 사람이 자동 선택되도록 초기 셋업
-  const initialSet = useMemo(()=>{
-    if(selectedIds && selectedIds.length > 0) return new Set(selectedIds);
-    if(perspective && members[perspective]) return new Set([perspective]);
-    return new Set();
-  },[]);
-  const [localSelected,setLocalSelected] = useState(initialSet);
-  const [expanded,setExpanded] = useState(null); // "off" | "d" | "e" | null
-
-  const list = useMemo(()=>
-    Object.entries(members).sort((a,b)=>(a[1].joinedAt||0)-(b[1].joinedAt||0))
-  ,[members]);
-
-  // 각 멤버별 시점 사람과 OFF 겹치는 일수 (시점 기준)
-  const overlapDays = useMemo(()=>{
-    const result = {};
-    if(!perspective) return result;
-    const baseSchedule = schedules?.[perspective] || {};
-    const daysInMonth = new Date(year, month+1, 0).getDate();
-    list.forEach(([id,m])=>{
-      if(id===perspective){ result[id] = null; return; }
-      const other = schedules?.[id] || {};
-      let cnt = 0;
-      for(let d=1; d<=daysInMonth; d++){
-        const k = dKey(year,month,d);
-        if(baseSchedule[k]==="O" && other[k]==="O") cnt++;
+        result.push(ch);
       }
-      result[id] = cnt;
-    });
-    return result;
-  },[list,schedules,perspective,year,month]);
+      return result;
+    }
 
-  // 매칭되는 날짜들 (선택된 사람들 기준) - 3가지 상황별
-  // 각 항목: { day: number, warnings: string[] }
-  const planMatches = useMemo(()=>{
-    const off = []; const d = []; const e = [];
-    if(localSelected.size===0) return { off, d, e };
-    const daysInMonth = new Date(year, month+1, 0).getDate();
-    const selArr = Array.from(localSelected);
+    // ============================================================
+    // 입사일 자동 포맷팅 (입력 중 호출)
+    // "20230515" → "2023.05.15."
+    // ============================================================
+    function formatHireDateInput(value) {
+      const digits = value.replace(/\D/g, "").slice(0, 8);
+      let out = digits;
+      if (digits.length > 4) out = digits.slice(0, 4) + "." + digits.slice(4);
+      if (digits.length > 6) out = digits.slice(0, 4) + "." + digits.slice(4, 6) + "." + digits.slice(6);
+      if (digits.length === 8) out += ".";
+      return out;
+    }
+    function hireDateToISO(formatted) {
+      const digits = formatted.replace(/\D/g, "");
+      if (digits.length !== 8) return null;
+      return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6, 8)}`;
+    }
+    function isoToHireDate(iso) {
+      if (!iso) return "";
+      const [y, m, d] = iso.split("-");
+      return `${y}.${m}.${d}.`;
+    }
+    function formatPhone(value) {
+      const d = value.replace(/\D/g, "").slice(0, 11);
+      if (d.length < 4) return d;
+      if (d.length < 8) return `${d.slice(0, 3)}-${d.slice(3)}`;
+      return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
+    }
 
-    for(let day=1; day<=daysInMonth; day++){
-      const k = dKey(year,month,day);
+    // ============================================================
+    // 날짜 유틸
+    // ============================================================
+    const WEEKDAYS_KR = ["일", "월", "화", "수", "목", "금", "토"];
+    function getMonthInfo(year, month) {
+      // month: 1-12
+      const first = new Date(year, month - 1, 1);
+      const last = new Date(year, month, 0);
+      const daysInMonth = last.getDate();
+      const startWeekday = first.getDay(); // 0=Sun
+      return { first, last, daysInMonth, startWeekday };
+    }
+    function isoDate(year, month, day) {
+      return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    }
+    function todayInfo() {
+      const now = new Date();
+      return {
+        year: now.getFullYear(),
+        month: now.getMonth() + 1,
+        day: now.getDate(),
+      };
+    }
 
-      // 1. 모두 OFF
-      let allOff = true;
-      for(const id of selArr){
-        if(schedules?.[id]?.[k] !== "O"){ allOff = false; break; }
-      }
-      if(allOff){ off.push({day, warnings:[]}); continue; }
+    const { useState, useEffect, useMemo, useRef } = React;
+    const { createRoot } = ReactDOM;
 
-      // 2. 모두 D
-      let allD = true;
-      for(const id of selArr){
-        if(schedules?.[id]?.[k] !== "D"){ allD = false; break; }
-      }
-      if(allD){
-        // 다음 날 OFF 아닌 사람 체크
-        const nextDate = new Date(year, month, day+1);
-        const nextKey = dKey(nextDate.getFullYear(), nextDate.getMonth(), nextDate.getDate());
-        const nonOffPeople = []; // [{name, code}]
-        for(const id of selArr){
-          const s = schedules?.[id]?.[nextKey];
-          if(s && s !== "O"){
-            nonOffPeople.push({name: members[id]?.name || "?", code: s});
+    // ============================================================
+    // <App> 루트
+    // ============================================================
+    function App() {
+      const [me, setMe] = useState(null); // { sabun, ... }
+      const [bootDone, setBootDone] = useState(false);
+
+      // 자동 로그인: localStorage 세션
+      useEffect(() => {
+        (async () => {
+          const saved = localStorage.getItem("61w-session");
+          if (!saved) { setBootDone(true); return; }
+          try {
+            const { sabun } = JSON.parse(saved);
+            const snap = await get(ref(db, `users/${sabun}`));
+            if (snap.exists()) {
+              setMe({ sabun, ...snap.val() });
+            } else {
+              localStorage.removeItem("61w-session");
+            }
+          } catch (e) {
+            console.error(e);
+            localStorage.removeItem("61w-session");
           }
+          setBootDone(true);
+        })();
+      }, []);
+
+      const handleLogin = (sabun, userData) => {
+        localStorage.setItem("61w-session", JSON.stringify({ sabun }));
+        setMe({ sabun, ...userData });
+      };
+
+      const handleLogout = () => {
+        localStorage.removeItem("61w-session");
+        setMe(null);
+      };
+
+      const handleProfileUpdate = (newData) => {
+        setMe(prev => ({ ...prev, ...newData }));
+      };
+
+      if (!bootDone) {
+        return <div className="center-msg">불러오는 중…</div>;
+      }
+      if (!me) {
+        return <AuthScreen onLogin={handleLogin} />;
+      }
+      return <CalendarScreen me={me} onLogout={handleLogout} onProfileUpdate={handleProfileUpdate} />;
+    }
+
+    // ============================================================
+    // <AuthScreen>
+    // ============================================================
+    function AuthScreen({ onLogin }) {
+      const [mode, setMode] = useState("login"); // "login" | "signup"
+      return mode === "login"
+        ? <LoginForm onLogin={onLogin} switchToSignup={() => setMode("signup")} />
+        : <SignupForm onLogin={onLogin} switchToLogin={() => setMode("login")} />;
+    }
+
+    function LoginForm({ onLogin, switchToSignup }) {
+      const [sabun, setSabun] = useState("");
+      const [password, setPassword] = useState("");
+      const [err, setErr] = useState("");
+      const [busy, setBusy] = useState(false);
+
+      const submit = async (e) => {
+        e.preventDefault();
+        setErr("");
+        if (!/^\d{5,6}$/.test(sabun)) {
+          setErr("사번은 5~6자리 숫자여야 해요.");
+          return;
         }
-        d.push({day, warnings: nonOffPeople});
-        continue;
-      }
-
-      // 3. 모두 E + 다음 날 모두 OFF 또는 N
-      let allE = true;
-      for(const id of selArr){
-        if(schedules?.[id]?.[k] !== "E"){ allE = false; break; }
-      }
-      if(allE){
-        const nextDate = new Date(year, month, day+1);
-        const nextKey = dKey(nextDate.getFullYear(), nextDate.getMonth(), nextDate.getDate());
-        let allOffOrN = true;
-        const nPeople = [];
-        for(const id of selArr){
-          const s = schedules?.[id]?.[nextKey];
-          if(s !== "O" && s !== "N"){ allOffOrN = false; break; }
-          if(s === "N") nPeople.push(members[id]?.name || "?");
+        if (!password) {
+          setErr("비밀번호를 입력해 주세요.");
+          return;
         }
-        if(allOffOrN){
-          e.push({day, warnings: nPeople});
-        }
-      }
-    }
-    return { off, d, e };
-  },[localSelected,schedules,members,year,month]);
-
-  const toggle = (id)=>{
-    const next = new Set(localSelected);
-    if(next.has(id)) next.delete(id);
-    else next.add(id);
-    setLocalSelected(next);
-  };
-
-  const handleApply = ()=>{
-    onChange(Array.from(localSelected));
-    onClose();
-  };
-
-  const handleClear = ()=>{
-    setLocalSelected(new Set());
-    onChange([]);
-    onClose();
-  };
-
-  // 날짜 리스트 → "3일, 8일, 10일" 형식
-  const formatDays = (items)=>items.map(it=>`${it.day}일`).join(", ");
-
-  // 셀 라벨 줄: "8일은 슬기가 다음 날 N." / "15일은 슬기, 지원이 다음 날 D, E."
-  const formatDWarning = (item)=>{
-    if(item.warnings.length === 0) return null;
-    if(item.warnings.length === 1){
-      const p = item.warnings[0];
-      return `${item.day}일은 ${p.name}이/가 다음 날 ${p.code}.`;
-    }
-    const names = item.warnings.map(p=>p.name).join(", ");
-    const codes = item.warnings.map(p=>p.code).join(", ");
-    return `${item.day}일은 ${names}이/가 다음 날 ${codes}.`;
-  };
-
-  const formatEWarning = (item)=>{
-    if(item.warnings.length === 0) return `${item.day}일은 다음 날 전부 OFF.`;
-    if(item.warnings.length === 1){
-      return `${item.day}일은 ${item.warnings[0]}이/가 다음 날 N.`;
-    }
-    return `${item.day}일은 ${item.warnings.join(", ")}이/가 다음 날 N.`;
-  };
-
-  // 각 행 렌더
-  const renderRow = (key, label, items, color, bg, formatWarn, hasWarnPerItem)=>{
-    const count = items.length;
-    const isExpanded = expanded === key && count > 0;
-    return el("div",{style:{
-      background: bg,
-      border:`1px solid ${color}`,
-      borderRadius:12,
-      marginBottom:6,
-      overflow:"hidden"
-    }},
-      el("button",{onClick:()=>setExpanded(isExpanded ? null : key),
-        disabled: count === 0,
-        style:{
-          width:"100%",padding:"10px 14px",
-          display:"flex",alignItems:"center",gap:10,
-          textAlign:"left",
-          opacity: count === 0 ? 0.55 : 1
-        }
-      },
-        el("div",{style:{
-          width:10,height:10,borderRadius:"50%",
-          background: color,flexShrink:0
-        }}),
-        el("div",{style:{flex:1,fontSize:13,fontWeight:700,color:"var(--text)"}}, label),
-        el("div",{style:{fontSize:14,fontWeight:800,color:"var(--text)"}},
-          count === 0 ? "없음" : count),
-        count > 0 && el("div",{style:{fontSize:12,color:"var(--text-faint)",marginLeft:4}},
-          isExpanded ? "▲" : "▽")
-      ),
-      isExpanded && el("div",{className:"anim-down",style:{
-        padding:"6px 14px 12px",
-        borderTop:`1px solid ${color}`,
-        background:"var(--surface-softer)"
-      }},
-        el("div",{style:{fontSize:12,color:"var(--text)",fontWeight:700,marginBottom:hasWarnPerItem?6:0,lineHeight:1.5}},
-          formatDays(items)),
-        hasWarnPerItem && items.filter(it=>{
-          const w = formatWarn(it);
-          return w !== null;
-        }).map(it=>
-          el("div",{key:it.day,style:{fontSize:11,color:"var(--text-sub)",marginTop:3,lineHeight:1.5}},
-            formatWarn(it))
-        )
-      )
-    );
-  };
-
-  // 가이드 문구
-  let guideText = "";
-  if(localSelected.size === 0) guideText = "약속 잡을 사람을 선택해주세요";
-  else if(localSelected.size === 1) guideText = "누구와 약속을 잡을까요?";
-
-  return el("div",{className:"anim-fade",
-    onClick:onClose,
-    style:{
-      position:"fixed",inset:0,background:"var(--modal-bg)",
-      zIndex:55,display:"flex",alignItems:"flex-end"
-    }
-  },
-    el("div",{className:"anim-up",
-      onClick:e=>e.stopPropagation(),
-      style:{
-        width:"100%",background:"var(--bg-1)",
-        borderRadius:"22px 22px 0 0",
-        padding:"20px 16px 28px",
-        maxHeight:"85vh",overflowY:"auto"
-      }
-    },
-      el("div",{style:{width:36,height:4,background:"var(--border-soft)",borderRadius:2,margin:"0 auto 14px"}}),
-      el("div",{style:{fontSize:18,fontWeight:800,color:"var(--text)",marginBottom:4}},"👥 약속 잡기"),
-      el("div",{style:{fontSize:12,color:"var(--text-faint)",marginBottom:14,lineHeight:1.5}},
-        "함께 약속 잡을 사람을 선택해. 매칭되는 날이 캘린더에 강조됩니다."),
-
-      el("div",{style:{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8,marginBottom:14}},
-        list.map(([id,m])=>{
-          const sel = localSelected.has(id);
-          const ov = overlapDays[id];
-          const isPerspective = id === perspective;
-          return el("button",{key:id,onClick:()=>toggle(id),
-            style:{
-              display:"flex",alignItems:"center",gap:10,
-              padding:"10px 12px",borderRadius:14,
-              background: sel ? m.color : "var(--surface)",
-              border:`2px solid ${sel ? m.color : "var(--border)"}`,
-              transition:"all 0.15s"
-            }
-          },
-            el("div",{style:{
-              width:22,height:22,borderRadius:"50%",
-              background: sel ? "var(--surface)" : m.color,
-              flexShrink:0
-            }}),
-            el("div",{style:{flex:1,textAlign:"left",minWidth:0}},
-              el("div",{style:{fontSize:14,fontWeight:700,color: sel ? "var(--surface)" : "var(--text)"}}, m.name),
-              el("div",{style:{fontSize:10,fontWeight:600,color: sel ? "var(--surface)" : "var(--text-faint)",marginTop:1,opacity: sel?0.85:1}},
-                isPerspective ? "본인" : (ov!=null ? `OFF ${ov}일 겹침` : ""))
-            )
-          );
-        })
-      ),
-
-      // 가이드 문구 (0명 또는 1명)
-      guideText && el("div",{style:{
-        background:"var(--surface-faint)",borderRadius:12,
-        padding:"14px 14px",marginBottom:14,
-        fontSize:13,color:"var(--text-sub)",fontWeight:600,textAlign:"center"
-      }}, guideText),
-
-      // 카운트 영역 (2명 이상)
-      localSelected.size >= 2 && el("div",{style:{marginBottom:14}},
-        el("div",{style:{fontSize:11,color:"var(--text-faint)",fontWeight:600,marginBottom:6,paddingLeft:2}},
-          "이번 달 약속 잡기 좋은 날"),
-        renderRow("off", "모두 OFF", planMatches.off, "var(--shift-o)", "var(--shift-o-light)", null, false),
-        renderRow("d", "모두 D", planMatches.d, "var(--shift-d)", "var(--shift-d-light)", formatDWarning, true),
-        renderRow("e", "E + 다음 OFF/N", planMatches.e, "var(--shift-e)", "var(--shift-e-light)", formatEWarning, true)
-      ),
-
-      el("div",{style:{display:"flex",gap:8}},
-        el("button",{onClick:handleClear,
-          style:{flex:1,padding:"14px 0",borderRadius:12,background:"var(--surface)",border:"1px solid var(--border)",color:"var(--text-sub)",fontSize:14,fontWeight:600}
-        },"해제"),
-        el("button",{onClick:handleApply,
-          style:{flex:2,padding:"14px 0",borderRadius:12,background:"var(--text)",color:"var(--bg-1)",fontSize:14,fontWeight:700}
-        },localSelected.size===0 ? "닫기" : `${localSelected.size}명 선택 적용`)
-      )
-    )
-  );
-}
-
-// ───── 헤더 ─────
-function Header({meData,pData,members,perspective,me,year,month,isEditMode,planMode,onMoveMonth,onPickPerson,onGoHome,onGoToday,onPlan,onSettings,onLockMode,onRequestEdit,onHeaderTouchStart,onHeaderTouchEnd,noticeSlot}){
-  const swipedRef = useRef(false);
-  const handleTouchStart = (e)=>{ swipedRef.current=false; onHeaderTouchStart(e); };
-  const handleTouchEnd = (e)=>{
-    const result = onHeaderTouchEnd(e);
-    if(result==="swiped") swipedRef.current=true;
-  };
-  const handleClick = ()=>{ if(!swipedRef.current) onPickPerson(); };
-
-  // 시점 라벨
-  let perspectiveLabel = "";
-  if(isEditMode){
-    perspectiveLabel = perspective===me ? "내 캘린더 · 좌우로 다른 사람 보기" : "보는 중 · 좌우로 전환";
-  } else {
-    perspectiveLabel = "보기 모드 · 좌우로 다른 사람 보기";
-  }
-
-  return el("div",{style:{padding:"14px 14px 8px"}},
-    // 줄1: 시점 + 잠금 토글 + 설정
-    el("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:10}},
-      el("div",{
-        onTouchStart:handleTouchStart,
-        onTouchEnd:handleTouchEnd,
-        onClick:handleClick,
-        style:{
-          flex:1,display:"flex",alignItems:"center",gap:10,
-          padding:"10px 14px",borderRadius:14,
-          background:"var(--surface-soft)",
-          textAlign:"left",cursor:"pointer",
-          touchAction:"pan-y"
-        }
-      },
-        el("div",{style:{width:28,height:28,borderRadius:"50%",background:pData.color,flexShrink:0}}),
-        el("div",{style:{flex:1,minWidth:0}},
-          el("div",{style:{fontSize:11,color:"var(--text-faint)",fontWeight:600,letterSpacing:"-0.02em"}},
-            perspectiveLabel),
-          el("div",{style:{fontSize:16,fontWeight:800,color:"var(--text)",letterSpacing:"-0.02em"}},
-            pData.name + " ▾")
-        ),
-        isEditMode && perspective!==me && el("button",{onClick:e=>{e.stopPropagation();onGoHome();},
-          style:{padding:"6px 10px",borderRadius:10,background:meData.color,color:"var(--surface)",fontSize:12,fontWeight:700}
-        },"내 캘린더")
-      ),
-      // 약속 잡기 버튼
-      el("button",{onClick:onPlan,
-        title:"약속 잡기 (모두 OFF인 날 강조)",
-        style:{
-          width:42,height:42,borderRadius:14,
-          background: planMode ? "var(--shift-e-light)" : "var(--surface-soft)",
-          fontSize:17,
-          border: planMode ? "1.5px solid var(--shift-e)" : "none"
-        }
-      },"👥"),
-      // 잠금/해제 토글
-      isEditMode
-        ? el("button",{onClick:onLockMode,
-            title:"수정 모드 종료 (잠금)",
-            style:{
-              width:42,height:42,borderRadius:14,
-              background:"var(--shift-n-light)",
-              fontSize:18,
-              border:"1.5px solid #F5C97A"
-            }
-          },"🔓")
-        : el("button",{onClick:onRequestEdit,
-            title:"수정 모드 진입",
-            style:{
-              width:42,height:42,borderRadius:14,
-              background:"var(--surface-soft)",
-              fontSize:18
-            }
-          },"🔒"),
-      el("button",{onClick:onSettings,
-        style:{
-          width:42,height:42,borderRadius:14,
-          background:"var(--surface-soft)",
-          fontSize:18
-        }
-      },"⚙︎")
-    ),
-    // 공지 슬롯 (시점 줄 ↔ 년월 줄 사이)
-    noticeSlot,
-    // 줄2: 월 이동
-    el("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"4px 6px"}},
-      el("button",{onClick:()=>onMoveMonth(-1),style:{fontSize:20,color:"var(--text-sub)",padding:"4px 12px"}},"‹"),
-      el("button",{onClick:onGoToday,
-        style:{fontSize:18,fontWeight:700,color:"var(--text)",letterSpacing:"-0.02em",padding:"4px 12px"}},
-        `${year}.${String(month+1).padStart(2,"0")}`),
-      el("button",{onClick:()=>onMoveMonth(1),style:{fontSize:20,color:"var(--text-sub)",padding:"4px 12px"}},"›")
-    )
-  );
-}
-
-function WeekdayRow(){
-  return el("div",{style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",marginBottom:4}},
-    WEEKDAYS.map((w,i)=>el("div",{key:w,
-      style:{
-        textAlign:"center",fontSize:11,fontWeight:700,
-        color:i===0?"var(--sun)":i===6?"var(--sat)":"var(--text-faint)",
-        padding:"4px 0",letterSpacing:"-0.01em"
-      }
-    },w))
-  );
-}
-
-// ───── 캘린더 그리드 ─────
-function CalendarGrid({cells,year,month,today,members,schedules,memos,perspective,me,planSelectedIds,onCellTap,onCellLongPress}){
-  const longPressRef = useRef({timer:null,fired:false});
-
-  const startPress = (day)=>{
-    longPressRef.current.fired = false;
-    longPressRef.current.timer = setTimeout(()=>{
-      longPressRef.current.fired = true;
-      if(navigator.vibrate) navigator.vibrate(15);
-      onCellLongPress(day);
-    },420);
-  };
-  const endPress = (day)=>{
-    if(longPressRef.current.timer){
-      clearTimeout(longPressRef.current.timer);
-      longPressRef.current.timer = null;
-    }
-    if(!longPressRef.current.fired) onCellTap(day);
-    longPressRef.current.fired = false;
-  };
-  const cancelPress = ()=>{
-    if(longPressRef.current.timer){
-      clearTimeout(longPressRef.current.timer);
-      longPressRef.current.timer = null;
-    }
-    longPressRef.current.fired = true;
-  };
-
-  return el("div",{style:{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:3}},
-    cells.map((d,idx)=>{
-      if(d===null) return el("div",{key:`e${idx}`,style:{aspectRatio:"1/1.15"}});
-      return el(DayCell,{
-        key:d, day:d, year, month, today,
-        dow:idx%7,
-        members, schedules, memos, perspective,
-        planSelectedIds,
-        onPressStart:()=>startPress(d),
-        onPressEnd:()=>endPress(d),
-        onPressCancel:cancelPress
-      });
-    })
-  );
-}
-
-// ───── 한 셀 ─────
-function DayCell({day,year,month,today,dow,members,schedules,memos,perspective,planSelectedIds,onPressStart,onPressEnd,onPressCancel}){
-  const dateKey = dKey(year,month,day);
-  const isToday = today.getFullYear()===year && today.getMonth()===month && today.getDate()===day;
-
-  const pData = members[perspective];
-  const myShift = schedules?.[perspective]?.[dateKey] || null;
-  const sInfo = myShift && SHIFT[myShift] ? SHIFT[myShift] : null;
-  const isCustom = myShift && !RESERVED_CODES.includes(myShift);
-
-  // 통계 계산
-  const counts = useMemo(()=>{
-    const c = {D:0,E:0,N:0,O:0};
-    Object.keys(members).forEach(mid=>{
-      const s = schedules?.[mid]?.[dateKey];
-      if(s && c[s]!==undefined) c[s]++;
-    });
-    return c;
-  },[members,schedules,dateKey]);
-
-  const sameCount = sInfo && (myShift!=="O") ? counts[myShift]-1 : 0;
-
-  // 메모 존재 여부
-  const hasMemo = memos[dateKey] && Object.keys(memos[dateKey]).length>0;
-
-  // 생일
-  const birthdays = useMemo(()=>{
-    return Object.values(members).filter(m=>m.birthMonth===month+1 && m.birthDay===day);
-  },[members,month,day]);
-
-  // 약속 잡기 모드: 3가지 상황 강조
-  // - "off": 선택자 전원 OFF (가장 추천)
-  // - "d": 선택자 전원 D (퇴근 후 약속 가능, 다음 날 무관)
-  // - "e": 선택자 전원 E + 다음 날 전원 OFF (이브닝 끝나고 늦게까지)
-  const planMatch = useMemo(()=>{
-    if(!planSelectedIds || planSelectedIds.length===0) return null;
-
-    // 1. 모두 OFF
-    let allOff = true;
-    for(const id of planSelectedIds){
-      if(schedules?.[id]?.[dateKey] !== "O"){ allOff = false; break; }
-    }
-    if(allOff) return "off";
-
-    // 2. 모두 D (다음 날 조건 없음)
-    let allD = true;
-    for(const id of planSelectedIds){
-      if(schedules?.[id]?.[dateKey] !== "D"){ allD = false; break; }
-    }
-    if(allD) return "d";
-
-    // 3. 모두 E + 다음 날 모두 OFF 또는 N
-    let allE = true;
-    for(const id of planSelectedIds){
-      if(schedules?.[id]?.[dateKey] !== "E"){ allE = false; break; }
-    }
-    if(allE){
-      const nextDate = new Date(year, month, day+1);
-      const nextKey = dKey(nextDate.getFullYear(), nextDate.getMonth(), nextDate.getDate());
-      let allOffOrN = true;
-      for(const id of planSelectedIds){
-        const s = schedules?.[id]?.[nextKey];
-        if(s !== "O" && s !== "N"){ allOffOrN = false; break; }
-      }
-      if(allOffOrN) return "e";
-    }
-
-    return null;
-  },[planSelectedIds,schedules,dateKey,year,month,day]);
-
-  // 셀 색상
-  let bg = "var(--surface-softer)";
-  let cellBorder = "1px solid var(--border)";
-  if(isToday){
-    cellBorder = `2px solid ${pData.color}`;
-  }
-  if(planSelectedIds && planSelectedIds.length>0){
-    if(planMatch === "off"){
-      bg = "var(--shift-o-light)";
-      cellBorder = "2px solid var(--shift-o)";
-    } else if(planMatch === "d"){
-      bg = "var(--shift-d-light)";
-      cellBorder = "2px solid var(--shift-d)";
-    } else if(planMatch === "e"){
-      bg = "var(--shift-e-light)";
-      cellBorder = "2px solid var(--shift-e)";
-    } else {
-      bg = "var(--surface-softer)";
-    }
-  }
-  const isDimmed = planSelectedIds && planSelectedIds.length>0 && !planMatch;
-
-  const dowColor = dow===0?"var(--sun)":dow===6?"var(--sat)":"var(--text-sub)";
-
-  return el("div",{
-    onTouchStart:onPressStart, onTouchEnd:onPressEnd, onTouchMove:onPressCancel, onTouchCancel:onPressCancel,
-    onMouseDown:onPressStart, onMouseUp:onPressEnd, onMouseLeave:onPressCancel,
-    style:{
-      position:"relative",
-      aspectRatio:"1/1.15",
-      background:bg,
-      border:cellBorder,
-      borderRadius:9,
-      padding:"3px 3px 2px",
-      display:"flex",flexDirection:"column",
-      cursor:"pointer",
-      overflow:"hidden",
-      opacity: isDimmed ? 0.35 : 1,
-      transition: "opacity 0.18s, background 0.18s"
-    }
-  },
-    // 좌상단: 메모점
-    hasMemo && el("div",{style:{
-      position:"absolute",top:3,left:3,
-      width:6,height:6,borderRadius:"50%",
-      background:MEMO_COLOR,
-      boxShadow:"0 0 0 1.5px rgba(255,255,255,0.9)"
-    }}),
-    // 우상단: 생일
-    birthdays.length>0 && el("div",{style:{
-      position:"absolute",top:1,right:2,fontSize:9
-    }},"🎂"),
-    // 날짜
-    el("div",{style:{
-      fontSize:10,fontWeight:700,color:dowColor,
-      textAlign:"center",lineHeight:1,marginTop:1
-    }},day),
-    // 듀티
-    el("div",{style:{
-      flex:1,display:"flex",alignItems:"center",justifyContent:"center"
-    }},
-      sInfo
-        ? el("div",{style:{
-            fontSize:18,fontWeight:800,color:sInfo.color,letterSpacing:"-0.02em",lineHeight:1
-          }},sInfo.label)
-        : isCustom
-          ? el("div",{style:{
-              fontSize:16,fontWeight:800,color:"var(--text-sub)",letterSpacing:"-0.02em",lineHeight:1
-            }},myShift)
-          : el("div",{style:{fontSize:11,color:"var(--text-extrafaint)"}},"·")
-    ),
-    // 하단 통계 (항상 O · D · E · N 4개)
-    el("div",{style:{
-      display:"flex",justifyContent:"center",alignItems:"center",
-      gap:2,
-      paddingBottom:1,minHeight:11
-    }},
-      statMini(counts.O, SHIFT.O.color),
-      sep(),
-      statMini(counts.D, SHIFT.D.color),
-      sep(),
-      statMini(counts.E, SHIFT.E.color),
-      sep(),
-      statMini(counts.N, SHIFT.N.color)
-    )
-  );
-}
-
-function statMini(n,color){
-  return el("span",{key:Math.random(),style:{
-    fontSize:9,fontWeight:700,color:n>0?color:"var(--text-extrafaint)",lineHeight:1
-  }},n);
-}
-function sep(){
-  return el("span",{key:Math.random(),style:{fontSize:8,color:"var(--text-extrafaint)",lineHeight:1}},"·");
-}
-
-// ───── 시점 선택 시트 ─────
-function PersonPicker({members,me,perspective,onSelect,onClose}){
-  const list = Object.entries(members).sort((a,b)=>(a[1].joinedAt||0)-(b[1].joinedAt||0));
-  return el("div",{className:"anim-fade",
-    onClick:onClose,
-    style:{
-      position:"fixed",inset:0,background:"var(--modal-bg)",
-      zIndex:50,display:"flex",alignItems:"flex-end"
-    }
-  },
-    el("div",{className:"anim-up",
-      onClick:e=>e.stopPropagation(),
-      style:{
-        width:"100%",background:"var(--bg-1)",
-        borderRadius:"22px 22px 0 0",
-        padding:"20px 16px 28px",
-        maxHeight:"80vh",overflowY:"auto"
-      }
-    },
-      el("div",{style:{width:36,height:4,background:"var(--border-soft)",borderRadius:2,margin:"0 auto 18px"}}),
-      el("div",{style:{fontSize:12,color:"var(--text-faint)",fontWeight:600,marginBottom:12,paddingLeft:4}},"누구 캘린더 볼까?"),
-      el("div",{style:{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8}},
-        list.map(([id,m])=>{
-          const isMe = id===me;
-          const isCur = id===perspective;
-          const accent = isCur ? m.color : NEUTRAL_COLOR;
-          return el("button",{key:id,onClick:()=>onSelect(id),
-            style:{
-              display:"flex",alignItems:"center",gap:10,
-              padding:"12px 12px",borderRadius:14,
-              background:isCur?m.color:"var(--surface)",
-              border:`2px solid ${isCur?m.color:"var(--border)"}`,
-              transition:"all 0.15s"
-            }
-          },
-            el("div",{style:{width:24,height:24,borderRadius:"50%",background:isCur?"var(--surface)":NEUTRAL_LIGHT,flexShrink:0}}),
-            el("div",{style:{flex:1,textAlign:"left",minWidth:0}},
-              el("div",{style:{fontSize:14,fontWeight:700,color:isCur?"var(--surface)":"var(--text)",letterSpacing:"-0.02em"}},m.name),
-              isMe && el("div",{style:{fontSize:10,color:isCur?"rgba(255,255,255,0.8)":"var(--text-faint)",fontWeight:600}},"나")
-            )
-          );
-        })
-      )
-    )
-  );
-}
-
-// ───── 한 줄 입력 드로어 ─────
-function InputDrawer({year,month,me,members,schedules,onClose}){
-  const [text,setText] = useState("");
-  const [err,setErr] = useState("");
-  const [saving,setSaving] = useState(false);
-
-  const meData = members[me];
-  const customCode = meData?.customCode;
-  const customDesc = meData?.customDesc;
-  const daysInMonth = new Date(year,month+1,0).getDate();
-
-  // 기존 듀티 한 줄로 미리 채우기
-  useEffect(()=>{
-    let s = "";
-    for(let d=1;d<=daysInMonth;d++){
-      s += schedules?.[me]?.[dKey(year,month,d)] || "_";
-    }
-    setText(s);
-  },[year,month,me,schedules,daysInMonth]);
-
-  const validChars = ["D","E","N","O","_",customCode].filter(Boolean);
-
-  const handleSave = async()=>{
-    const cleaned = text.toUpperCase().replace(/\s/g,"");
-    if(cleaned.length!==daysInMonth){
-      return setErr(`${daysInMonth}자가 필요해. 현재 ${cleaned.length}자`);
-    }
-    for(let i=0;i<cleaned.length;i++){
-      if(!validChars.includes(cleaned[i])){
-        return setErr(`${i+1}일: "${cleaned[i]}"는 허용 안 됨`);
-      }
-    }
-    setErr(""); setSaving(true);
-    const updates = {};
-    for(let d=1;d<=daysInMonth;d++){
-      const c = cleaned[d-1];
-      const k = `${ROOT}/schedules/${me}/${dKey(year,month,d)}`;
-      updates[k] = c==="_" ? null : c;
-    }
-    await update(ref(db),updates);
-    setSaving(false);
-    onClose();
-  };
-
-  return el("div",{className:"anim-fade",
-    onClick:onClose,
-    style:{
-      position:"fixed",inset:0,background:"var(--modal-bg)",
-      zIndex:50,display:"flex",alignItems:"flex-end"
-    }
-  },
-    el("div",{className:"anim-up",
-      onClick:e=>e.stopPropagation(),
-      style:{
-        width:"100%",background:"var(--bg-1)",
-        borderRadius:"22px 22px 0 0",
-        padding:"20px 18px 24px"
-      }
-    },
-      el("div",{style:{width:36,height:4,background:"var(--border-soft)",borderRadius:2,margin:"0 auto 18px"}}),
-      el("div",{style:{fontSize:14,fontWeight:700,color:"var(--text)",marginBottom:6}},`${year}년 ${month+1}월 — ${daysInMonth}일치`),
-      el("div",{style:{fontSize:12,color:"var(--text-faint)",marginBottom:14,lineHeight:1.5}},
-        `D / E / N / O ${customCode?` / ${customCode}`:""}  사용 · 미입력은 _`,
-        customCode && customDesc && el("div",{style:{marginTop:2}},`${customCode} = ${customDesc}`)
-      ),
-      el("textarea",{
-        value:text,
-        onChange:e=>setText(e.target.value.toUpperCase().replace(/[^DENO_A-Z]/g,"").slice(0,daysInMonth+5)),
-        placeholder:"DDEENNOO...",
-        rows:4,
-        style:{
-          width:"100%",padding:"12px 14px",borderRadius:12,
-          background:"var(--surface)",border:"1px solid #EFE6D5",
-          fontSize:18,letterSpacing:"0.18em",fontWeight:700,
-          fontFamily:"'SF Mono','Menlo',monospace",
-          color:"var(--text)",lineHeight:1.5,resize:"none"
-        }
-      }),
-      el("div",{style:{fontSize:11,color:"var(--text-fainter)",marginTop:6,textAlign:"right"}},
-        `${text.replace(/\s/g,"").length} / ${daysInMonth}`),
-      err && el("div",{style:{fontSize:13,color:MEMO_COLOR,marginTop:8}},err),
-      el("div",{style:{display:"flex",gap:8,marginTop:14}},
-        el("button",{onClick:onClose,
-          style:{flex:1,padding:"14px 0",borderRadius:12,background:"var(--surface)",border:"1px solid #EFE6D5",color:"var(--text-sub)",fontSize:14,fontWeight:600}
-        },"취소"),
-        el("button",{onClick:handleSave,disabled:saving,
-          style:{flex:2,padding:"14px 0",borderRadius:12,background:"var(--text)",color:"var(--surface)",fontSize:14,fontWeight:700,opacity:saving?0.5:1}
-        },saving?"저장 중...":"저장")
-      )
-    )
-  );
-}
-
-// ───── 날짜 모달 ─────
-// ───── 빠른 듀티 변경 팝업 ─────
-function QuickEditPopup({day,year,month,me,members,schedules,onClose}){
-  const meData = members[me];
-  const dateKey = dKey(year,month,day);
-  const cur = schedules?.[me]?.[dateKey] || null;
-  const codes = ["D","E","N","O", meData?.customCode].filter(Boolean);
-
-  const setShift = async(code)=>{
-    const path = `${ROOT}/schedules/${me}/${dateKey}`;
-    if(cur===code) await set(ref(db,path),null);
-    else await set(ref(db,path),code);
-    onClose();
-  };
-
-  const dow = new Date(year,month,day).getDay();
-
-  return el("div",{className:"anim-fade",
-    onClick:onClose,
-    style:{
-      position:"fixed",inset:0,background:"var(--modal-bg)",
-      zIndex:55,display:"flex",alignItems:"center",justifyContent:"center"
-    }
-  },
-    el("div",{className:"anim-up",
-      onClick:e=>e.stopPropagation(),
-      style:{
-        background:"var(--bg-1)",
-        borderRadius:18,
-        padding:"18px 18px 16px",
-        margin:"0 24px",
-        minWidth:280,
-        boxShadow:"0 8px 28px rgba(60,40,20,0.18)"
-      }
-    },
-      el("div",{style:{
-        display:"flex",alignItems:"baseline",gap:8,marginBottom:14,
-        justifyContent:"center"
-      }},
-        el("div",{style:{fontSize:20,fontWeight:800,color:"var(--text)"}},
-          `${month+1}월 ${day}일`),
-        el("div",{style:{fontSize:13,color:dow===0?"var(--sun)":dow===6?"var(--sat)":"var(--text-faint)",fontWeight:700}},
-          `(${WEEKDAYS[dow]})`)
-      ),
-      el("div",{style:{display:"flex",gap:6}},
-        codes.map(c=>{
-          const info = SHIFT[c];
-          const active = cur===c;
-          return el("button",{key:c,onClick:()=>setShift(c),
-            style:{
-              flex:1,padding:"16px 0",borderRadius:12,
-              background: active ? (info?info.color:meData.color) : "var(--surface)",
-              color: active ? "var(--surface)" : "var(--text-soft)",
-              border:`1.5px solid ${active ? (info?info.color:meData.color) : "var(--border)"}`,
-              fontSize:18,fontWeight:800
-            }
-          },c);
-        })
-      ),
-      el("div",{style:{fontSize:10,color:"var(--text-fainter)",textAlign:"center",marginTop:10}},
-        cur ? "같은 듀티 다시 누르면 비움" : "탭해서 듀티 입력")
-    )
-  );
-}
-
-function DayModal({day,scrollToAll,year,month,members,schedules,memos,perspective,me,isEditMode,onRequestEdit,onChangeDay,onClose}){
-  const dateKey = dKey(year,month,day);
-  const dow = new Date(year,month,day).getDay();
-  const allRef = useRef(null);
-  const isMyView = isEditMode && perspective===me;
-  const [editingDuty,setEditingDuty] = useState(false);
-
-  // 일자 변경 (좌우 스와이프용)
-  const goPrevDay = useCallback(()=>{
-    if(!onChangeDay) return;
-    const d = new Date(year, month, day-1);
-    onChangeDay(d.getFullYear(), d.getMonth(), d.getDate());
-  },[year,month,day,onChangeDay]);
-
-  const goNextDay = useCallback(()=>{
-    if(!onChangeDay) return;
-    const d = new Date(year, month, day+1);
-    onChangeDay(d.getFullYear(), d.getMonth(), d.getDate());
-  },[year,month,day,onChangeDay]);
-
-  // 스와이프 감지 (모달 본문 내부)
-  const swipeRef = useRef({startX:0, startY:0, startTime:0});
-  const onContentTouchStart = (e)=>{
-    if(!e.touches || !e.touches[0]) return;
-    swipeRef.current = {
-      startX: e.touches[0].clientX,
-      startY: e.touches[0].clientY,
-      startTime: Date.now()
-    };
-  };
-  const onContentTouchEnd = (e)=>{
-    if(!e.changedTouches || !e.changedTouches[0]) return;
-    const dx = e.changedTouches[0].clientX - swipeRef.current.startX;
-    const dy = e.changedTouches[0].clientY - swipeRef.current.startY;
-    const dt = Date.now() - swipeRef.current.startTime;
-    // 빠르고(<500ms) 충분히 가로(>50px)이고 세로보다 우세
-    if(dt < 500 && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5){
-      if(dx > 0) goPrevDay();
-      else goNextDay();
-    }
-  };
-
-  useEffect(()=>{
-    if(scrollToAll && allRef.current){
-      setTimeout(()=>allRef.current.scrollIntoView({behavior:"smooth",block:"start"}),200);
-    }
-  },[scrollToAll]);
-
-  // 듀티별 그룹
-  const groups = useMemo(()=>{
-    const g = {D:[],E:[],N:[],O:[],custom:[]};
-    Object.entries(members).forEach(([id,m])=>{
-      const s = schedules?.[id]?.[dateKey];
-      if(!s) return;
-      if(RESERVED_CODES.includes(s)) g[s].push({id,m,code:s});
-      else g.custom.push({id,m,code:s});
-    });
-    return g;
-  },[members,schedules,dateKey]);
-
-  // 메모
-  const dayMemos = memos[dateKey] || {};
-  const memoEntries = Object.entries(dayMemos).sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
-
-  // 생일
-  const birthdays = Object.values(members).filter(m=>m.birthMonth===month+1 && m.birthDay===day);
-
-  return el("div",{className:"anim-fade",
-    onClick:onClose,
-    style:{
-      position:"fixed",inset:0,background:"var(--modal-bg)",
-      zIndex:60,display:"flex",alignItems:"flex-end"
-    }
-  },
-    el("div",{className:"anim-up",
-      onClick:e=>e.stopPropagation(),
-      onTouchStart:onContentTouchStart,
-      onTouchEnd:onContentTouchEnd,
-      style:{
-        width:"100%",background:"var(--bg-1)",
-        borderRadius:"22px 22px 0 0",
-        maxHeight:"86vh",overflowY:"auto",
-        padding:"20px 18px 32px"
-      }
-    },
-      el("div",{style:{width:36,height:4,background:"var(--border-soft)",borderRadius:2,margin:"0 auto 14px"}}),
-      // 헤더
-      el("div",{style:{display:"flex",alignItems:"baseline",gap:8,marginBottom:14}},
-        el("button",{onClick:goPrevDay,
-          style:{fontSize:18,color:"var(--text-faint)",padding:"0 6px"}},"‹"),
-        el("div",{style:{fontSize:24,fontWeight:800,color:"var(--text)",letterSpacing:"-0.03em"}},
-          `${month+1}월 ${day}일`),
-        el("div",{style:{fontSize:14,color:dow===0?"var(--sun)":dow===6?"var(--sat)":"var(--text-faint)",fontWeight:700}},
-          `(${WEEKDAYS[dow]})`),
-        el("button",{onClick:goNextDay,
-          style:{fontSize:18,color:"var(--text-faint)",padding:"0 6px"}},"›"),
-        el("div",{style:{flex:1}}),
-        el("button",{onClick:()=>shareDayAsImage({day,year,month,members,schedules,memos:dayMemos}),
-          title:"공유",
-          style:{
-            padding:"6px 12px",borderRadius:10,
-            background:"var(--surface)",
-            color:"var(--text-sub)",fontSize:13,fontWeight:600,
-            display:"inline-flex",alignItems:"center",gap:4
+        setBusy(true);
+        try {
+          const snap = await get(ref(db, `users/${sabun}`));
+          if (!snap.exists()) {
+            setErr("등록되지 않은 사번이에요. 회원가입을 먼저 해주세요.");
+            setBusy(false);
+            return;
           }
-        }, "📤 공유")
-      ),
-      // 생일 배너
-      birthdays.length>0 && el("div",{style:{
-        background:"linear-gradient(95deg, var(--shift-n-light), var(--shift-n-light))",
-        padding:"10px 14px",borderRadius:12,marginBottom:14,
-        fontSize:13,fontWeight:700,color:"var(--text)"
-      }},
-        `🎂 오늘은 ${birthdays.map(m=>m.name).join(", ")} 생일!`
-      ),
-      // 본인 듀티 수정 (본인 시점일 때만)
-      isMyView && el(MyDutyEditor,{
-        dateKey, me, members, schedules
-      }),
-      // 모두 듀티
-      el("div",{ref:allRef,style:{marginBottom:18}},
-        el("div",{style:{fontSize:11,color:"var(--text-faint)",fontWeight:700,marginBottom:8,letterSpacing:"-0.01em"}},
-          "── 모두의 듀티"),
-        ["D","E","N","O"].map(code=>{
-          const list = groups[code];
-          if(list.length===0) return null;
-          const info = SHIFT[code];
-          return el("div",{key:code,style:{
-            background:info.light,borderRadius:12,padding:"10px 12px",marginBottom:6
-          }},
-            el("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:6}},
-              el("div",{style:{width:22,height:22,borderRadius:"50%",background:info.color,color:"var(--surface)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800}},code),
-              el("span",{style:{fontSize:12,color:"#5C5040",fontWeight:600}},`${info.full} · ${list.length}명`)
-            ),
-            el("div",{style:{display:"flex",flexWrap:"wrap",gap:6}},
-              list.map(({id,m})=>{
-                const isCur = id===perspective;
-                return el("div",{key:id,
-                  style:{
-                    display:"inline-flex",alignItems:"center",gap:6,
-                    padding:"4px 10px",borderRadius:14,
-                    background:"var(--surface)",
-                    border:`1.5px solid ${isCur?m.color:"transparent"}`
-                  }
-                },
-                  el("div",{style:{width:10,height:10,borderRadius:"50%",background:isCur?m.color:NEUTRAL_COLOR}}),
-                  el("span",{style:{fontSize:13,fontWeight:isCur?700:600,color:isCur?m.color:"var(--text-soft)"}},m.name)
-                );
-              })
-            )
-          );
-        }),
-        groups.custom.length>0 && el("div",{style:{
-          background:"var(--shift-custom-light)",borderRadius:12,padding:"10px 12px",marginBottom:6
-        }},
-          el("div",{style:{fontSize:12,color:"#5C5040",fontWeight:600,marginBottom:6}},`기타 · ${groups.custom.length}명`),
-          el("div",{style:{display:"flex",flexWrap:"wrap",gap:6}},
-            groups.custom.map(({id,m,code})=>{
-              const isCur = id===perspective;
-              return el("div",{key:id,
-                style:{
-                  display:"inline-flex",alignItems:"center",gap:6,
-                  padding:"4px 10px",borderRadius:14,
-                  background:"var(--surface)",
-                  border:`1.5px solid ${isCur?m.color:"transparent"}`
-                }
-              },
-                el("div",{style:{width:18,height:18,borderRadius:"50%",background:isCur?m.color:NEUTRAL_COLOR,color:"var(--surface)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:800}},code),
-                el("span",{style:{fontSize:13,fontWeight:isCur?700:600,color:isCur?m.color:"var(--text-soft)"}},m.name),
-                m.customDesc && el("span",{style:{fontSize:10,color:"var(--text-faint)"}},`(${m.customDesc})`)
-              );
-            })
-          )
-        )
-      ),
-      // 메모
-      el(MemoSection,{dateKey, me, members, memos:dayMemos, isEditMode, onRequestEdit})
-    )
-  );
-}
-
-// ───── 본인 듀티 수정 (모달 내) ─────
-function MyDutyEditor({dateKey,me,members,schedules}){
-  const meData = members[me];
-  const cur = schedules?.[me]?.[dateKey] || null;
-  const codes = ["D","E","N","O", meData?.customCode].filter(Boolean);
-
-  const setShift = async(code)=>{
-    const path = `${ROOT}/schedules/${me}/${dateKey}`;
-    if(cur===code) await set(ref(db,path),null);
-    else await set(ref(db,path),code);
-  };
-
-  return el("div",{style:{marginBottom:18}},
-    el("div",{style:{fontSize:11,color:"var(--text-faint)",fontWeight:700,marginBottom:8,letterSpacing:"-0.01em"}},
-      "── 내 듀티"),
-    el("div",{style:{display:"flex",gap:6}},
-      codes.map(c=>{
-        const info = SHIFT[c];
-        const isCustom = !info;
-        const active = cur===c;
-        return el("button",{key:c,onClick:()=>setShift(c),
-          style:{
-            flex:1,padding:"14px 0",borderRadius:12,
-            background:active ? (info?info.color:meData.color) : "var(--surface)",
-            color:active?"var(--surface)":"var(--text-soft)",
-            border:`1.5px solid ${active ? (info?info.color:meData.color) : "var(--border)"}`,
-            fontSize:15,fontWeight:800,
-            transition:"all 0.15s"
+          const user = snap.val();
+          const inputHash = await hashPassword(sabun, password);
+          if (inputHash !== user.loginHash) {
+            setErr("비밀번호가 일치하지 않아요.");
+            setBusy(false);
+            return;
           }
-        },c);
-      })
-    )
-  );
-}
-
-// ───── 메모 섹션 ─────
-// ───── 메모 반응 ─────
-const REACTION_EMOJIS = ["👍","🎉","❤️","🍻","😂","🙌"];
-
-function MemoReactions({dateKey,mid,reactions,members,me,isEditMode,onRequestEdit}){
-  const [pickerOpen,setPickerOpen] = useState(false);
-
-  // reactions: { emoji: { userId: true } }
-  const summary = useMemo(()=>{
-    const arr = [];
-    Object.entries(reactions||{}).forEach(([emoji, users])=>{
-      const userIds = Object.keys(users||{}).filter(uid => users[uid] && members[uid]);
-      if(userIds.length>0){
-        arr.push({ emoji, userIds, count: userIds.length, mineActive: !!(me && users[me]) });
-      }
-    });
-    // 많이 받은 순 정렬
-    arr.sort((a,b)=>b.count-a.count);
-    return arr;
-  },[reactions,members,me]);
-
-  const toggleReaction = async(emoji)=>{
-    if(!isEditMode){
-      onRequestEdit && onRequestEdit();
-      return;
-    }
-    const path = `${ROOT}/memos/${dateKey}/${mid}/reactions/${emoji}/${me}`;
-    const cur = reactions?.[emoji]?.[me];
-    if(cur) await set(ref(db,path), null);
-    else await set(ref(db,path), true);
-    setPickerOpen(false);
-  };
-
-  return el("div",{style:{display:"flex",alignItems:"center",gap:4,flexWrap:"wrap"}},
-    summary.map(({emoji,userIds,count,mineActive})=>
-      el("button",{key:emoji, onClick:()=>toggleReaction(emoji),
-        title: userIds.map(uid=>members[uid]?.name).filter(Boolean).join(", "),
-        style:{
-          display:"inline-flex",alignItems:"center",gap:3,
-          padding:"3px 8px",borderRadius:12,
-          background: mineActive ? "var(--shift-d-light)" : "var(--surface-faint)",
-          border: `1px solid ${mineActive ? "var(--shift-d)" : "var(--border)"}`,
-          fontSize:12, lineHeight:1
+          onLogin(sabun, user);
+        } catch (e) {
+          console.error(e);
+          setErr("로그인 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.");
+          setBusy(false);
         }
-      },
-        el("span",null, emoji),
-        el("span",{style:{fontSize:11,fontWeight:600,color:"var(--text-sub)"}}, count)
-      )
-    ),
-    pickerOpen
-      ? el("div",{style:{display:"inline-flex",alignItems:"center",gap:2,padding:"3px 6px",borderRadius:12,background:"var(--surface-faint)",border:"1px solid var(--border)"}},
-          REACTION_EMOJIS.map(em=>el("button",{key:em,onClick:()=>toggleReaction(em),
-            style:{fontSize:14,padding:"2px 4px",lineHeight:1}}, em))
-        )
-      : el("button",{onClick:()=>{
-          if(!isEditMode){ onRequestEdit && onRequestEdit(); return; }
-          setPickerOpen(true);
-        },
-        style:{
-          padding:"3px 8px",borderRadius:12,
-          background:"transparent",
-          border:"1px dashed var(--border-soft)",
-          fontSize:11, color:"var(--text-fainter)", lineHeight:1
-        }
-      }, summary.length===0 ? "+ 반응" : "+")
-  );
-}
+      };
 
-function MemoSection({dateKey,me,members,memos,isEditMode,onRequestEdit}){
-  const [text,setText] = useState("");
-  const [emoji,setEmoji] = useState("📌");
-  const [adding,setAdding] = useState(false);
-
-  const memoEntries = Object.entries(memos).sort((a,b)=>(a[1].createdAt||0)-(b[1].createdAt||0));
-  const meData = members[me];
-
-  const handleAdd = async()=>{
-    if(!text.trim()) return;
-    const newRef = push(ref(db,`${ROOT}/memos/${dateKey}`));
-    await set(newRef,{
-      text:text.trim(),emoji,
-      authorId:me, authorName:meData?.name||"?",
-      createdAt:Date.now()
-    });
-    setText(""); setEmoji("📌"); setAdding(false);
-  };
-  const handleDelete = async(memoId)=>{
-    await remove(ref(db,`${ROOT}/memos/${dateKey}/${memoId}`));
-  };
-
-  const EMOJIS = ["📌","🎉","🍽","💊","✈️","🏥","📅","❤️","⭐","🎂","🏃","☕"];
-
-  return el("div",null,
-    el("div",{style:{fontSize:11,color:"var(--text-faint)",fontWeight:700,marginBottom:8,letterSpacing:"-0.01em"}},
-      "── 메모"),
-    memoEntries.length===0 && !adding && el("div",{style:{fontSize:13,color:"var(--text-fainter)",padding:"6px 4px"}},"아직 메모 없음"),
-    memoEntries.map(([mid,memo])=>{
-      const isMine = isEditMode && memo.authorId===me;
-      const author = members[memo.authorId];
-      const reactions = memo.reactions || {}; // {emoji: {userId: true, ...}}
-      return el("div",{key:mid,style:{
-        display:"flex",flexDirection:"column",gap:6,
-        padding:"10px 12px",borderRadius:12,
-        background:"var(--surface)",marginBottom:6
-      }},
-        el("div",{style:{display:"flex",alignItems:"flex-start",gap:8}},
-          el("div",{style:{fontSize:18,lineHeight:1.2}},memo.emoji||"📌"),
-          el("div",{style:{flex:1,minWidth:0}},
-            el("div",{style:{fontSize:14,color:"var(--text-soft)",lineHeight:1.4,wordBreak:"break-word"}},memo.text),
-            el("div",{style:{fontSize:10,color:"var(--text-faint)",marginTop:3,display:"flex",alignItems:"center",gap:5}},
-              el("div",{style:{width:6,height:6,borderRadius:"50%",background:author?.color||"var(--text-fainter)"}}),
-              el("span",null,author?.name||"?"),
-              el("span",null,"·"),
-              el("span",null,new Date(memo.createdAt||0).toLocaleDateString("ko-KR",{month:"numeric",day:"numeric"}))
-            )
-          ),
-          isMine && el("button",{onClick:()=>handleDelete(mid),
-            style:{fontSize:13,color:"var(--text-fainter)",padding:"4px 6px"}},"삭제")
-        ),
-        el(MemoReactions, { dateKey, mid, reactions, members, me, isEditMode, onRequestEdit })
+      return (
+        <div className="auth-wrap">
+          <div>
+            <h1 className="auth-title">61w 듀티</h1>
+            <p className="auth-sub">사번으로 로그인</p>
+          </div>
+          <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <div className="field">
+              <label>사번</label>
+              <input
+                type="tel"
+                inputMode="numeric"
+                value={sabun}
+                onChange={e => setSabun(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                placeholder="224051"
+                autoComplete="username"
+              />
+            </div>
+            <div className="field">
+              <label>비밀번호</label>
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                autoComplete="current-password"
+              />
+            </div>
+            {err && <div className="auth-error">{err}</div>}
+            <button type="submit" className="btn-primary" disabled={busy}>
+              {busy ? "로그인 중…" : "로그인"}
+            </button>
+            <button type="button" className="btn-ghost" onClick={switchToSignup}>
+              아직 계정이 없어요 · 회원가입
+            </button>
+          </form>
+        </div>
       );
-    }),
-    !isEditMode ? el("button",{onClick:onRequestEdit,
-      style:{
-        width:"100%",padding:"10px 0",borderRadius:12,
-        background:"transparent",border:"1.5px dashed #D9CCB0",
-        fontSize:12,color:"var(--text-fainter)",fontWeight:600,marginTop:6
-      }
-    },"🔒 메모 작성하려면 수정 모드로")
-    : adding ? el("div",{style:{background:"var(--surface)",borderRadius:12,padding:"10px 12px",marginTop:6}},
-      el("div",{style:{display:"flex",flexWrap:"wrap",gap:4,marginBottom:8}},
-        EMOJIS.map(e=>el("button",{key:e,onClick:()=>setEmoji(e),
-          style:{
-            fontSize:18,padding:"4px 6px",borderRadius:8,
-            background:emoji===e?"var(--shift-custom-light)":"transparent"
+    }
+
+    function SignupForm({ onLogin, switchToLogin }) {
+      const [sabun, setSabun] = useState("");
+      const [name, setName] = useState("");
+      const [team, setTeam] = useState("A");
+      const [hireDate, setHireDate] = useState("");
+      const [phone, setPhone] = useState("");
+      const [password, setPassword] = useState("");
+      const [password2, setPassword2] = useState("");
+      const [err, setErr] = useState("");
+      const [busy, setBusy] = useState(false);
+
+      const submit = async (e) => {
+        e.preventDefault();
+        setErr("");
+        if (!/^\d{5,6}$/.test(sabun)) return setErr("사번은 5~6자리 숫자여야 해요.");
+        if (!name.trim()) return setErr("이름을 입력해 주세요.");
+        if (!TEAMS.includes(team)) return setErr("팀을 선택해 주세요.");
+        const hireISO = hireDateToISO(hireDate);
+        if (!hireISO) return setErr("입사일은 8자리 숫자(YYYYMMDD)로 입력해 주세요.");
+        if (password.length < 4) return setErr("비밀번호는 4자 이상이어야 해요.");
+        if (password !== password2) return setErr("비밀번호가 서로 일치하지 않아요.");
+
+        setBusy(true);
+        try {
+          // 1) 이미 존재하는지 확인
+          const existSnap = await get(ref(db, `users/${sabun}`));
+          if (existSnap.exists()) {
+            setErr("이미 등록된 사번이에요. 로그인 화면으로 가주세요.");
+            setBusy(false);
+            return;
           }
-        },e))
-      ),
-      el("input",{type:"text",value:text,onChange:e=>setText(e.target.value.slice(0,80)),
-        placeholder:"메모를 적어줘",autoFocus:true,
-        style:{width:"100%",fontSize:14,padding:"8px 0",borderBottom:"1px solid #EFE6D5"}
-      }),
-      el("div",{style:{display:"flex",gap:6,marginTop:10}},
-        el("button",{onClick:()=>{setAdding(false);setText("");},
-          style:{flex:1,padding:"10px 0",borderRadius:10,background:"var(--surface-faint)",fontSize:13,color:"var(--text-sub)",fontWeight:600}
-        },"취소"),
-        el("button",{onClick:handleAdd,
-          style:{flex:1,padding:"10px 0",borderRadius:10,background:"var(--text)",color:"var(--surface)",fontSize:13,fontWeight:700}
-        },"추가")
-      )
-    ) : el("button",{onClick:()=>setAdding(true),
-      style:{
-        width:"100%",padding:"10px 0",borderRadius:12,
-        background:"transparent",border:"1.5px dashed #D9CCB0",
-        fontSize:13,color:"var(--text-faint)",fontWeight:600,marginTop:6
-      }
-    },"+ 메모 추가")
-  );
-}
-
-// ───── 연락처 패널 ─────
-function ContactsPanel({open,onToggle,members,me}){
-  const list = Object.entries(members).sort((a,b)=>(a[1].joinedAt||0)-(b[1].joinedAt||0));
-  return el("div",{style:{
-    background:"var(--surface-softer)",
-    borderTop:"1px solid rgba(0,0,0,0.04)",
-    padding:"4px 14px"
-  }},
-    el("button",{onClick:onToggle,
-      style:{
-        width:"100%",padding:"10px 4px",
-        display:"flex",alignItems:"center",justifyContent:"space-between",
-        fontSize:13,fontWeight:600,color:"var(--text-sub)"
-      }
-    },
-      el("span",null,`📇 연락처 (${list.length}명)`),
-      el("span",{style:{fontSize:11,transition:"transform 0.2s",transform:open?"rotate(180deg)":"none"}},"▾")
-    ),
-    open && el("div",{className:"anim-down",style:{paddingBottom:14}},
-      list.map(([id,m])=>el("a",{key:id,
-        href:m.phone?`tel:${m.phone.replace(/-/g,"")}`:undefined,
-        style:{
-          display:"flex",alignItems:"center",gap:10,
-          padding:"10px 6px",
-          borderTop:"1px solid rgba(0,0,0,0.04)",
-          textDecoration:"none",color:"inherit"
-        }
-      },
-        el("div",{style:{width:24,height:24,borderRadius:"50%",background:m.color,flexShrink:0}}),
-        el("div",{style:{flex:1,minWidth:0}},
-          el("div",{style:{fontSize:14,fontWeight:700,color:"var(--text)",letterSpacing:"-0.01em"}},
-            m.name + (id===me?" (나)":""),
-            m.birthMonth && el("span",{style:{fontSize:11,color:"var(--text-fainter)",fontWeight:500,marginLeft:6}},
-              `🎂 ${m.birthMonth}/${m.birthDay}`)
-          ),
-          m.phone && el("div",{style:{fontSize:12,color:"var(--text-sub)",marginTop:1,fontVariantNumeric:"tabular-nums"}},m.phone)
-        ),
-        m.phone && el("div",{style:{fontSize:13,color:"var(--text-fainter)"}},"📞")
-      ))
-    )
-  );
-}
-
-// ───── 설정 모달 ─────
-// ───── 내 통계 ─────
-function MyStats({me,members,schedules}){
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth();
-  const todayDate = today.getDate();
-
-  const stats = useMemo(()=>{
-    const mySchedule = schedules?.[me] || {};
-    const counts = {D:0, E:0, N:0, O:0, custom:0};
-    let totalNights = 0;
-    let maxConsecWork = 0;
-    let curConsecWork = 0;
-
-    // 이번 달 카운트
-    const daysInMonth = new Date(year, month+1, 0).getDate();
-    for(let d=1; d<=daysInMonth; d++){
-      const k = dKey(year, month, d);
-      const s = mySchedule[k];
-      if(!s) continue;
-      if(s==="D"||s==="E"||s==="N") counts[s]++;
-      else if(s==="O") counts.O++;
-      else counts.custom++;
-    }
-
-    // 누적 나이트, 최장 연속 근무 (전체 데이터 기준)
-    const allDates = Object.keys(mySchedule).sort();
-    allDates.forEach(k=>{
-      const s = mySchedule[k];
-      if(s==="N") totalNights++;
-      if(s && s!=="O"){
-        curConsecWork++;
-        if(curConsecWork > maxConsecWork) maxConsecWork = curConsecWork;
-      } else {
-        curConsecWork = 0;
-      }
-    });
-
-    return { counts, totalNights, maxConsecWork };
-  },[me,schedules,year,month]);
-
-  const cell = (label, value, color)=>el("div",{style:{
-    flex:1,
-    background:"var(--surface-faint)",borderRadius:10,padding:"10px 6px",
-    textAlign:"center"
-  }},
-    el("div",{style:{fontSize:18,fontWeight:800,color:color||"var(--text)",letterSpacing:"-0.02em"}},value),
-    el("div",{style:{fontSize:10,color:"var(--text-faint)",fontWeight:600,marginTop:2}},label)
-  );
-
-  return el("div",{style:{background:"var(--surface)",borderRadius:14,padding:14,marginBottom:14}},
-    el("div",{style:{fontSize:13,fontWeight:700,color:"var(--text)",marginBottom:10}},
-      `📊 ${month+1}월 통계`),
-    el("div",{style:{display:"flex",gap:6,marginBottom:8}},
-      cell("Day", stats.counts.D, "var(--shift-d)"),
-      cell("Eve", stats.counts.E, "var(--shift-e)"),
-      cell("Night", stats.counts.N, "var(--shift-n)"),
-      cell("Off", stats.counts.O, "var(--shift-o)")
-    ),
-    stats.counts.custom>0 && el("div",{style:{fontSize:11,color:"var(--text-faint)",textAlign:"center",marginBottom:6}},
-      `기타 ${stats.counts.custom}일`),
-    el("div",{style:{display:"flex",gap:6,marginTop:6}},
-      cell("누적 나이트", stats.totalNights, "#F5A623"),
-      cell("최장 연속 근무", `${stats.maxConsecWork}일`, "var(--text-sub)")
-    )
-  );
-}
-
-function SettingsModal({me,members,schedules,isEditMode,onClose,onLockMode,onFullLogout,onRequestEdit,onOpenNotices}){
-  const meData = me ? members[me] : null;
-  const [editingCode,setEditingCode] = useState(false);
-  const [code,setCode] = useState(meData?.customCode||"");
-  const [desc,setDesc] = useState(meData?.customDesc||"");
-  const [err,setErr] = useState("");
-  const [showProfile,setShowProfile] = useState(false);
-  const [showDelete,setShowDelete] = useState(false);
-  const [showHelp,setShowHelp] = useState(false);
-
-  const usedCodes = new Set();
-  Object.values(members).forEach(m=>{
-    if(m.customCode && m.customCode!==meData?.customCode) usedCodes.add(m.customCode);
-  });
-
-  const saveCode = async()=>{
-    const c = code.toUpperCase().trim();
-    if(c==="") {
-      await update(ref(db,`${ROOT}/members/${me}`),{customCode:null,customDesc:null});
-      setEditingCode(false); return;
-    }
-    if(c.length!==1) return setErr("한 글자");
-    if(!/^[A-Z]$/.test(c)) return setErr("알파벳만");
-    if(RESERVED_CODES.includes(c)) return setErr(`${c}는 예약됨 (D/E/N/O)`);
-    if(usedCodes.has(c)) return setErr(`${c}는 다른 멤버가 사용 중`);
-    setErr("");
-    await update(ref(db,`${ROOT}/members/${me}`),{customCode:c,customDesc:desc.trim()||null});
-    setEditingCode(false);
-  };
-
-  return el("div",{className:"anim-fade",
-    onClick:onClose,
-    style:{
-      position:"fixed",inset:0,background:"var(--modal-bg)",
-      zIndex:70,display:"flex",alignItems:"flex-end"
-    }
-  },
-    el("div",{className:"anim-up",
-      onClick:e=>e.stopPropagation(),
-      style:{
-        width:"100%",background:"var(--bg-1)",
-        borderRadius:"22px 22px 0 0",
-        padding:"20px 18px 28px",
-        maxHeight:"85vh",overflowY:"auto"
-      }
-    },
-      el("div",{style:{width:36,height:4,background:"var(--border-soft)",borderRadius:2,margin:"0 auto 18px"}}),
-      el("div",{style:{fontSize:18,fontWeight:800,marginBottom:16,color:"var(--text)"}},"설정"),
-
-      // 사용법 (모드 무관)
-      el("button",{onClick:()=>setShowHelp(true),
-        style:{
-          width:"100%",padding:"14px",borderRadius:14,
-          background:"var(--surface)",
-          fontSize:14,color:"var(--text)",fontWeight:700,
-          marginBottom:8,
-          display:"flex",alignItems:"center",justifyContent:"space-between"
-        }
-      },
-        el("span",null,"📖 사용법"),
-        el("span",{style:{color:"var(--text-faint)"}},"›")
-      ),
-
-      // 공지 관리 (모드 무관 - 작성은 모달 안에서 다시 체크)
-      el("button",{onClick:()=>{onClose();onOpenNotices && onOpenNotices();},
-        style:{
-          width:"100%",padding:"14px",borderRadius:14,
-          background:"var(--surface)",
-          fontSize:14,color:"var(--text)",fontWeight:700,
-          marginBottom:14,
-          display:"flex",alignItems:"center",justifyContent:"space-between"
-        }
-      },
-        el("span",null,"📢 공지"),
-        el("span",{style:{color:"var(--text-faint)"}},"›")
-      ),
-
-      // 게스트 모드 안내
-      !isEditMode && el("div",{style:{background:"var(--surface)",borderRadius:14,padding:16,marginBottom:14,textAlign:"center"}},
-        el("div",{style:{fontSize:32,marginBottom:6}},"🔒"),
-        el("div",{style:{fontSize:14,fontWeight:700,color:"var(--text)",marginBottom:6}},"보기 모드"),
-        el("div",{style:{fontSize:12,color:"var(--text-faint)",marginBottom:14,lineHeight:1.5}},
-          "수정 모드로 진입하면 본인 정보 수정,\n커스텀 코드 설정, 계정 관리 등이 가능해요."),
-        el("button",{onClick:()=>{onClose();onRequestEdit();},
-          style:{
-            width:"100%",padding:"12px 0",borderRadius:12,
-            background:"var(--text)",color:"var(--surface)",
-            fontSize:14,fontWeight:700
+          // 2) 화이트리스트 확인 (admin 사번은 패스)
+          if (sabun !== ADMIN_SABUN) {
+            const wlSnap = await get(ref(db, `whitelist/${sabun}`));
+            if (!wlSnap.exists()) {
+              setErr("등록 권한이 없는 사번이에요. 관리자에게 문의해 주세요.");
+              setBusy(false);
+              return;
+            }
           }
-        },"🔓 수정 모드로 진입")
-      ),
+          // 3) 저장
+          const loginHash = await hashPassword(sabun, password);
+          const userData = {
+            name: name.trim(),
+            team,
+            hireDate: hireISO,
+            phone: phone.replace(/\D/g, ""),
+            loginHash,
+            createdAt: Date.now(),
+          };
+          await set(ref(db, `users/${sabun}`), userData);
+          onLogin(sabun, userData);
+        } catch (e) {
+          console.error(e);
+          setErr("회원가입 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.");
+          setBusy(false);
+        }
+      };
 
-      // 수정 모드: 내 정보 + 수정 버튼
-      isEditMode && meData && el("div",{style:{background:"var(--surface)",borderRadius:14,padding:14,marginBottom:14}},
-        el("div",{style:{display:"flex",alignItems:"center",gap:12,marginBottom:12}},
-          el("div",{style:{width:40,height:40,borderRadius:"50%",background:meData?.color}}),
-          el("div",{style:{flex:1,minWidth:0}},
-            el("div",{style:{fontSize:16,fontWeight:800,color:"var(--text)"}},meData?.name),
-            el("div",{style:{fontSize:11,color:"var(--text-faint)",marginTop:2}},
-              meData?.birthMonth?`🎂 ${meData.birthMonth}/${meData.birthDay}`:"",
-              meData?.phone?` · ${meData.phone}`:""
-            )
-          )
-        ),
-        el("button",{onClick:()=>setShowProfile(true),
-          style:{
-            width:"100%",padding:"10px",borderRadius:10,
-            background:"var(--surface-faint)",fontSize:13,color:"var(--text-soft)",fontWeight:600
+      return (
+        <div className="auth-wrap">
+          <div>
+            <h1 className="auth-title">회원가입</h1>
+            <p className="auth-sub">필수 정보를 입력해 주세요</p>
+          </div>
+          <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <div className="field">
+              <label>사번</label>
+              <input
+                type="tel"
+                inputMode="numeric"
+                value={sabun}
+                onChange={e => setSabun(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                placeholder="5~6자리 숫자"
+              />
+            </div>
+            <div className="field">
+              <label>이름</label>
+              <input value={name} onChange={e => setName(e.target.value)} />
+            </div>
+            <div className="field">
+              <label>팀</label>
+              <select value={team} onChange={e => setTeam(e.target.value)}>
+                {TEAMS.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+            <div className="field">
+              <label>입사일 (YYYYMMDD)</label>
+              <input
+                type="tel"
+                inputMode="numeric"
+                value={hireDate}
+                onChange={e => setHireDate(formatHireDateInput(e.target.value))}
+                placeholder="20230515"
+              />
+            </div>
+            <div className="field">
+              <label>전화번호</label>
+              <input
+                type="tel"
+                inputMode="numeric"
+                value={phone}
+                onChange={e => setPhone(formatPhone(e.target.value))}
+                placeholder="01012345678"
+              />
+            </div>
+            <div className="field">
+              <label>비밀번호</label>
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+            </div>
+            <div className="field">
+              <label>비밀번호 확인</label>
+              <input type="password" value={password2} onChange={e => setPassword2(e.target.value)} />
+            </div>
+            {err && <div className="auth-error">{err}</div>}
+            <button type="submit" className="btn-primary" disabled={busy}>
+              {busy ? "등록 중…" : "가입하기"}
+            </button>
+            <button type="button" className="btn-ghost" onClick={switchToLogin}>
+              이미 계정이 있어요 · 로그인
+            </button>
+          </form>
+        </div>
+      );
+    }
+
+    // ============================================================
+    // <CalendarScreen>
+    // ============================================================
+    function CalendarScreen({ me, onLogout, onProfileUpdate }) {
+      const today = todayInfo();
+      const [year, setYear] = useState(today.year);
+      const [month, setMonth] = useState(today.month);
+
+      const [duties, setDuties] = useState({});         // { day(int): "D"/"E"/... }
+      const [clinicOverrides, setClinicOverrides] = useState({}); // { "YYYY-MM-DD": status }
+
+      const [showProfile, setShowProfile] = useState(false);
+      const [showDutyInput, setShowDutyInput] = useState(false);
+
+      const monthKey = `${year}-${String(month).padStart(2, "0")}`;
+
+      // duties 구독
+      useEffect(() => {
+        const r = ref(db, `duties/${monthKey}/${me.sabun}`);
+        const unsub = onValue(r, snap => {
+          const val = snap.val() || {};
+          const map = {};
+          Object.keys(val).forEach(k => {
+            const dayInt = parseInt(k, 10);
+            const v = val[k];
+            map[dayInt] = typeof v === "string" ? v : v.shift;
+          });
+          setDuties(map);
+        });
+        return () => unsub();
+      }, [monthKey, me.sabun]);
+
+      // 진료시간 override 구독 (월별)
+      useEffect(() => {
+        const r = ref(db, `clinicHours`);
+        const unsub = onValue(r, snap => {
+          setClinicOverrides(snap.val() || {});
+        });
+        return () => unsub();
+      }, []);
+
+      const goPrevMonth = () => {
+        if (month === 1) { setYear(year - 1); setMonth(12); }
+        else setMonth(month - 1);
+      };
+      const goNextMonth = () => {
+        if (month === 12) { setYear(year + 1); setMonth(1); }
+        else setMonth(month + 1);
+      };
+      const goToday = () => {
+        setYear(today.year);
+        setMonth(today.month);
+      };
+
+      const isCurrentMonth = (year === today.year && month === today.month);
+
+      const tColor = teamColor(me.team);
+
+      return (
+        <>
+          <div className="top-bar">
+            <div className="top-bar-title">
+              <span>{me.name}</span>
+              <span className="team-badge" style={{ background: tColor.bg, color: tColor.text }}>{me.team}</span>
+            </div>
+            <div className="top-bar-actions">
+              <button className="icon-btn" onClick={() => setShowProfile(true)} aria-label="프로필">⚙︎</button>
+            </div>
+          </div>
+
+          <div className="month-nav" style={{ padding: "10px 18px 4px", justifyContent: "center" }}>
+            <button onClick={goPrevMonth} aria-label="이전 달">‹</button>
+            <button
+              onClick={goToday}
+              style={{ width: "auto", padding: "0 14px", fontSize: 16, fontWeight: 600, color: "var(--text)" }}
+            >
+              {year}년 {month}월
+            </button>
+            <button onClick={goNextMonth} aria-label="다음 달">›</button>
+          </div>
+
+          <CalendarGrid
+            year={year}
+            month={month}
+            duties={duties}
+            clinicOverrides={clinicOverrides}
+            today={today}
+            myTeam={me.team}
+          />
+
+          <button className="fab" onClick={() => setShowDutyInput(true)}>
+            ✎ {month}월 듀티 입력
+          </button>
+
+          {showProfile && (
+            <ProfileModal
+              me={me}
+              onClose={() => setShowProfile(false)}
+              onLogout={onLogout}
+              onProfileUpdate={onProfileUpdate}
+            />
+          )}
+          {showDutyInput && (
+            <DutyInputModal
+              year={year}
+              month={month}
+              sabun={me.sabun}
+              myTeam={me.team}
+              currentDuties={duties}
+              onClose={() => setShowDutyInput(false)}
+            />
+          )}
+        </>
+      );
+    }
+
+    // ============================================================
+    // <CalendarGrid>
+    // ============================================================
+    function CalendarGrid({ year, month, duties, clinicOverrides, today, myTeam }) {
+      const { daysInMonth, startWeekday } = getMonthInfo(year, month);
+      const tColor = teamColor(myTeam);
+
+      const cells = [];
+      // 앞쪽 빈 셀
+      for (let i = 0; i < startWeekday; i++) {
+        cells.push(<div key={`e-${i}`} className="cal-cell empty" />);
+      }
+      for (let day = 1; day <= daysInMonth; day++) {
+        const iso = isoDate(year, month, day);
+        const dow = (startWeekday + day - 1) % 7;
+        const status = getClinicStatus(iso, dow, clinicOverrides);
+        const isToday = (year === today.year && month === today.month && day === today.day);
+        const shift = duties[day];
+        const isHoliday = !!HOLIDAYS[iso];
+
+        cells.push(
+          <div key={day} className={`cal-cell ${isToday ? "today" : ""}`}>
+            {isHoliday && <div className="holiday-dot" title={HOLIDAYS[iso]} />}
+            <div className={`cal-date ${status}`}>{day}</div>
+            <div className="duty-stack">
+              {shift && (
+                <div
+                  className="duty-pill"
+                  style={
+                    shift === "O"
+                      ? { background: "transparent", color: "var(--text-soft)", fontWeight: 500 }
+                      : { background: tColor.bg, color: tColor.text }
+                  }
+                >
+                  {shift}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="cal-wrap">
+          <div className="cal-weekdays">
+            {WEEKDAYS_KR.map((w, i) => (
+              <div key={w} style={{
+                color: i === 0 ? "var(--c-closed)" : i === 6 ? "var(--c-morning)" : "var(--text-soft)"
+              }}>{w}</div>
+            ))}
+          </div>
+          <div className="cal-grid">{cells}</div>
+        </div>
+      );
+    }
+
+    // ============================================================
+    // <DutyInputModal>
+    // ============================================================
+    function DutyInputModal({ year, month, sabun, myTeam, currentDuties, onClose }) {
+      const { daysInMonth } = getMonthInfo(year, month);
+
+      // 기존 듀티를 문자열로 직렬화 (있는 만큼만)
+      const initial = useMemo(() => {
+        let maxDay = 0;
+        for (const k of Object.keys(currentDuties)) {
+          const d = parseInt(k, 10);
+          if (d > maxDay) maxDay = d;
+        }
+        let out = "";
+        for (let d = 1; d <= maxDay; d++) {
+          out += currentDuties[d] || "";
+        }
+        return out;
+      }, []); // 모달 열 때만
+
+      const [text, setText] = useState(initial);
+      const [err, setErr] = useState("");
+      const [busy, setBusy] = useState(false);
+
+      const parsed = useMemo(() => {
+        try { return parseDutyString(text); }
+        catch { return null; }
+      }, [text]);
+
+      const save = async () => {
+        setErr("");
+        let codes;
+        try {
+          codes = parseDutyString(text);
+        } catch (e) {
+          setErr(e.message);
+          return;
+        }
+        if (codes.length > daysInMonth) {
+          setErr(`이 달은 ${daysInMonth}일까지인데 ${codes.length}개가 입력됐어요.`);
+          return;
+        }
+        setBusy(true);
+        try {
+          const monthKey = `${year}-${String(month).padStart(2, "0")}`;
+          // 모든 날 한 번에 덮어쓰기 (입력 안 된 날은 null로 삭제)
+          const updates = {};
+          for (let d = 1; d <= daysInMonth; d++) {
+            const dKey = String(d).padStart(2, "0");
+            if (d <= codes.length) {
+              updates[`duties/${monthKey}/${sabun}/${dKey}`] = {
+                shift: codes[d - 1],
+                team: myTeam,
+              };
+            } else {
+              updates[`duties/${monthKey}/${sabun}/${dKey}`] = null;
+            }
           }
-        },"개인정보 수정")
-      ),
-
-      // 수정 모드: 내 통계
-      isEditMode && meData && el(MyStats, {me, members, schedules}),
-
-      // 수정 모드: 커스텀 코드
-      isEditMode && meData && el("div",{style:{background:"var(--surface)",borderRadius:14,padding:14,marginBottom:14}},
-        el("div",{style:{fontSize:13,fontWeight:700,color:"var(--text)",marginBottom:6}},"내 커스텀 근무 코드"),
-        el("div",{style:{fontSize:11,color:"var(--text-faint)",marginBottom:10,lineHeight:1.5}},
-          "D/E/N/O 외에 한 글자 알파벳을 본인 근무로 지정할 수 있어. 예: I = 8am~6pm 상근. 모두 듀티 카운트(D/E/N/O 수)에는 포함 안 됨."
-        ),
-        editingCode ? el("div",null,
-          el("div",{style:{display:"flex",gap:8,marginBottom:8}},
-            el("input",{type:"text",value:code,
-              onChange:e=>setCode(e.target.value.toUpperCase().slice(0,1)),
-              placeholder:"I",maxLength:1,
-              style:{...inputStyle(),width:60,textAlign:"center",fontSize:18,fontWeight:800}
-            }),
-            el("input",{type:"text",value:desc,
-              onChange:e=>setDesc(e.target.value.slice(0,30)),
-              placeholder:"예: 8am~6pm 상근",
-              style:{...inputStyle(),flex:1}
-            })
-          ),
-          err && el("div",{style:{fontSize:12,color:MEMO_COLOR,marginBottom:8}},err),
-          el("div",{style:{display:"flex",gap:6}},
-            el("button",{onClick:()=>{setEditingCode(false);setErr("");setCode(meData?.customCode||"");setDesc(meData?.customDesc||"");},
-              style:{flex:1,padding:"10px 0",borderRadius:10,background:"var(--surface-faint)",fontSize:13,color:"var(--text-sub)",fontWeight:600}
-            },"취소"),
-            el("button",{onClick:saveCode,
-              style:{flex:2,padding:"10px 0",borderRadius:10,background:"var(--text)",color:"var(--surface)",fontSize:13,fontWeight:700}
-            },"저장")
-          )
-        ) : el("button",{onClick:()=>setEditingCode(true),
-          style:{
-            width:"100%",padding:"12px",borderRadius:10,
-            background:"var(--surface-faint)",fontSize:14,color:"var(--text-soft)",fontWeight:600,
-            display:"flex",alignItems:"center",justifyContent:"space-between"
-          }
-        },
-          el("span",null, meData?.customCode ? `${meData.customCode} = ${meData.customDesc||""}` : "코드 추가"),
-          el("span",{style:{color:"var(--text-faint)"}},"›")
-        ),
-        usedCodes.size>0 && el("div",{style:{fontSize:10,color:"var(--text-fainter)",marginTop:8}},
-          `다른 멤버 사용 중: ${Array.from(usedCodes).join(", ")}`
-        )
-      ),
-
-      // 수정 모드: 잠금 (수정 모드 종료)
-      isEditMode && el("button",{onClick:()=>{onClose();onLockMode();},
-        style:{
-          width:"100%",padding:"14px 0",borderRadius:12,
-          background:"var(--surface)",border:"1px solid #EFE6D5",
-          color:"var(--text-sub)",fontSize:14,fontWeight:700,marginBottom:10
+          await update(ref(db), updates);
+          onClose();
+        } catch (e) {
+          console.error(e);
+          setErr("저장 중 오류가 발생했어요.");
+          setBusy(false);
         }
-      },"🔒 수정 모드 종료"),
+      };
 
-      // 수정 모드: 계정 삭제
-      isEditMode && el("button",{onClick:()=>setShowDelete(true),
-        style:{
-          width:"100%",padding:"14px 0",borderRadius:12,
-          background:"transparent",border:"1px solid rgba(255,92,92,0.3)",
-          color:MEMO_COLOR,fontSize:13,fontWeight:600,marginBottom:8
+      return (
+        <div className="modal-backdrop" onClick={onClose}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">{month}월 듀티 입력</h2>
+              <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
+            </div>
+            <div className="modal-fields">
+              <div className="duty-help">
+                1일부터 순서대로 한 글자씩 입력. 공백/줄바꿈 무시.<br />
+                <code>D</code> Day · <code>E</code> Evening · <code>N</code> Night · <code>O</code> Off · <code>T</code> Top · <code>M</code> Mid · <code>V</code> 반차
+              </div>
+              <textarea
+                className="duty-textarea"
+                value={text}
+                onChange={e => setText(e.target.value)}
+                placeholder="예: DENNOOD ENN OOD..."
+                autoFocus
+              />
+              <div className="day-counter">
+                {parsed ? `${parsed.length}일` : "—"} / {daysInMonth}일
+              </div>
+              {err && <div className="auth-error">{err}</div>}
+            </div>
+            <div className="modal-actions">
+              <button className="btn-primary" onClick={save} disabled={busy || !text.trim()}>
+                {busy ? "저장 중…" : "저장"}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================================
+    // <ProfileModal>
+    // ============================================================
+    function ProfileModal({ me, onClose, onLogout, onProfileUpdate }) {
+      const [editing, setEditing] = useState(false);
+      const [showAdminWL, setShowAdminWL] = useState(false);
+      const tColor = teamColor(me.team);
+      const isAdmin = me.sabun === ADMIN_SABUN;
+
+      if (editing) {
+        return (
+          <ProfileEdit
+            me={me}
+            onCancel={() => setEditing(false)}
+            onSaved={(newData) => {
+              onProfileUpdate(newData);
+              setEditing(false);
+            }}
+          />
+        );
+      }
+      if (showAdminWL) {
+        return <WhitelistAdmin onClose={() => setShowAdminWL(false)} />;
+      }
+
+      return (
+        <div className="modal-backdrop" onClick={onClose}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">내 정보</h2>
+              <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
+            </div>
+
+            <div>
+              <div className="profile-row">
+                <span className="profile-label">사번</span>
+                <span className="profile-value">{me.sabun}</span>
+              </div>
+              <div className="profile-row">
+                <span className="profile-label">이름</span>
+                <span className="profile-value">{me.name}</span>
+              </div>
+              <div className="profile-row">
+                <span className="profile-label">팀</span>
+                <span className="team-badge" style={{ background: tColor.bg, color: tColor.text }}>{me.team}</span>
+              </div>
+              <div className="profile-row">
+                <span className="profile-label">입사일</span>
+                <span className="profile-value">{isoToHireDate(me.hireDate)}</span>
+              </div>
+              <div className="profile-row">
+                <span className="profile-label">전화번호</span>
+                <span className="profile-value">{formatPhone(me.phone || "")}</span>
+              </div>
+            </div>
+
+            <div className="modal-actions" style={{ marginTop: 18 }}>
+              <button className="menu-item" onClick={() => setEditing(true)}>
+                <span>정보 수정</span><span style={{ color: "var(--text-soft)" }}>›</span>
+              </button>
+              {isAdmin && (
+                <button className="menu-item" onClick={() => setShowAdminWL(true)}>
+                  <span>화이트리스트 관리</span><span style={{ color: "var(--text-soft)" }}>›</span>
+                </button>
+              )}
+              <button className="menu-item danger" onClick={onLogout}>
+                <span>로그아웃</span><span>›</span>
+              </button>
+            </div>
+
+            <p style={{ fontSize: 11, color: "var(--text-soft)", textAlign: "center", marginTop: 24 }}>
+              61w · Phase 1
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    function ProfileEdit({ me, onCancel, onSaved }) {
+      const [name, setName] = useState(me.name);
+      const [team, setTeam] = useState(me.team);
+      const [hireDate, setHireDate] = useState(isoToHireDate(me.hireDate));
+      const [phone, setPhone] = useState(formatPhone(me.phone || ""));
+      const [err, setErr] = useState("");
+      const [busy, setBusy] = useState(false);
+
+      const save = async () => {
+        setErr("");
+        if (!name.trim()) return setErr("이름을 입력해 주세요.");
+        const hireISO = hireDateToISO(hireDate);
+        if (!hireISO) return setErr("입사일은 8자리 숫자(YYYYMMDD)로 입력해 주세요.");
+        setBusy(true);
+        try {
+          const newData = {
+            name: name.trim(),
+            team,
+            hireDate: hireISO,
+            phone: phone.replace(/\D/g, ""),
+          };
+          await update(ref(db, `users/${me.sabun}`), newData);
+          onSaved(newData);
+        } catch (e) {
+          console.error(e);
+          setErr("저장 중 오류가 발생했어요.");
+          setBusy(false);
         }
-      },"계정 삭제"),
+      };
 
-      isEditMode && el("div",{style:{fontSize:10,color:"var(--text-fainter)",textAlign:"center",marginTop:6}},
-        "창을 닫거나 잠금 시 게스트 모드로 돌아가요. 데이터는 보존됨."),
-
-      // 프로필 수정 모달
-      showProfile && meData && el(ProfileEditor,{
-        me, meData, members,
-        onClose:()=>setShowProfile(false)
-      }),
-      // 계정 삭제 모달
-      showDelete && meData && el(DeleteAccount,{
-        me, meData,
-        onClose:()=>setShowDelete(false),
-        onDeleted:onFullLogout
-      }),
-      // 사용법 모달
-      showHelp && el(HelpModal, { onClose:()=>setShowHelp(false) })
-    )
-  );
-}
-
-// ───── 사용법 모달 (껍데기) ─────
-function HelpModal({onClose}){
-  return el("div",{className:"anim-fade",
-    onClick:onClose,
-    style:{
-      position:"fixed",inset:0,background:"var(--modal-bg)",
-      zIndex:80,display:"flex",alignItems:"flex-end"
+      return (
+        <div className="modal-backdrop" onClick={onCancel}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">정보 수정</h2>
+              <button className="modal-close" onClick={onCancel} aria-label="닫기">×</button>
+            </div>
+            <div className="modal-fields">
+              <div className="field">
+                <label>이름</label>
+                <input value={name} onChange={e => setName(e.target.value)} />
+              </div>
+              <div className="field">
+                <label>팀</label>
+                <select value={team} onChange={e => setTeam(e.target.value)}>
+                  {TEAMS.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div className="field">
+                <label>입사일 (YYYYMMDD)</label>
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  value={hireDate}
+                  onChange={e => setHireDate(formatHireDateInput(e.target.value))}
+                />
+              </div>
+              <div className="field">
+                <label>전화번호</label>
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  value={phone}
+                  onChange={e => setPhone(formatPhone(e.target.value))}
+                />
+              </div>
+              {err && <div className="auth-error">{err}</div>}
+            </div>
+            <div className="modal-actions">
+              <button className="btn-primary" onClick={save} disabled={busy}>
+                {busy ? "저장 중…" : "저장"}
+              </button>
+              <button className="btn-ghost" onClick={onCancel}>취소</button>
+            </div>
+          </div>
+        </div>
+      );
     }
-  },
-    el("div",{className:"anim-up",
-      onClick:e=>e.stopPropagation(),
-      style:{
-        width:"100%",background:"var(--bg-1)",
-        borderRadius:"22px 22px 0 0",
-        padding:"20px 18px 32px",
-        maxHeight:"85vh",overflowY:"auto"
-      }
-    },
-      el("div",{style:{width:36,height:4,background:"var(--border-soft)",borderRadius:2,margin:"0 auto 18px"}}),
-      el("div",{style:{fontSize:20,fontWeight:800,marginBottom:18,color:"var(--text)"}},"📖 사용법"),
 
-      el(HelpItem, { title: "✏️ 처음 시작할 때", body: "가입 후 본인 듀티를 입력해야 다른 동기들도 볼 수 있어요.\n헤더 🔒 → 비번 입력 → '📝 한 줄 입력' 버튼 → DDEENNOO... 한 달치 한 번에." }),
-      el(HelpItem, { title: "🔒 보기 모드와 🔓 수정 모드", body: "평소엔 보기 모드(🔒). 다른 사람 듀티 보고, 약속 잡고.\n본인 듀티나 메모 추가하려면 🔒 탭 → 비번 입력으로 수정 모드(🔓) 진입.\n앱 닫으면 자동으로 다시 보기 모드로 돌아가요." }),
-      el(HelpItem, { title: "📅 친구 듀티 보기", body: "헤더 시점 카드(이름) 좌우로 슬라이드하거나, 카드 탭해서 사람 선택." }),
-      el(HelpItem, { title: "🍻 약속 잡기", body: "캘린더 셀 탭 → 그날 모두의 듀티 한눈에.\n캘린더 아래 '다음 오프(5/2)에 슬기, 지원도 같이 쉬네요' 한줄평도 참고.\n헤더 👥 버튼 → 동기 다중 선택 → 모두 OFF인 날 강조 표시." }),
-      el(HelpItem, { title: "📝 듀티 빠르게 수정", body: "수정 모드에서 셀 꾹 누르기 → D/E/N/O 빠른 변경 팝업.\n또는 셀 탭 → 모달 안에서 듀티 변경." }),
-      el(HelpItem, { title: "💬 메모", body: "'치맥 ㄱㄱ' 같은 약속 메모 작성 시 작성자 자동 표시.\n본인이 쓴 메모만 삭제 가능.\n메모에 반응 (👍🍻 등) 추가 가능." }),
-      el(HelpItem, { title: "🎨 커스텀 근무 코드", body: "간호사가 아니면 D/E/N/O로 표현 안 되겠죠.\n설정 → '커스텀 근무 코드'에서 한 글자 등록 (예: I = 8am-6pm)." }),
-      el(HelpItem, { title: "📞 연락처", body: "화면 맨 아래 '📇 연락처' 토글 → 전화번호 탭하면 바로 통화." }),
+    // ============================================================
+    // <WhitelistAdmin> — admin 사번 전용 (Phase 4 정식 UI 전 임시)
+    // ============================================================
+    function WhitelistAdmin({ onClose }) {
+      const [list, setList] = useState([]);
+      const [bulkText, setBulkText] = useState("");
+      const [err, setErr] = useState("");
+      const [busy, setBusy] = useState(false);
 
-      el("button",{onClick:onClose,
-        style:{
-          width:"100%",padding:"14px 0",borderRadius:12,
-          background:"var(--text)",color:"var(--bg-1)",
-          fontSize:14,fontWeight:700,marginTop:12
+      useEffect(() => {
+        const r = ref(db, "whitelist");
+        const unsub = onValue(r, snap => {
+          const val = snap.val() || {};
+          setList(Object.keys(val).sort());
+        });
+        return () => unsub();
+      }, []);
+
+      const addBulk = async () => {
+        setErr("");
+        const parts = bulkText.split(/[\s,;\n]+/).map(s => s.trim()).filter(Boolean);
+        const invalid = parts.filter(s => !/^\d{5,6}$/.test(s));
+        if (invalid.length) {
+          setErr(`잘못된 사번: ${invalid.join(", ")}`);
+          return;
         }
-      },"닫기")
-    )
-  );
-}
+        if (!parts.length) {
+          setErr("추가할 사번을 입력해 주세요.");
+          return;
+        }
+        setBusy(true);
+        try {
+          const updates = {};
+          parts.forEach(s => { updates[`whitelist/${s}`] = true; });
+          await update(ref(db), updates);
+          setBulkText("");
+        } catch (e) {
+          console.error(e);
+          setErr("저장 중 오류가 발생했어요.");
+        }
+        setBusy(false);
+      };
 
-function HelpItem({title,body}){
-  const [open,setOpen] = useState(false);
-  return el("div",{style:{
-    background:"var(--surface)",borderRadius:12,padding:"4px 0",marginBottom:8
-  }},
-    el("button",{onClick:()=>setOpen(!open),
-      style:{
-        width:"100%",padding:"12px 14px",
-        display:"flex",alignItems:"center",justifyContent:"space-between",
-        fontSize:14,fontWeight:700,color:"var(--text)",textAlign:"left"
-      }
-    },
-      el("span",null,title),
-      el("span",{style:{color:"var(--text-faint)",transition:"transform 0.2s",transform:open?"rotate(90deg)":"none"}},"›")
-    ),
-    open && el("div",{className:"anim-down",style:{
-      padding:"0 14px 14px",
-      fontSize:13,color:"var(--text-sub)",lineHeight:1.6,whiteSpace:"pre-wrap"
-    }}, body)
-  );
-}
+      const remove1 = async (sabun) => {
+        if (!confirm(`${sabun} 화이트리스트에서 제거할까요? (이미 가입한 계정은 그대로 유지됨)`)) return;
+        try {
+          await remove(ref(db, `whitelist/${sabun}`));
+        } catch (e) {
+          console.error(e);
+          alert("삭제 실패");
+        }
+      };
 
-// ───── 프로필 수정 ─────
-function ProfileEditor({me,meData,members,onClose}){
-  const [name,setName] = useState(meData.name||"");
-  const [phone,setPhone] = useState(meData.phone||"");
-  const [bMonth,setBMonth] = useState(String(meData.birthMonth||""));
-  const [bDay,setBDay] = useState(String(meData.birthDay||""));
-  const [color,setColor] = useState(meData.color);
-  const [pw,setPw] = useState("");
-  const [pw2,setPw2] = useState("");
-  const [err,setErr] = useState("");
-  const [saving,setSaving] = useState(false);
+      return (
+        <div className="modal-backdrop" onClick={onClose}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">화이트리스트</h2>
+              <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
+            </div>
 
-  const usedColors = new Set();
-  const usedNames = new Set();
-  Object.entries(members).forEach(([id,m])=>{
-    if(id!==me){
-      usedColors.add(m.color);
-      usedNames.add(m.name);
+            <div className="duty-help" style={{ marginBottom: 14 }}>
+              가입 가능한 사번 명단. 사번을 줄바꿈/콤마/공백으로 구분해 한꺼번에 추가할 수 있어요.
+              <br />본인(<code>{ADMIN_SABUN}</code>)은 자동으로 항상 가입 가능.
+            </div>
+
+            <div className="field" style={{ marginBottom: 8 }}>
+              <textarea
+                className="duty-textarea"
+                style={{ letterSpacing: 0, textTransform: "none" }}
+                value={bulkText}
+                onChange={e => setBulkText(e.target.value)}
+                placeholder="123456&#10;234567&#10;345678&#10;..."
+              />
+            </div>
+            {err && <div className="auth-error" style={{ marginBottom: 10 }}>{err}</div>}
+            <button className="btn-primary" onClick={addBulk} disabled={busy} style={{ marginBottom: 20 }}>
+              {busy ? "추가 중…" : "추가"}
+            </button>
+
+            <p className="menu-section-title">현재 명단 ({list.length}명)</p>
+            {list.length === 0 ? (
+              <p style={{ color: "var(--text-soft)", fontSize: 13, padding: "12px 0" }}>
+                아직 등록된 사번이 없어요.
+              </p>
+            ) : (
+              <div>
+                {list.map(s => (
+                  <div key={s} className="profile-row">
+                    <span className="profile-value" style={{ fontFamily: "ui-monospace, monospace" }}>{s}</span>
+                    <button
+                      className="icon-btn"
+                      onClick={() => remove1(s)}
+                      style={{ color: "var(--c-closed)" }}
+                      aria-label="삭제"
+                    >×</button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      );
     }
-  });
 
-  const handleSave = async()=>{
-    if(!name.trim()) return setErr("이름");
-    if(usedNames.has(name.trim())) return setErr("이미 있는 이름");
-    const m=parseInt(bMonth),d=parseInt(bDay);
-    if(!(m>=1&&m<=12)||!(d>=1&&d<=31)) return setErr("생일 확인");
-    const phoneDigits = phone.replace(/\D/g,"");
-    if(!/^\d{10,11}$/.test(phoneDigits)) return setErr("전화번호 10~11자리");
-    if(pw && pw.length!==4) return setErr("비번은 4자리");
-    if(pw && pw!==pw2) return setErr("비번 확인 불일치");
-    setErr(""); setSaving(true);
-    const updates = {
-      name:name.trim(),
-      birthMonth:m,birthDay:d,
-      phone:formatPhone(phoneDigits),
-      color
-    };
-    if(pw) updates.password = pw;
-    await update(ref(db,`${ROOT}/members/${me}`),updates);
-    setSaving(false);
-    onClose();
-  };
+    // ============================================================
+    // 마운트
+    // ============================================================
+    createRoot(document.getElementById("root")).render(<App />);
+  </script>
 
-  return el("div",{className:"anim-fade",
-    onClick:onClose,
-    style:{
-      position:"fixed",inset:0,background:"var(--modal-bg)",
-      zIndex:80,display:"flex",alignItems:"flex-end"
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(err => {
+          console.log("SW 등록 실패:", err);
+        });
+      });
     }
-  },
-    el("div",{className:"anim-up",
-      onClick:e=>e.stopPropagation(),
-      style:{
-        width:"100%",background:"var(--bg-1)",
-        borderRadius:"22px 22px 0 0",
-        padding:"20px 18px 28px",
-        maxHeight:"88vh",overflowY:"auto"
-      }
-    },
-      el("div",{style:{width:36,height:4,background:"var(--border-soft)",borderRadius:2,margin:"0 auto 14px"}}),
-      el("div",{style:{fontSize:18,fontWeight:800,marginBottom:16,color:"var(--text)"}},"개인정보 수정"),
-
-      el("div",{style:{display:"flex",flexDirection:"column",gap:12}},
-        field("이름", el("input",{
-          type:"text",value:name,onChange:e=>setName(e.target.value.slice(0,8)),
-          maxLength:8,style:inputStyle()
-        })),
-        field("생일 (양력)", el("div",{style:{display:"flex",gap:8,alignItems:"center"}},
-          el("input",{type:"tel",inputMode:"numeric",value:bMonth,onChange:e=>setBMonth(e.target.value.replace(/\D/g,"").slice(0,2)),placeholder:"월",style:{...inputStyle(),width:60,textAlign:"center"}}),
-          el("span",{style:{color:"var(--text-fainter)"}},"/"),
-          el("input",{type:"tel",inputMode:"numeric",value:bDay,onChange:e=>setBDay(e.target.value.replace(/\D/g,"").slice(0,2)),placeholder:"일",style:{...inputStyle(),width:60,textAlign:"center"}})
-        )),
-        field("전화번호", el("input",{
-          type:"tel",inputMode:"numeric",value:phone,
-          onChange:e=>setPhone(formatPhone(e.target.value.replace(/\D/g,"").slice(0,11))),
-          placeholder:"010-0000-0000",
-          style:{...inputStyle(),fontVariantNumeric:"tabular-nums"}
-        })),
-        field("색상", el("div",{style:{display:"grid",gridTemplateColumns:"repeat(8,1fr)",gap:8,paddingTop:4}},
-          MEMBER_COLORS.map(c=>{
-            const used = usedColors.has(c) && c!==color;
-            return el("button",{key:c,onClick:()=>!used&&setColor(c),
-              style:{
-                aspectRatio:"1",borderRadius:"50%",
-                background:used?"var(--surface-faint)":c,
-                border:color===c?"3px solid #2D2D3A":"3px solid transparent",
-                opacity:used?0.4:1,
-                cursor:used?"not-allowed":"pointer"
-              }
-            });
-          })
-        )),
-        field("비밀번호 변경 (선택)", el("div",{style:{display:"flex",gap:8}},
-          el("input",{type:"tel",inputMode:"numeric",maxLength:4,value:pw,onChange:e=>setPw(e.target.value.replace(/\D/g,"").slice(0,4)),placeholder:"새 비번",style:{...inputStyle(),flex:1,letterSpacing:"0.4em",textAlign:"center"}}),
-          el("input",{type:"tel",inputMode:"numeric",maxLength:4,value:pw2,onChange:e=>setPw2(e.target.value.replace(/\D/g,"").slice(0,4)),placeholder:"확인",style:{...inputStyle(),flex:1,letterSpacing:"0.4em",textAlign:"center"}})
-        ))
-      ),
-      err && el("div",{style:{fontSize:13,color:MEMO_COLOR,textAlign:"center",marginTop:10}},err),
-      el("div",{style:{display:"flex",gap:8,marginTop:18}},
-        el("button",{onClick:onClose,
-          style:{flex:1,padding:"14px 0",borderRadius:12,background:"var(--surface)",border:"1px solid #EFE6D5",color:"var(--text-sub)",fontSize:14,fontWeight:600}
-        },"취소"),
-        el("button",{onClick:handleSave,disabled:saving,
-          style:{flex:2,padding:"14px 0",borderRadius:12,background:"var(--text)",color:"var(--surface)",fontSize:14,fontWeight:700,opacity:saving?0.5:1}
-        },saving?"저장 중...":"저장")
-      )
-    )
-  );
-}
-
-// ───── 계정 삭제 ─────
-function DeleteAccount({me,meData,onClose,onDeleted}){
-  const [pw,setPw] = useState("");
-  const [confirmText,setConfirmText] = useState("");
-  const [err,setErr] = useState("");
-  const [deleting,setDeleting] = useState(false);
-
-  const handleDelete = async()=>{
-    if(meData.password!==pw) return setErr("비번 틀림");
-    if(confirmText!=="삭제") return setErr("'삭제' 두 글자를 정확히 입력");
-    setErr(""); setDeleting(true);
-    // 멤버 정보, 듀티 데이터 모두 삭제 (메모는 다른 사람도 본 거라 본인이 작성한 것만 정리는 복잡 → 보존)
-    await remove(ref(db,`${ROOT}/members/${me}`));
-    await remove(ref(db,`${ROOT}/schedules/${me}`));
-    setDeleting(false);
-    onDeleted();
-  };
-
-  return el("div",{className:"anim-fade",
-    onClick:onClose,
-    style:{
-      position:"fixed",inset:0,background:"var(--modal-bg)",
-      zIndex:80,display:"flex",alignItems:"flex-end"
-    }
-  },
-    el("div",{className:"anim-up",
-      onClick:e=>e.stopPropagation(),
-      style:{
-        width:"100%",background:"var(--bg-1)",
-        borderRadius:"22px 22px 0 0",
-        padding:"22px 20px 28px"
-      }
-    },
-      el("div",{style:{width:36,height:4,background:"var(--border-soft)",borderRadius:2,margin:"0 auto 14px"}}),
-      el("div",{style:{fontSize:18,fontWeight:800,marginBottom:8,color:MEMO_COLOR}},"⚠ 계정 삭제"),
-      el("div",{style:{fontSize:13,color:"#5C5040",lineHeight:1.6,marginBottom:18}},
-        `${meData.name}의 계정과 입력한 모든 듀티 데이터가 영구 삭제돼. 작성한 메모는 그룹 기록으로 남아. 되돌릴 수 없어.`
-      ),
-      el("div",{style:{display:"flex",flexDirection:"column",gap:12}},
-        field("비밀번호", el("input",{
-          type:"tel",inputMode:"numeric",maxLength:4,value:pw,
-          onChange:e=>setPw(e.target.value.replace(/\D/g,"").slice(0,4)),
-          placeholder:"••••",
-          style:{...inputStyle(),letterSpacing:"0.4em",textAlign:"center",fontSize:18,fontWeight:700}
-        })),
-        field("확인을 위해 '삭제'를 입력", el("input",{
-          type:"text",value:confirmText,
-          onChange:e=>setConfirmText(e.target.value),
-          placeholder:"삭제",
-          style:inputStyle()
-        }))
-      ),
-      err && el("div",{style:{fontSize:13,color:MEMO_COLOR,textAlign:"center",marginTop:10}},err),
-      el("div",{style:{display:"flex",gap:8,marginTop:18}},
-        el("button",{onClick:onClose,
-          style:{flex:1,padding:"14px 0",borderRadius:12,background:"var(--surface)",border:"1px solid #EFE6D5",color:"var(--text-sub)",fontSize:14,fontWeight:600}
-        },"취소"),
-        el("button",{onClick:handleDelete,disabled:deleting,
-          style:{flex:1,padding:"14px 0",borderRadius:12,background:MEMO_COLOR,color:"var(--surface)",fontSize:14,fontWeight:700,opacity:deleting?0.5:1}
-        },deleting?"삭제 중...":"영구 삭제")
-      )
-    )
-  );
-}
-
-// ───── 마운트 ─────
-ReactDOM.createRoot(document.getElementById("app")).render(el(App));
-</script>
+  </script>
 </body>
 </html>
