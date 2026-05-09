@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -62,412 +63,274 @@
     }
 
     /* ====== auth ====== */
-    .auth-wrap {
-      padding: 64px 24px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    .auth-title {
-      font-size: 26px;
-      font-weight: 600;
-      letter-spacing: -0.5px;
-      margin: 0 0 4px;
-    }
-    .auth-sub {
-      color: var(--text-mute);
-      font-size: 14px;
-      margin: 0 0 20px;
-    }
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .field label {
-      font-size: 13px;
-      color: var(--text-mute);
-      font-weight: 500;
-    }
+    .auth-wrap { padding: 64px 24px 24px; display: flex; flex-direction: column; gap: 20px; }
+    .auth-title { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; margin: 0 0 4px; }
+    .auth-sub { color: var(--text-mute); font-size: 14px; margin: 0 0 20px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 13px; color: var(--text-mute); font-weight: 500; }
     .field input, .field select {
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: var(--surface);
-      outline: none;
-      transition: border-color 0.15s;
+      padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px;
+      background: var(--surface); outline: none; transition: border-color 0.15s;
     }
-    .field input:focus, .field select:focus {
-      border-color: var(--accent);
-    }
+    .field input:focus, .field select:focus { border-color: var(--accent); }
     .btn-primary {
-      padding: 14px;
-      border: none;
-      border-radius: 10px;
-      background: var(--text);
-      color: var(--bg);
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: -0.2px;
+      padding: 14px; border: none; border-radius: 10px;
+      background: var(--text); color: var(--bg); font-size: 15px; font-weight: 600; letter-spacing: -0.2px;
     }
     .btn-primary:active { opacity: 0.8; }
     .btn-primary:disabled { opacity: 0.4; }
     .btn-ghost {
-      padding: 12px;
-      border: none;
-      background: transparent;
-      color: var(--text-mute);
-      font-size: 14px;
-      text-decoration: underline;
-      text-underline-offset: 3px;
+      padding: 12px; border: none; background: transparent;
+      color: var(--text-mute); font-size: 14px;
+      text-decoration: underline; text-underline-offset: 3px;
     }
     .auth-error {
-      padding: 10px 14px;
-      background: #FCEBEB;
-      color: #791F1F;
-      border-radius: 8px;
-      font-size: 13px;
+      padding: 10px 14px; background: #FCEBEB; color: #791F1F;
+      border-radius: 8px; font-size: 13px;
     }
 
     /* ====== top bar ====== */
     .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 18px;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg);
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; border-bottom: 1px solid var(--border);
+      background: var(--bg); position: sticky; top: 0; z-index: 10;
     }
     .top-bar-title {
-      font-size: 17px;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      font-size: 17px; font-weight: 600; letter-spacing: -0.3px;
+      display: flex; align-items: center; gap: 10px;
     }
-    .top-bar-actions {
-      display: flex;
-      gap: 8px;
-    }
+    .top-bar-actions { display: flex; gap: 8px; }
     .icon-btn {
-      width: 36px;
-      height: 36px;
-      border: none;
-      border-radius: 50%;
-      background: transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      color: var(--text);
+      width: 36px; height: 36px; border: none; border-radius: 50%;
+      background: transparent; display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: var(--text);
     }
     .icon-btn:active { background: var(--surface-alt); }
 
-    .month-nav {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+    .month-nav { display: flex; align-items: center; gap: 6px; }
     .month-nav button {
-      width: 28px;
-      height: 28px;
-      border: none;
-      border-radius: 50%;
-      background: transparent;
-      color: var(--text-mute);
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 28px; height: 28px; border: none; border-radius: 50%;
+      background: transparent; color: var(--text-mute); font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
     }
     .month-nav button:active { background: var(--surface-alt); }
 
     /* ====== calendar ====== */
-    .cal-wrap {
-      padding: 6px 8px 24px;
-    }
-    .cal-weekdays {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      padding: 8px 4px 4px;
-    }
+    .cal-wrap { padding: 6px 8px 24px; }
+    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); padding: 8px 4px 4px; }
     .cal-weekdays div {
-      text-align: center;
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text-soft);
-      letter-spacing: 0.4px;
+      text-align: center; font-size: 11px; font-weight: 500;
+      color: var(--text-soft); letter-spacing: 0.4px;
     }
-    .cal-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 2px;
-    }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
     .cal-cell {
-      aspect-ratio: 1 / 1.15;
-      border-radius: 8px;
-      padding: 4px 4px 3px;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      background: transparent;
-      transition: background 0.1s;
-      position: relative;
+      aspect-ratio: 1 / 1.15; min-height: 56px;
+      border-radius: 8px; padding: 4px 4px 3px;
+      display: flex; flex-direction: column; align-items: stretch;
+      background: transparent; transition: background 0.1s; position: relative;
+      border: none; outline: none; font: inherit; color: inherit;
+      text-align: inherit; cursor: pointer; appearance: none; -webkit-appearance: none;
     }
-    .cal-cell.today {
-      background: var(--surface);
-      box-shadow: inset 0 0 0 1.5px var(--accent);
-    }
-    .cal-cell:active {
-      background: var(--surface-alt);
-    }
-    .cal-cell.empty {
-      visibility: hidden;
-    }
-    .cal-date {
-      font-size: 13px;
-      font-weight: 500;
-      text-align: center;
-      letter-spacing: -0.2px;
-    }
-    .cal-date.full    { color: var(--c-full); }
+    .cal-cell.today { background: var(--surface); box-shadow: inset 0 0 0 1.5px var(--accent); }
+    .cal-cell:active { background: var(--surface-alt); }
+    .cal-cell.empty { visibility: hidden; pointer-events: none; }
+    .cal-date { font-size: 13px; font-weight: 500; text-align: center; letter-spacing: -0.2px; }
+    .cal-date.full { color: var(--c-full); }
     .cal-date.morning { color: var(--c-morning); }
-    .cal-date.closed  { color: var(--c-closed); }
+    .cal-date.closed { color: var(--c-closed); }
     .holiday-dot {
-      position: absolute;
-      top: 4px;
-      right: 6px;
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: var(--c-closed);
-      opacity: 0.7;
+      position: absolute; top: 4px; right: 6px;
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--c-closed); opacity: 0.7;
     }
     .duty-stack {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding-top: 2px;
+      flex: 1; display: flex; align-items: center; justify-content: center; padding-top: 2px;
     }
     .duty-pill {
-      font-size: 13px;
-      font-weight: 600;
-      padding: 4px 0;
-      width: 100%;
-      text-align: center;
-      border-radius: 6px;
-      letter-spacing: 0.5px;
+      font-size: 13px; font-weight: 600; padding: 4px 0; width: 100%;
+      text-align: center; border-radius: 6px; letter-spacing: 0.5px;
     }
 
     /* ====== modal ====== */
     .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.4);
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      z-index: 100;
-      animation: fadeIn 0.15s ease;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+      display: flex; align-items: flex-end; justify-content: center;
+      z-index: 100; animation: fadeIn 0.15s ease;
     }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     .modal {
-      background: var(--bg);
-      border-radius: 18px 18px 0 0;
-      width: 100%;
-      max-width: 480px;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 18px 22px 32px;
-      animation: slideUp 0.2s ease;
+      background: var(--bg); border-radius: 18px 18px 0 0;
+      width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto;
+      padding: 18px 22px 32px; animation: slideUp 0.2s ease;
       padding-bottom: calc(32px + env(safe-area-inset-bottom));
     }
     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
     }
-    .modal-title {
-      font-size: 17px;
-      font-weight: 600;
-      margin: 0;
-    }
+    .modal-title { font-size: 17px; font-weight: 600; margin: 0; }
     .modal-close {
-      width: 32px;
-      height: 32px;
-      border: none;
-      background: transparent;
-      font-size: 20px;
-      color: var(--text-mute);
+      width: 32px; height: 32px; border: none; background: transparent;
+      font-size: 20px; color: var(--text-mute);
     }
-    .modal-fields {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-    .modal-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    .modal-fields { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+    .modal-actions { display: flex; flex-direction: column; gap: 8px; }
 
     /* ====== duty input modal ====== */
     .duty-help {
-      background: var(--surface-alt);
-      border-radius: 10px;
-      padding: 12px 14px;
-      font-size: 12px;
-      color: var(--text-mute);
-      line-height: 1.6;
+      background: var(--surface-alt); border-radius: 10px;
+      padding: 12px 14px; font-size: 12px; color: var(--text-mute); line-height: 1.6;
     }
     .duty-help code {
-      background: var(--surface);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: ui-monospace, SFMono-Regular, monospace;
-      font-size: 11px;
-      color: var(--text);
+      background: var(--surface); padding: 2px 6px; border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, monospace; font-size: 11px; color: var(--text);
     }
     .duty-textarea {
-      width: 100%;
-      min-height: 100px;
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: var(--surface);
-      font-family: ui-monospace, SFMono-Regular, monospace;
-      font-size: 16px;
-      letter-spacing: 2px;
-      line-height: 1.6;
-      outline: none;
-      resize: vertical;
-      text-transform: uppercase;
+      width: 100%; min-height: 100px;
+      padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px;
+      background: var(--surface); font-family: ui-monospace, SFMono-Regular, monospace;
+      font-size: 16px; letter-spacing: 2px; line-height: 1.6;
+      outline: none; resize: vertical; text-transform: uppercase;
     }
     .duty-textarea:focus { border-color: var(--accent); }
-    .day-counter {
-      font-size: 12px;
-      color: var(--text-mute);
-      text-align: right;
-    }
+    .day-counter { font-size: 12px; color: var(--text-mute); text-align: right; }
 
     /* ====== profile ====== */
     .profile-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 0; border-bottom: 1px solid var(--border);
     }
     .profile-row:last-child { border-bottom: none; }
-    .profile-label {
-      color: var(--text-mute);
-      font-size: 14px;
-    }
-    .profile-value {
-      font-weight: 500;
-    }
+    .profile-label { color: var(--text-mute); font-size: 14px; }
+    .profile-value { font-weight: 500; }
     .team-badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 3px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .seg {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-      padding: 4px;
-      background: var(--surface-alt);
-      border-radius: 10px;
-    }
-    .seg button {
-      padding: 10px 6px;
-      border: none;
-      background: transparent;
-      border-radius: 7px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-mute);
-      transition: all 0.1s;
-    }
-    .seg button.active {
-      background: var(--surface);
-      color: var(--text);
-      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
-    }
-    .seg.team-seg {
-      grid-template-columns: repeat(4, 1fr);
+      display: inline-flex; align-items: center; padding: 3px 10px;
+      border-radius: 999px; font-size: 12px; font-weight: 600;
     }
 
     /* ====== loading & empty ====== */
-    .center-msg {
-      padding: 80px 24px;
-      text-align: center;
-      color: var(--text-mute);
-      font-size: 14px;
-    }
+    .center-msg { padding: 80px 24px; text-align: center; color: var(--text-mute); font-size: 14px; }
 
     /* ====== fab ====== */
     .fab {
-      position: fixed;
-      bottom: calc(20px + env(safe-area-inset-bottom));
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 13px 22px;
-      background: var(--text);
-      color: var(--bg);
-      border: none;
-      border-radius: 999px;
-      font-size: 14px;
-      font-weight: 600;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
-      z-index: 50;
+      position: fixed; bottom: calc(20px + env(safe-area-inset-bottom));
+      left: 50%; transform: translateX(-50%);
+      padding: 13px 22px; background: var(--text); color: var(--bg);
+      border: none; border-radius: 999px; font-size: 14px; font-weight: 600;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18); z-index: 50;
     }
     .fab:active { transform: translateX(-50%) scale(0.96); }
 
     /* ====== profile menu ====== */
     .menu-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 0;
-      border-bottom: 1px solid var(--border);
-      background: transparent;
-      border-left: none;
-      border-right: none;
-      border-top: none;
-      width: 100%;
-      text-align: left;
-      font-size: 15px;
-      color: var(--text);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 0; border-bottom: 1px solid var(--border); background: transparent;
+      border-left: none; border-right: none; border-top: none;
+      width: 100%; text-align: left; font-size: 15px; color: var(--text);
     }
     .menu-item:active { color: var(--text-mute); }
     .menu-item.danger { color: var(--c-closed); }
     .menu-section-title {
-      font-size: 12px;
-      color: var(--text-soft);
-      letter-spacing: 0.4px;
-      margin: 18px 0 4px;
-      font-weight: 500;
+      font-size: 12px; color: var(--text-soft); letter-spacing: 0.4px;
+      margin: 18px 0 4px; font-weight: 500;
+    }
+
+    /* ====== day detail modal ====== */
+    .day-modal-date {
+      font-size: 22px; font-weight: 600; letter-spacing: -0.4px;
+      margin: 0 0 2px;
+    }
+    .day-modal-date .weekday {
+      font-size: 16px; font-weight: 500; color: var(--text-mute); margin-left: 6px;
+    }
+    .day-modal-date.morning .day-num { color: var(--c-morning); }
+    .day-modal-date.closed .day-num { color: var(--c-closed); }
+    .day-clinic-tag {
+      font-size: 12px; color: var(--text-mute); margin-bottom: 16px;
+    }
+    .day-section {
+      padding: 16px 0; border-top: 1px solid var(--border);
+    }
+    .day-section:first-of-type { border-top: none; padding-top: 8px; }
+    .day-section-title {
+      font-size: 12px; color: var(--text-soft); letter-spacing: 0.5px;
+      font-weight: 500; margin: 0 0 12px; text-transform: uppercase;
+    }
+    .my-shift-card {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; background: var(--surface); border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .my-shift-card .shift-letter {
+      font-size: 24px; font-weight: 700; letter-spacing: 1px;
+    }
+    .my-shift-card .shift-meta {
+      font-size: 13px; color: var(--text-mute); text-align: right;
+    }
+    .my-shift-card .shift-meta .meta-team {
+      display: inline-block; margin-left: 6px;
+      padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600;
+    }
+
+    .handover-row {
+      display: flex; gap: 10px; align-items: flex-start;
+      padding: 8px 0;
+    }
+    .handover-arrow {
+      flex-shrink: 0; width: 22px; text-align: center;
+      color: var(--text-soft); font-size: 16px; line-height: 1.5;
+    }
+    .handover-info { flex: 1; min-width: 0; }
+    .handover-meta {
+      font-size: 11px; color: var(--text-soft); letter-spacing: 0.4px;
+      margin-bottom: 4px;
+    }
+    .handover-people {
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .handover-empty {
+      font-size: 13px; color: var(--text-soft); font-style: italic;
+    }
+
+    .person-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 999px;
+      font-size: 13px; font-weight: 500;
+      border: 1px solid transparent;
+    }
+    .person-chip.me {
+      box-shadow: inset 0 0 0 1.5px var(--text);
+      font-weight: 600;
+    }
+    .person-chip .role-tag {
+      font-size: 10px; opacity: 0.7; font-weight: 600; letter-spacing: 0.3px;
+    }
+
+    .lineup-team {
+      display: flex; gap: 10px; padding: 10px 0;
+      border-top: 1px solid var(--border);
+    }
+    .lineup-team:first-child { border-top: none; padding-top: 4px; }
+    .lineup-team-label {
+      flex-shrink: 0; width: 56px;
+      display: flex; align-items: flex-start;
+    }
+    .lineup-team-label .team-badge {
+      font-size: 11px; padding: 2px 8px;
+    }
+    .lineup-people {
+      flex: 1; display: flex; flex-wrap: wrap; gap: 6px; min-width: 0;
     }
   </style>
+
 </head>
 <body>
   <div id="root"></div>
 
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <script type="text/babel" data-type="module" data-presets="react">
@@ -476,9 +339,6 @@
       getDatabase, ref, set, get, onValue, update, remove, child
     } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-    // ============================================================
-    // Firebase 설정
-    // ============================================================
     const firebaseConfig = {
       apiKey: "AIzaSyDPdMQPm3CRpEWaRpg45FD5KYThZTkH9_E",
       authDomain: "duty-db3c7.firebaseapp.com",
@@ -501,6 +361,7 @@
       D: "Day", E: "Evening", N: "Night", O: "Off",
       T: "Top", M: "Mid", V: "반차"
     };
+    const HANDOVER_SHIFTS = ["D", "E", "N"];
 
     function teamColor(team) {
       if (team === "main") return { bg: "var(--t-main-bg)", text: "var(--t-main-text)", edge: "var(--t-main-edge)" };
@@ -512,84 +373,48 @@
     }
 
     // ============================================================
-    // 공휴일 (2026-2030 한국 공휴일, 음력 환산 포함)
-    // ※ 임시공휴일/대체공휴일 일부는 누락 가능. 설정에서 수동 추가/수정 가능.
+    // 공휴일 (2026-2027)
     // ============================================================
     const HOLIDAYS = {
-      // 2026
       "2026-01-01": "신정",
-      "2026-02-16": "설날",
-      "2026-02-17": "설날",
-      "2026-02-18": "설날",
-      "2026-03-01": "삼일절",
-      "2026-03-02": "삼일절 대체",
+      "2026-02-16": "설날", "2026-02-17": "설날", "2026-02-18": "설날",
+      "2026-03-01": "삼일절", "2026-03-02": "삼일절 대체",
       "2026-05-05": "어린이날",
-      "2026-05-24": "부처님오신날",
-      "2026-05-25": "부처님오신날 대체",
+      "2026-05-24": "부처님오신날", "2026-05-25": "부처님오신날 대체",
       "2026-06-06": "현충일",
-      "2026-08-15": "광복절",
-      "2026-08-17": "광복절 대체",
-      "2026-09-24": "추석",
-      "2026-09-25": "추석",
-      "2026-09-26": "추석",
-      "2026-09-28": "추석 대체",
-      "2026-10-03": "개천절",
-      "2026-10-05": "개천절 대체",
+      "2026-08-15": "광복절", "2026-08-17": "광복절 대체",
+      "2026-09-24": "추석", "2026-09-25": "추석", "2026-09-26": "추석", "2026-09-28": "추석 대체",
+      "2026-10-03": "개천절", "2026-10-05": "개천절 대체",
       "2026-10-09": "한글날",
       "2026-12-25": "성탄절",
-      // 2027
       "2027-01-01": "신정",
-      "2027-02-06": "설날",
-      "2027-02-07": "설날",
-      "2027-02-08": "설날",
-      "2027-02-09": "설날 대체",
+      "2027-02-06": "설날", "2027-02-07": "설날", "2027-02-08": "설날", "2027-02-09": "설날 대체",
       "2027-03-01": "삼일절",
       "2027-05-05": "어린이날",
       "2027-05-13": "부처님오신날",
-      "2027-06-07": "현충일 대체",
-      "2027-06-06": "현충일",
-      "2027-08-15": "광복절",
-      "2027-08-16": "광복절 대체",
-      "2027-09-14": "추석",
-      "2027-09-15": "추석",
-      "2027-09-16": "추석",
-      "2027-10-03": "개천절",
-      "2027-10-04": "개천절 대체",
-      "2027-10-09": "한글날",
-      "2027-10-11": "한글날 대체",
+      "2027-06-06": "현충일", "2027-06-07": "현충일 대체",
+      "2027-08-15": "광복절", "2027-08-16": "광복절 대체",
+      "2027-09-14": "추석", "2027-09-15": "추석", "2027-09-16": "추석",
+      "2027-10-03": "개천절", "2027-10-04": "개천절 대체",
+      "2027-10-09": "한글날", "2027-10-11": "한글날 대체",
       "2027-12-25": "성탄절",
     };
 
-    // ============================================================
-    // 진료시간 추론
-    // 우선순위: clinicHours override > holiday(closed) > 요일 기본값
-    // 결과: "full" | "morning" | "closed"
-    // ============================================================
     function getClinicStatus(dateISO, dayOfWeek, overrides) {
       if (overrides && overrides[dateISO]) return overrides[dateISO];
       if (HOLIDAYS[dateISO]) return "closed";
-      if (dayOfWeek === 0) return "closed";   // 일
-      if (dayOfWeek === 6) return "morning";  // 토
-      return "full";                            // 월~금
+      if (dayOfWeek === 0) return "closed";
+      if (dayOfWeek === 6) return "morning";
+      return "full";
     }
 
-    // ============================================================
-    // 해시 (SHA-256, salt = 사번)
-    // ============================================================
     async function hashPassword(sabun, password) {
       const data = new TextEncoder().encode(sabun + ":" + password);
       const buf = await crypto.subtle.digest("SHA-256", data);
       return Array.from(new Uint8Array(buf))
-        .map(b => b.toString(16).padStart(2, "0"))
-        .join("");
+        .map(b => b.toString(16).padStart(2, "0")).join("");
     }
 
-    // ============================================================
-    // 듀티 입력 파서
-    // 입력: "DENNOOD T M V O" (공백/줄바꿈 무시, 대소문자 무시)
-    // 출력: ["D","E","N","N","O","O","D","T","M","V","O"]
-    // 잘못된 문자가 있으면 throw
-    // ============================================================
     function parseDutyString(raw) {
       const cleaned = raw.toUpperCase().replace(/\s+/g, "");
       const valid = new Set(SHIFT_CODES);
@@ -604,10 +429,6 @@
       return result;
     }
 
-    // ============================================================
-    // 입사일 자동 포맷팅 (입력 중 호출)
-    // "20230515" → "2023.05.15."
-    // ============================================================
     function formatHireDateInput(value) {
       const digits = value.replace(/\D/g, "").slice(0, 8);
       let out = digits;
@@ -633,41 +454,101 @@
       return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
     }
 
-    // ============================================================
-    // 날짜 유틸
-    // ============================================================
     const WEEKDAYS_KR = ["일", "월", "화", "수", "목", "금", "토"];
     function getMonthInfo(year, month) {
-      // month: 1-12
       const first = new Date(year, month - 1, 1);
       const last = new Date(year, month, 0);
-      const daysInMonth = last.getDate();
-      const startWeekday = first.getDay(); // 0=Sun
-      return { first, last, daysInMonth, startWeekday };
+      return {
+        first, last,
+        daysInMonth: last.getDate(),
+        startWeekday: first.getDay(),
+      };
     }
     function isoDate(year, month, day) {
       return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     }
     function todayInfo() {
       const now = new Date();
-      return {
-        year: now.getFullYear(),
-        month: now.getMonth() + 1,
-        day: now.getDate(),
+      return { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
+    }
+    function getMonthKey(year, month) {
+      return `${year}-${String(month).padStart(2, "0")}`;
+    }
+    function adjacentMonthKey(year, month, offset) {
+      const d = new Date(year, month - 1 + offset, 1);
+      return getMonthKey(d.getFullYear(), d.getMonth() + 1);
+    }
+    function shiftDate(year, month, day, offset) {
+      const d = new Date(year, month - 1, day + offset);
+      return { year: d.getFullYear(), month: d.getMonth() + 1, day: d.getDate() };
+    }
+    function getWeekday(year, month, day) {
+      return new Date(year, month - 1, day).getDay();
+    }
+
+    function normalizeDuty(v) {
+      if (!v) return null;
+      if (typeof v === "string") return { shift: v };
+      return v;
+    }
+    function getDutyAt(allDuties, monthKey, sabun, day) {
+      const m = allDuties?.[monthKey];
+      if (!m || !m[sabun]) return null;
+      const dKey = String(day).padStart(2, "0");
+      return normalizeDuty(m[sabun][dKey]);
+    }
+    function getEffectiveTeam(duty, fallbackTeam) {
+      if (!duty) return fallbackTeam;
+      if (duty.helper && duty.helper.team) return duty.helper.team;
+      return duty.team || fallbackTeam;
+    }
+    function getPeopleByShift(allDuties, allUsers, monthKey, day, targetShift) {
+      const m = allDuties?.[monthKey];
+      if (!m) return [];
+      const result = [];
+      for (const sabun of Object.keys(m)) {
+        const duty = getDutyAt(allDuties, monthKey, sabun, day);
+        if (!duty) continue;
+        if (duty.shift === targetShift) result.push(sabun);
+      }
+      return result;
+    }
+    function groupByEffectiveTeam(sabuns, allUsers, allDuties, monthKey, day) {
+      const groups = {};
+      for (const t of TEAMS) groups[t] = [];
+      for (const sabun of sabuns) {
+        const user = allUsers[sabun];
+        if (!user) continue;
+        const duty = getDutyAt(allDuties, monthKey, sabun, day);
+        const team = getEffectiveTeam(duty, user.team);
+        if (groups[team]) groups[team].push(sabun);
+      }
+      return groups;
+    }
+
+    function getHandoverConfig(myShift) {
+      if (myShift === "D") return {
+        prev: { offset: -1, shift: "N", labelTime: "어제 N" },
+        next: { offset: 0, shift: "E", labelTime: "오늘 E" },
       };
+      if (myShift === "E") return {
+        prev: { offset: 0, shift: "D", labelTime: "오늘 D" },
+        next: { offset: 0, shift: "N", labelTime: "오늘 N" },
+      };
+      if (myShift === "N") return {
+        prev: { offset: 0, shift: "E", labelTime: "오늘 E" },
+        next: { offset: 1, shift: "D", labelTime: "내일 D" },
+      };
+      return null;
     }
 
     const { useState, useEffect, useMemo, useRef } = React;
     const { createRoot } = ReactDOM;
 
-    // ============================================================
-    // <App> 루트
-    // ============================================================
     function App() {
-      const [me, setMe] = useState(null); // { sabun, ... }
+      const [me, setMe] = useState(null);
       const [bootDone, setBootDone] = useState(false);
 
-      // 자동 로그인: localStorage 세션
       useEffect(() => {
         (async () => {
           const saved = localStorage.getItem("61w-session");
@@ -675,11 +556,8 @@
           try {
             const { sabun } = JSON.parse(saved);
             const snap = await get(ref(db, `users/${sabun}`));
-            if (snap.exists()) {
-              setMe({ sabun, ...snap.val() });
-            } else {
-              localStorage.removeItem("61w-session");
-            }
+            if (snap.exists()) setMe({ sabun, ...snap.val() });
+            else localStorage.removeItem("61w-session");
           } catch (e) {
             console.error(e);
             localStorage.removeItem("61w-session");
@@ -692,30 +570,21 @@
         localStorage.setItem("61w-session", JSON.stringify({ sabun }));
         setMe({ sabun, ...userData });
       };
-
       const handleLogout = () => {
         localStorage.removeItem("61w-session");
         setMe(null);
       };
-
       const handleProfileUpdate = (newData) => {
         setMe(prev => ({ ...prev, ...newData }));
       };
 
-      if (!bootDone) {
-        return <div className="center-msg">불러오는 중…</div>;
-      }
-      if (!me) {
-        return <AuthScreen onLogin={handleLogin} />;
-      }
+      if (!bootDone) return <div className="center-msg">불러오는 중…</div>;
+      if (!me) return <AuthScreen onLogin={handleLogin} />;
       return <CalendarScreen me={me} onLogout={handleLogout} onProfileUpdate={handleProfileUpdate} />;
     }
 
-    // ============================================================
-    // <AuthScreen>
-    // ============================================================
     function AuthScreen({ onLogin }) {
-      const [mode, setMode] = useState("login"); // "login" | "signup"
+      const [mode, setMode] = useState("login");
       return mode === "login"
         ? <LoginForm onLogin={onLogin} switchToSignup={() => setMode("signup")} />
         : <SignupForm onLogin={onLogin} switchToLogin={() => setMode("login")} />;
@@ -730,33 +599,25 @@
       const submit = async (e) => {
         e.preventDefault();
         setErr("");
-        if (!/^\d{5,6}$/.test(sabun)) {
-          setErr("사번은 5~6자리 숫자여야 해요.");
-          return;
-        }
-        if (!password) {
-          setErr("비밀번호를 입력해 주세요.");
-          return;
-        }
+        if (!/^\d{5,6}$/.test(sabun)) return setErr("사번은 5~6자리 숫자여야 해요.");
+        if (!password) return setErr("비밀번호를 입력해 주세요.");
         setBusy(true);
         try {
           const snap = await get(ref(db, `users/${sabun}`));
           if (!snap.exists()) {
             setErr("등록되지 않은 사번이에요. 회원가입을 먼저 해주세요.");
-            setBusy(false);
-            return;
+            setBusy(false); return;
           }
           const user = snap.val();
           const inputHash = await hashPassword(sabun, password);
           if (inputHash !== user.loginHash) {
             setErr("비밀번호가 일치하지 않아요.");
-            setBusy(false);
-            return;
+            setBusy(false); return;
           }
           onLogin(sabun, user);
         } catch (e) {
           console.error(e);
-          setErr("로그인 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.");
+          setErr("로그인 중 오류가 발생했어요.");
           setBusy(false);
         }
       };
@@ -770,23 +631,14 @@
           <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <div className="field">
               <label>사번</label>
-              <input
-                type="tel"
-                inputMode="numeric"
-                value={sabun}
+              <input type="tel" inputMode="numeric" value={sabun}
                 onChange={e => setSabun(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                placeholder="224051"
-                autoComplete="username"
-              />
+                placeholder="224051" autoComplete="username" />
             </div>
             <div className="field">
               <label>비밀번호</label>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                autoComplete="current-password"
-              />
+              <input type="password" value={password}
+                onChange={e => setPassword(e.target.value)} autoComplete="current-password" />
             </div>
             {err && <div className="auth-error">{err}</div>}
             <button type="submit" className="btn-primary" disabled={busy}>
@@ -820,41 +672,33 @@
         const hireISO = hireDateToISO(hireDate);
         if (!hireISO) return setErr("입사일은 8자리 숫자(YYYYMMDD)로 입력해 주세요.");
         if (password.length < 4) return setErr("비밀번호는 4자 이상이어야 해요.");
-        if (password !== password2) return setErr("비밀번호가 서로 일치하지 않아요.");
+        if (password !== password2) return setErr("비밀번호가 일치하지 않아요.");
 
         setBusy(true);
         try {
-          // 1) 이미 존재하는지 확인
           const existSnap = await get(ref(db, `users/${sabun}`));
           if (existSnap.exists()) {
             setErr("이미 등록된 사번이에요. 로그인 화면으로 가주세요.");
-            setBusy(false);
-            return;
+            setBusy(false); return;
           }
-          // 2) 화이트리스트 확인 (admin 사번은 패스)
           if (sabun !== ADMIN_SABUN) {
             const wlSnap = await get(ref(db, `whitelist/${sabun}`));
             if (!wlSnap.exists()) {
               setErr("등록 권한이 없는 사번이에요. 관리자에게 문의해 주세요.");
-              setBusy(false);
-              return;
+              setBusy(false); return;
             }
           }
-          // 3) 저장
           const loginHash = await hashPassword(sabun, password);
           const userData = {
-            name: name.trim(),
-            team,
-            hireDate: hireISO,
+            name: name.trim(), team, hireDate: hireISO,
             phone: phone.replace(/\D/g, ""),
-            loginHash,
-            createdAt: Date.now(),
+            loginHash, createdAt: Date.now(),
           };
           await set(ref(db, `users/${sabun}`), userData);
           onLogin(sabun, userData);
         } catch (e) {
           console.error(e);
-          setErr("회원가입 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.");
+          setErr("회원가입 중 오류가 발생했어요.");
           setBusy(false);
         }
       };
@@ -868,13 +712,9 @@
           <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <div className="field">
               <label>사번</label>
-              <input
-                type="tel"
-                inputMode="numeric"
-                value={sabun}
+              <input type="tel" inputMode="numeric" value={sabun}
                 onChange={e => setSabun(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                placeholder="5~6자리 숫자"
-              />
+                placeholder="5~6자리 숫자" />
             </div>
             <div className="field">
               <label>이름</label>
@@ -888,31 +728,25 @@
             </div>
             <div className="field">
               <label>입사일 (YYYYMMDD)</label>
-              <input
-                type="tel"
-                inputMode="numeric"
-                value={hireDate}
+              <input type="tel" inputMode="numeric" value={hireDate}
                 onChange={e => setHireDate(formatHireDateInput(e.target.value))}
-                placeholder="20230515"
-              />
+                placeholder="20230515" />
             </div>
             <div className="field">
               <label>전화번호</label>
-              <input
-                type="tel"
-                inputMode="numeric"
-                value={phone}
+              <input type="tel" inputMode="numeric" value={phone}
                 onChange={e => setPhone(formatPhone(e.target.value))}
-                placeholder="01012345678"
-              />
+                placeholder="01012345678" />
             </div>
             <div className="field">
               <label>비밀번호</label>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+              <input type="password" value={password}
+                onChange={e => setPassword(e.target.value)} />
             </div>
             <div className="field">
               <label>비밀번호 확인</label>
-              <input type="password" value={password2} onChange={e => setPassword2(e.target.value)} />
+              <input type="password" value={password2}
+                onChange={e => setPassword2(e.target.value)} />
             </div>
             {err && <div className="auth-error">{err}</div>}
             <button type="submit" className="btn-primary" disabled={busy}>
@@ -926,46 +760,56 @@
       );
     }
 
-    // ============================================================
-    // <CalendarScreen>
-    // ============================================================
     function CalendarScreen({ me, onLogout, onProfileUpdate }) {
       const today = todayInfo();
       const [year, setYear] = useState(today.year);
       const [month, setMonth] = useState(today.month);
 
-      const [duties, setDuties] = useState({});         // { day(int): "D"/"E"/... }
-      const [clinicOverrides, setClinicOverrides] = useState({}); // { "YYYY-MM-DD": status }
+      const [allUsers, setAllUsers] = useState({});
+      const [allDuties, setAllDuties] = useState({});
+      const [clinicOverrides, setClinicOverrides] = useState({});
 
       const [showProfile, setShowProfile] = useState(false);
       const [showDutyInput, setShowDutyInput] = useState(false);
+      const [openDay, setOpenDay] = useState(null);
 
-      const monthKey = `${year}-${String(month).padStart(2, "0")}`;
+      const monthKey = getMonthKey(year, month);
+      const prevMonthKey = adjacentMonthKey(year, month, -1);
+      const nextMonthKey = adjacentMonthKey(year, month, 1);
 
-      // duties 구독
       useEffect(() => {
-        const r = ref(db, `duties/${monthKey}/${me.sabun}`);
-        const unsub = onValue(r, snap => {
-          const val = snap.val() || {};
-          const map = {};
-          Object.keys(val).forEach(k => {
-            const dayInt = parseInt(k, 10);
-            const v = val[k];
-            map[dayInt] = typeof v === "string" ? v : v.shift;
-          });
-          setDuties(map);
-        });
-        return () => unsub();
-      }, [monthKey, me.sabun]);
-
-      // 진료시간 override 구독 (월별)
-      useEffect(() => {
-        const r = ref(db, `clinicHours`);
-        const unsub = onValue(r, snap => {
-          setClinicOverrides(snap.val() || {});
-        });
+        const r = ref(db, "users");
+        const unsub = onValue(r, snap => setAllUsers(snap.val() || {}));
         return () => unsub();
       }, []);
+
+      useEffect(() => {
+        const keys = [prevMonthKey, monthKey, nextMonthKey];
+        const unsubs = keys.map(mk => {
+          const r = ref(db, `duties/${mk}`);
+          return onValue(r, snap => {
+            setAllDuties(prev => ({ ...prev, [mk]: snap.val() || {} }));
+          });
+        });
+        return () => unsubs.forEach(u => u());
+      }, [prevMonthKey, monthKey, nextMonthKey]);
+
+      useEffect(() => {
+        const r = ref(db, "clinicHours");
+        const unsub = onValue(r, snap => setClinicOverrides(snap.val() || {}));
+        return () => unsub();
+      }, []);
+
+      const myDuties = useMemo(() => {
+        const m = allDuties[monthKey];
+        if (!m || !m[me.sabun]) return {};
+        const out = {};
+        Object.keys(m[me.sabun]).forEach(k => {
+          const v = normalizeDuty(m[me.sabun][k]);
+          if (v) out[parseInt(k, 10)] = v.shift;
+        });
+        return out;
+      }, [allDuties, monthKey, me.sabun]);
 
       const goPrevMonth = () => {
         if (month === 1) { setYear(year - 1); setMonth(12); }
@@ -975,12 +819,7 @@
         if (month === 12) { setYear(year + 1); setMonth(1); }
         else setMonth(month + 1);
       };
-      const goToday = () => {
-        setYear(today.year);
-        setMonth(today.month);
-      };
-
-      const isCurrentMonth = (year === today.year && month === today.month);
+      const goToday = () => { setYear(today.year); setMonth(today.month); };
 
       const tColor = teamColor(me.team);
 
@@ -998,22 +837,19 @@
 
           <div className="month-nav" style={{ padding: "10px 18px 4px", justifyContent: "center" }}>
             <button onClick={goPrevMonth} aria-label="이전 달">‹</button>
-            <button
-              onClick={goToday}
-              style={{ width: "auto", padding: "0 14px", fontSize: 16, fontWeight: 600, color: "var(--text)" }}
-            >
+            <button onClick={goToday}
+              style={{ width: "auto", padding: "0 14px", fontSize: 16, fontWeight: 600, color: "var(--text)" }}>
               {year}년 {month}월
             </button>
             <button onClick={goNextMonth} aria-label="다음 달">›</button>
           </div>
 
           <CalendarGrid
-            year={year}
-            month={month}
-            duties={duties}
+            year={year} month={month}
+            duties={myDuties}
             clinicOverrides={clinicOverrides}
-            today={today}
-            myTeam={me.team}
+            today={today} myTeam={me.team}
+            onCellClick={day => setOpenDay(day)}
           />
 
           <button className="fab" onClick={() => setShowDutyInput(true)}>
@@ -1021,36 +857,30 @@
           </button>
 
           {showProfile && (
-            <ProfileModal
-              me={me}
-              onClose={() => setShowProfile(false)}
-              onLogout={onLogout}
-              onProfileUpdate={onProfileUpdate}
-            />
+            <ProfileModal me={me} onClose={() => setShowProfile(false)}
+              onLogout={onLogout} onProfileUpdate={onProfileUpdate} />
           )}
           {showDutyInput && (
-            <DutyInputModal
-              year={year}
-              month={month}
-              sabun={me.sabun}
-              myTeam={me.team}
-              currentDuties={duties}
-              onClose={() => setShowDutyInput(false)}
-            />
+            <DutyInputModal year={year} month={month} sabun={me.sabun}
+              myTeam={me.team} currentDuties={myDuties}
+              onClose={() => setShowDutyInput(false)} />
+          )}
+          {openDay !== null && (
+            <DayDetailModal
+              year={year} month={month} day={openDay}
+              me={me} allUsers={allUsers} allDuties={allDuties}
+              clinicOverrides={clinicOverrides}
+              onClose={() => setOpenDay(null)} />
           )}
         </>
       );
     }
 
-    // ============================================================
-    // <CalendarGrid>
-    // ============================================================
-    function CalendarGrid({ year, month, duties, clinicOverrides, today, myTeam }) {
+    function CalendarGrid({ year, month, duties, clinicOverrides, today, myTeam, onCellClick }) {
       const { daysInMonth, startWeekday } = getMonthInfo(year, month);
       const tColor = teamColor(myTeam);
 
       const cells = [];
-      // 앞쪽 빈 셀
       for (let i = 0; i < startWeekday; i++) {
         cells.push(<div key={`e-${i}`} className="cal-cell empty" />);
       }
@@ -1063,24 +893,21 @@
         const isHoliday = !!HOLIDAYS[iso];
 
         cells.push(
-          <div key={day} className={`cal-cell ${isToday ? "today" : ""}`}>
+          <button key={day} className={`cal-cell ${isToday ? "today" : ""}`}
+            onClick={() => onCellClick(day)} type="button">
             {isHoliday && <div className="holiday-dot" title={HOLIDAYS[iso]} />}
             <div className={`cal-date ${status}`}>{day}</div>
             <div className="duty-stack">
               {shift && (
-                <div
-                  className="duty-pill"
-                  style={
-                    shift === "O"
-                      ? { background: "transparent", color: "var(--text-soft)", fontWeight: 500 }
-                      : { background: tColor.bg, color: tColor.text }
-                  }
-                >
+                <div className="duty-pill"
+                  style={shift === "O"
+                    ? { background: "transparent", color: "var(--text-soft)", fontWeight: 500 }
+                    : { background: tColor.bg, color: tColor.text }}>
                   {shift}
                 </div>
               )}
             </div>
-          </div>
+          </button>
         );
       }
 
@@ -1098,13 +925,200 @@
       );
     }
 
-    // ============================================================
-    // <DutyInputModal>
-    // ============================================================
+    function DayDetailModal({ year, month, day, me, allUsers, allDuties, clinicOverrides, onClose }) {
+      const monthKey = getMonthKey(year, month);
+      const iso = isoDate(year, month, day);
+      const dow = getWeekday(year, month, day);
+      const clinic = getClinicStatus(iso, dow, clinicOverrides);
+      const holiday = HOLIDAYS[iso];
+
+      const myDuty = getDutyAt(allDuties, monthKey, me.sabun, day);
+      const myShift = myDuty?.shift;
+      const myEffectiveTeam = getEffectiveTeam(myDuty, me.team);
+
+      const handover = HANDOVER_SHIFTS.includes(myShift) ? getHandoverConfig(myShift) : null;
+      const showHandover = handover && me.team !== "main";
+
+      let prevPeople = [], nextPeople = [];
+      if (showHandover) {
+        const pd = shiftDate(year, month, day, handover.prev.offset);
+        const pmk = getMonthKey(pd.year, pd.month);
+        const all = getPeopleByShift(allDuties, allUsers, pmk, pd.day, handover.prev.shift);
+        prevPeople = all.filter(s => {
+          const u = allUsers[s];
+          if (!u) return false;
+          const d = getDutyAt(allDuties, pmk, s, pd.day);
+          return getEffectiveTeam(d, u.team) === me.team;
+        });
+
+        const nd = shiftDate(year, month, day, handover.next.offset);
+        const nmk = getMonthKey(nd.year, nd.month);
+        const allN = getPeopleByShift(allDuties, allUsers, nmk, nd.day, handover.next.shift);
+        nextPeople = allN.filter(s => {
+          const u = allUsers[s];
+          if (!u) return false;
+          const d = getDutyAt(allDuties, nmk, s, nd.day);
+          return getEffectiveTeam(d, u.team) === me.team;
+        });
+      }
+
+      const showLineup = HANDOVER_SHIFTS.includes(myShift);
+      let lineup = null;
+      if (showLineup) {
+        const sabuns = getPeopleByShift(allDuties, allUsers, monthKey, day, myShift);
+        lineup = groupByEffectiveTeam(sabuns, allUsers, allDuties, monthKey, day);
+      }
+
+      const dateColorClass = clinic === "morning" ? "morning" : clinic === "closed" ? "closed" : "full";
+      const myTeamColor = teamColor(myEffectiveTeam);
+
+      return (
+        <div className="modal-backdrop" onClick={onClose}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <div>
+                <p className={`day-modal-date ${dateColorClass}`} style={{ marginBottom: holiday ? 4 : 8 }}>
+                  <span className="day-num">{month}월 {day}일</span>
+                  <span className="weekday">({WEEKDAYS_KR[dow]})</span>
+                </p>
+                <p className="day-clinic-tag">
+                  {holiday && <span style={{ color: "var(--c-closed)", fontWeight: 600 }}>{holiday} · </span>}
+                  진료 {clinic === "full" ? "오전·오후" : clinic === "morning" ? "오전만" : "휴진"}
+                </p>
+              </div>
+              <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
+            </div>
+
+            <div className="day-section">
+              <p className="day-section-title">내 근무</p>
+              {myShift ? (
+                <div className="my-shift-card">
+                  <span className="shift-letter"
+                    style={myShift === "O" ? { color: "var(--text-soft)" } : { color: myTeamColor.text }}>
+                    {myShift}
+                  </span>
+                  <span className="shift-meta">
+                    {SHIFT_LABELS[myShift]}
+                    <span className="meta-team" style={{ background: myTeamColor.bg, color: myTeamColor.text }}>
+                      {myEffectiveTeam}
+                    </span>
+                  </span>
+                </div>
+              ) : (
+                <p style={{ color: "var(--text-soft)", fontSize: 13, margin: 0 }}>
+                  이 날 듀티가 입력되지 않았어요.
+                </p>
+              )}
+            </div>
+
+            {showHandover && (
+              <div className="day-section">
+                <p className="day-section-title">{me.team}팀 인수인계</p>
+                <HandoverRow direction="prev" config={handover.prev}
+                  people={prevPeople} allUsers={allUsers} mySabun={me.sabun} myTeam={me.team} />
+                <HandoverRow direction="next" config={handover.next}
+                  people={nextPeople} allUsers={allUsers} mySabun={me.sabun} myTeam={me.team} />
+              </div>
+            )}
+
+            {showLineup && lineup && (
+              <div className="day-section">
+                <p className="day-section-title">{myShift} 라인업</p>
+                <LineupBlock lineup={lineup} mySabun={me.sabun} allUsers={allUsers}
+                  monthKey={monthKey} day={day} allDuties={allDuties} />
+              </div>
+            )}
+
+            {!showHandover && !showLineup && myShift && (
+              <div className="day-section">
+                <p style={{ fontSize: 13, color: "var(--text-soft)", margin: 0, textAlign: "center", padding: "8px 0" }}>
+                  {me.team === "main"
+                    ? "main 팀은 인수인계 표시가 없어요."
+                    : "이 근무는 인수인계·라인업 표시가 없어요."}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    function HandoverRow({ direction, config, people, allUsers, mySabun, myTeam }) {
+      const arrow = direction === "prev" ? "←" : "→";
+      return (
+        <div className="handover-row">
+          <div className="handover-arrow">{arrow}</div>
+          <div className="handover-info">
+            <div className="handover-meta">
+              {direction === "prev" ? "받음" : "넘김"} · {config.labelTime}
+            </div>
+            {people.length === 0 ? (
+              <div className="handover-empty">
+                {direction === "prev" ? "이전번 근무자가 없어요" : "다음번 근무자가 없어요"}
+              </div>
+            ) : (
+              <div className="handover-people">
+                {people.map(s => (
+                  <PersonChip key={s} sabun={s} user={allUsers[s]} isMe={s === mySabun} teamForColor={myTeam} />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    function LineupBlock({ lineup, mySabun, allUsers, monthKey, day, allDuties }) {
+      return (
+        <div>
+          {TEAMS.map(team => {
+            const sabuns = lineup[team] || [];
+            if (sabuns.length === 0) return null;
+            const c = teamColor(team);
+            return (
+              <div key={team} className="lineup-team">
+                <div className="lineup-team-label">
+                  <span className="team-badge" style={{ background: c.bg, color: c.text }}>{team}</span>
+                </div>
+                <div className="lineup-people">
+                  {sabuns.map(s => {
+                    const duty = getDutyAt(allDuties, monthKey, s, day);
+                    const isHelper = !!duty?.helper;
+                    return (
+                      <PersonChip key={s}
+                        sabun={s} user={allUsers[s]}
+                        isMe={s === mySabun}
+                        teamForColor={team}
+                        isHelper={isHelper} />
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+
+    function PersonChip({ sabun, user, isMe, teamForColor, isHelper }) {
+      if (!user) {
+        return <span className="person-chip" style={{
+          background: "var(--surface-alt)", color: "var(--text-soft)"
+        }}>{sabun}</span>;
+      }
+      const c = teamColor(teamForColor || user.team);
+      return (
+        <span className={`person-chip ${isMe ? "me" : ""}`}
+          style={{ background: c.bg, color: c.text }}>
+          {user.name}
+          {isHelper && <span className="role-tag">helper</span>}
+        </span>
+      );
+    }
+
     function DutyInputModal({ year, month, sabun, myTeam, currentDuties, onClose }) {
       const { daysInMonth } = getMonthInfo(year, month);
 
-      // 기존 듀티를 문자열로 직렬화 (있는 만큼만)
       const initial = useMemo(() => {
         let maxDay = 0;
         for (const k of Object.keys(currentDuties)) {
@@ -1112,30 +1126,23 @@
           if (d > maxDay) maxDay = d;
         }
         let out = "";
-        for (let d = 1; d <= maxDay; d++) {
-          out += currentDuties[d] || "";
-        }
+        for (let d = 1; d <= maxDay; d++) out += currentDuties[d] || "";
         return out;
-      }, []); // 모달 열 때만
+      }, []);
 
       const [text, setText] = useState(initial);
       const [err, setErr] = useState("");
       const [busy, setBusy] = useState(false);
 
       const parsed = useMemo(() => {
-        try { return parseDutyString(text); }
-        catch { return null; }
+        try { return parseDutyString(text); } catch { return null; }
       }, [text]);
 
       const save = async () => {
         setErr("");
         let codes;
-        try {
-          codes = parseDutyString(text);
-        } catch (e) {
-          setErr(e.message);
-          return;
-        }
+        try { codes = parseDutyString(text); }
+        catch (e) { setErr(e.message); return; }
         if (codes.length > daysInMonth) {
           setErr(`이 달은 ${daysInMonth}일까지인데 ${codes.length}개가 입력됐어요.`);
           return;
@@ -1143,15 +1150,11 @@
         setBusy(true);
         try {
           const monthKey = `${year}-${String(month).padStart(2, "0")}`;
-          // 모든 날 한 번에 덮어쓰기 (입력 안 된 날은 null로 삭제)
           const updates = {};
           for (let d = 1; d <= daysInMonth; d++) {
             const dKey = String(d).padStart(2, "0");
             if (d <= codes.length) {
-              updates[`duties/${monthKey}/${sabun}/${dKey}`] = {
-                shift: codes[d - 1],
-                team: myTeam,
-              };
+              updates[`duties/${monthKey}/${sabun}/${dKey}`] = { shift: codes[d - 1], team: myTeam };
             } else {
               updates[`duties/${monthKey}/${sabun}/${dKey}`] = null;
             }
@@ -1177,13 +1180,9 @@
                 1일부터 순서대로 한 글자씩 입력. 공백/줄바꿈 무시.<br />
                 <code>D</code> Day · <code>E</code> Evening · <code>N</code> Night · <code>O</code> Off · <code>T</code> Top · <code>M</code> Mid · <code>V</code> 반차
               </div>
-              <textarea
-                className="duty-textarea"
-                value={text}
+              <textarea className="duty-textarea" value={text}
                 onChange={e => setText(e.target.value)}
-                placeholder="예: DENNOOD ENN OOD..."
-                autoFocus
-              />
+                placeholder="예: DENNOOD ENN OOD..." autoFocus />
               <div className="day-counter">
                 {parsed ? `${parsed.length}일` : "—"} / {daysInMonth}일
               </div>
@@ -1199,9 +1198,6 @@
       );
     }
 
-    // ============================================================
-    // <ProfileModal>
-    // ============================================================
     function ProfileModal({ me, onClose, onLogout, onProfileUpdate }) {
       const [editing, setEditing] = useState(false);
       const [showAdminWL, setShowAdminWL] = useState(false);
@@ -1210,14 +1206,8 @@
 
       if (editing) {
         return (
-          <ProfileEdit
-            me={me}
-            onCancel={() => setEditing(false)}
-            onSaved={(newData) => {
-              onProfileUpdate(newData);
-              setEditing(false);
-            }}
-          />
+          <ProfileEdit me={me} onCancel={() => setEditing(false)}
+            onSaved={(newData) => { onProfileUpdate(newData); setEditing(false); }} />
         );
       }
       if (showAdminWL) {
@@ -1231,7 +1221,6 @@
               <h2 className="modal-title">내 정보</h2>
               <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
             </div>
-
             <div>
               <div className="profile-row">
                 <span className="profile-label">사번</span>
@@ -1254,7 +1243,6 @@
                 <span className="profile-value">{formatPhone(me.phone || "")}</span>
               </div>
             </div>
-
             <div className="modal-actions" style={{ marginTop: 18 }}>
               <button className="menu-item" onClick={() => setEditing(true)}>
                 <span>정보 수정</span><span style={{ color: "var(--text-soft)" }}>›</span>
@@ -1268,9 +1256,8 @@
                 <span>로그아웃</span><span>›</span>
               </button>
             </div>
-
             <p style={{ fontSize: 11, color: "var(--text-soft)", textAlign: "center", marginTop: 24 }}>
-              61w · Phase 1
+              61w · Phase 2
             </p>
           </div>
         </div>
@@ -1293,9 +1280,7 @@
         setBusy(true);
         try {
           const newData = {
-            name: name.trim(),
-            team,
-            hireDate: hireISO,
+            name: name.trim(), team, hireDate: hireISO,
             phone: phone.replace(/\D/g, ""),
           };
           await update(ref(db, `users/${me.sabun}`), newData);
@@ -1327,21 +1312,13 @@
               </div>
               <div className="field">
                 <label>입사일 (YYYYMMDD)</label>
-                <input
-                  type="tel"
-                  inputMode="numeric"
-                  value={hireDate}
-                  onChange={e => setHireDate(formatHireDateInput(e.target.value))}
-                />
+                <input type="tel" inputMode="numeric" value={hireDate}
+                  onChange={e => setHireDate(formatHireDateInput(e.target.value))} />
               </div>
               <div className="field">
                 <label>전화번호</label>
-                <input
-                  type="tel"
-                  inputMode="numeric"
-                  value={phone}
-                  onChange={e => setPhone(formatPhone(e.target.value))}
-                />
+                <input type="tel" inputMode="numeric" value={phone}
+                  onChange={e => setPhone(formatPhone(e.target.value))} />
               </div>
               {err && <div className="auth-error">{err}</div>}
             </div>
@@ -1356,9 +1333,6 @@
       );
     }
 
-    // ============================================================
-    // <WhitelistAdmin> — admin 사번 전용 (Phase 4 정식 UI 전 임시)
-    // ============================================================
     function WhitelistAdmin({ onClose }) {
       const [list, setList] = useState([]);
       const [bulkText, setBulkText] = useState("");
@@ -1378,14 +1352,8 @@
         setErr("");
         const parts = bulkText.split(/[\s,;\n]+/).map(s => s.trim()).filter(Boolean);
         const invalid = parts.filter(s => !/^\d{5,6}$/.test(s));
-        if (invalid.length) {
-          setErr(`잘못된 사번: ${invalid.join(", ")}`);
-          return;
-        }
-        if (!parts.length) {
-          setErr("추가할 사번을 입력해 주세요.");
-          return;
-        }
+        if (invalid.length) { setErr(`잘못된 사번: ${invalid.join(", ")}`); return; }
+        if (!parts.length) { setErr("추가할 사번을 입력해 주세요."); return; }
         setBusy(true);
         try {
           const updates = {};
@@ -1401,12 +1369,8 @@
 
       const remove1 = async (sabun) => {
         if (!confirm(`${sabun} 화이트리스트에서 제거할까요? (이미 가입한 계정은 그대로 유지됨)`)) return;
-        try {
-          await remove(ref(db, `whitelist/${sabun}`));
-        } catch (e) {
-          console.error(e);
-          alert("삭제 실패");
-        }
+        try { await remove(ref(db, `whitelist/${sabun}`)); }
+        catch (e) { console.error(e); alert("삭제 실패"); }
       };
 
       return (
@@ -1416,26 +1380,20 @@
               <h2 className="modal-title">화이트리스트</h2>
               <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
             </div>
-
             <div className="duty-help" style={{ marginBottom: 14 }}>
-              가입 가능한 사번 명단. 사번을 줄바꿈/콤마/공백으로 구분해 한꺼번에 추가할 수 있어요.
+              가입 가능한 사번 명단. 줄바꿈/콤마/공백으로 구분해 한꺼번에 추가할 수 있어요.
               <br />본인(<code>{ADMIN_SABUN}</code>)은 자동으로 항상 가입 가능.
             </div>
-
             <div className="field" style={{ marginBottom: 8 }}>
-              <textarea
-                className="duty-textarea"
+              <textarea className="duty-textarea"
                 style={{ letterSpacing: 0, textTransform: "none" }}
-                value={bulkText}
-                onChange={e => setBulkText(e.target.value)}
-                placeholder="123456&#10;234567&#10;345678&#10;..."
-              />
+                value={bulkText} onChange={e => setBulkText(e.target.value)}
+                placeholder="123456&#10;234567&#10;345678&#10;..." />
             </div>
             {err && <div className="auth-error" style={{ marginBottom: 10 }}>{err}</div>}
             <button className="btn-primary" onClick={addBulk} disabled={busy} style={{ marginBottom: 20 }}>
               {busy ? "추가 중…" : "추가"}
             </button>
-
             <p className="menu-section-title">현재 명단 ({list.length}명)</p>
             {list.length === 0 ? (
               <p style={{ color: "var(--text-soft)", fontSize: 13, padding: "12px 0" }}>
@@ -1446,12 +1404,8 @@
                 {list.map(s => (
                   <div key={s} className="profile-row">
                     <span className="profile-value" style={{ fontFamily: "ui-monospace, monospace" }}>{s}</span>
-                    <button
-                      className="icon-btn"
-                      onClick={() => remove1(s)}
-                      style={{ color: "var(--c-closed)" }}
-                      aria-label="삭제"
-                    >×</button>
+                    <button className="icon-btn" onClick={() => remove1(s)}
+                      style={{ color: "var(--c-closed)" }} aria-label="삭제">×</button>
                   </div>
                 ))}
               </div>
@@ -1461,20 +1415,16 @@
       );
     }
 
-    // ============================================================
-    // 마운트
-    // ============================================================
     createRoot(document.getElementById("root")).render(<App />);
   </script>
 
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js").catch(err => {
-          console.log("SW 등록 실패:", err);
-        });
+        navigator.serviceWorker.register("./sw.js").catch(err => console.log("SW 등록 실패:", err));
       });
     }
   </script>
+
 </body>
 </html>
