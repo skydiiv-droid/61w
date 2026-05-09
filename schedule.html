@@ -40,29 +40,20 @@
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
     html, body {
-      margin: 0; padding: 0;
-      background: var(--bg);
-      color: var(--text);
+      margin: 0; padding: 0; background: var(--bg); color: var(--text);
       font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 15px;
-      line-height: 1.5;
-      overscroll-behavior-y: contain;
+      font-size: 15px; line-height: 1.5; overscroll-behavior-y: contain;
       -webkit-font-smoothing: antialiased;
     }
-
     button { font-family: inherit; cursor: pointer; }
     input, select, textarea { font-family: inherit; font-size: 15px; }
-
     #root {
-      max-width: 480px;
-      margin: 0 auto;
-      min-height: 100vh;
+      max-width: 480px; margin: 0 auto; min-height: 100vh;
       padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
     }
 
-    /* ====== auth ====== */
+    /* auth */
     .auth-wrap { padding: 64px 24px 24px; display: flex; flex-direction: column; gap: 20px; }
     .auth-title { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; margin: 0 0 4px; }
     .auth-sub { color: var(--text-mute); font-size: 14px; margin: 0 0 20px; }
@@ -79,6 +70,10 @@
     }
     .btn-primary:active { opacity: 0.8; }
     .btn-primary:disabled { opacity: 0.4; }
+    .btn-secondary {
+      padding: 12px; border: 1px solid var(--border); border-radius: 10px;
+      background: transparent; color: var(--text); font-size: 14px;
+    }
     .btn-ghost {
       padding: 12px; border: none; background: transparent;
       color: var(--text-mute); font-size: 14px;
@@ -89,7 +84,7 @@
       border-radius: 8px; font-size: 13px;
     }
 
-    /* ====== top bar ====== */
+    /* top bar */
     .top-bar {
       display: flex; align-items: center; justify-content: space-between;
       padding: 14px 18px; border-bottom: 1px solid var(--border);
@@ -115,8 +110,8 @@
     }
     .month-nav button:active { background: var(--surface-alt); }
 
-    /* ====== calendar ====== */
-    .cal-wrap { padding: 6px 8px 24px; }
+    /* calendar */
+    .cal-wrap { padding: 6px 8px 24px; user-select: none; -webkit-user-select: none; }
     .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); padding: 8px 4px 4px; }
     .cal-weekdays div {
       text-align: center; font-size: 11px; font-weight: 500;
@@ -130,6 +125,7 @@
       background: transparent; transition: background 0.1s; position: relative;
       border: none; outline: none; font: inherit; color: inherit;
       text-align: inherit; cursor: pointer; appearance: none; -webkit-appearance: none;
+      -webkit-touch-callout: none; user-select: none;
     }
     .cal-cell.today { background: var(--surface); box-shadow: inset 0 0 0 1.5px var(--accent); }
     .cal-cell:active { background: var(--surface-alt); }
@@ -143,15 +139,24 @@
       width: 4px; height: 4px; border-radius: 50%;
       background: var(--c-closed); opacity: 0.7;
     }
+    .helper-dot {
+      position: absolute; bottom: 4px; right: 5px;
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--accent); opacity: 0.85;
+    }
     .duty-stack {
       flex: 1; display: flex; align-items: center; justify-content: center; padding-top: 2px;
     }
     .duty-pill {
       font-size: 13px; font-weight: 600; padding: 4px 0; width: 100%;
       text-align: center; border-radius: 6px; letter-spacing: 0.5px;
+      display: flex; align-items: center; justify-content: center; gap: 1px;
+    }
+    .duty-pill .role-mark {
+      font-size: 9px; font-weight: 500; opacity: 0.75; letter-spacing: 0;
     }
 
-    /* ====== modal ====== */
+    /* modal */
     .modal-backdrop {
       position: fixed; inset: 0; background: rgba(0,0,0,0.4);
       display: flex; align-items: flex-end; justify-content: center;
@@ -176,7 +181,7 @@
     .modal-fields { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
     .modal-actions { display: flex; flex-direction: column; gap: 8px; }
 
-    /* ====== duty input modal ====== */
+    /* duty input */
     .duty-help {
       background: var(--surface-alt); border-radius: 10px;
       padding: 12px 14px; font-size: 12px; color: var(--text-mute); line-height: 1.6;
@@ -190,12 +195,12 @@
       padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px;
       background: var(--surface); font-family: ui-monospace, SFMono-Regular, monospace;
       font-size: 16px; letter-spacing: 2px; line-height: 1.6;
-      outline: none; resize: vertical; text-transform: uppercase;
+      outline: none; resize: vertical;
     }
     .duty-textarea:focus { border-color: var(--accent); }
     .day-counter { font-size: 12px; color: var(--text-mute); text-align: right; }
 
-    /* ====== profile ====== */
+    /* profile */
     .profile-row {
       display: flex; justify-content: space-between; align-items: center;
       padding: 14px 0; border-bottom: 1px solid var(--border);
@@ -208,10 +213,9 @@
       border-radius: 999px; font-size: 12px; font-weight: 600;
     }
 
-    /* ====== loading & empty ====== */
     .center-msg { padding: 80px 24px; text-align: center; color: var(--text-mute); font-size: 14px; }
 
-    /* ====== fab ====== */
+    /* fab */
     .fab {
       position: fixed; bottom: calc(20px + env(safe-area-inset-bottom));
       left: 50%; transform: translateX(-50%);
@@ -221,7 +225,7 @@
     }
     .fab:active { transform: translateX(-50%) scale(0.96); }
 
-    /* ====== profile menu ====== */
+    /* profile menu */
     .menu-item {
       display: flex; align-items: center; justify-content: space-between;
       padding: 16px 0; border-bottom: 1px solid var(--border); background: transparent;
@@ -235,7 +239,7 @@
       margin: 18px 0 4px; font-weight: 500;
     }
 
-    /* ====== day detail modal ====== */
+    /* day detail */
     .day-modal-date {
       font-size: 22px; font-weight: 600; letter-spacing: -0.4px;
       margin: 0 0 2px;
@@ -245,12 +249,8 @@
     }
     .day-modal-date.morning .day-num { color: var(--c-morning); }
     .day-modal-date.closed .day-num { color: var(--c-closed); }
-    .day-clinic-tag {
-      font-size: 12px; color: var(--text-mute); margin-bottom: 16px;
-    }
-    .day-section {
-      padding: 16px 0; border-top: 1px solid var(--border);
-    }
+    .day-clinic-tag { font-size: 12px; color: var(--text-mute); margin-bottom: 16px; }
+    .day-section { padding: 16px 0; border-top: 1px solid var(--border); }
     .day-section:first-of-type { border-top: none; padding-top: 8px; }
     .day-section-title {
       font-size: 12px; color: var(--text-soft); letter-spacing: 0.5px;
@@ -264,62 +264,89 @@
     .my-shift-card .shift-letter {
       font-size: 24px; font-weight: 700; letter-spacing: 1px;
     }
-    .my-shift-card .shift-meta {
-      font-size: 13px; color: var(--text-mute); text-align: right;
-    }
+    .my-shift-card .shift-meta { font-size: 13px; color: var(--text-mute); text-align: right; }
     .my-shift-card .shift-meta .meta-team {
       display: inline-block; margin-left: 6px;
       padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600;
     }
-
-    .handover-row {
-      display: flex; gap: 10px; align-items: flex-start;
-      padding: 8px 0;
+    .my-shift-card .shift-meta .meta-role {
+      display: inline-block; margin-left: 4px; font-size: 11px;
+      color: var(--text-mute); font-weight: 500;
     }
+    .my-shift-card .shift-meta .meta-helper {
+      display: inline-block; margin-left: 4px; padding: 1px 6px; border-radius: 4px;
+      background: var(--accent); color: #fff; font-size: 10px; font-weight: 600; letter-spacing: 0.3px;
+    }
+
+    .handover-row { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; }
     .handover-arrow {
       flex-shrink: 0; width: 22px; text-align: center;
       color: var(--text-soft); font-size: 16px; line-height: 1.5;
     }
     .handover-info { flex: 1; min-width: 0; }
     .handover-meta {
-      font-size: 11px; color: var(--text-soft); letter-spacing: 0.4px;
-      margin-bottom: 4px;
+      font-size: 11px; color: var(--text-soft); letter-spacing: 0.4px; margin-bottom: 4px;
     }
-    .handover-people {
-      display: flex; flex-wrap: wrap; gap: 6px;
-    }
-    .handover-empty {
-      font-size: 13px; color: var(--text-soft); font-style: italic;
-    }
+    .handover-people { display: flex; flex-wrap: wrap; gap: 6px; }
+    .handover-empty { font-size: 13px; color: var(--text-soft); font-style: italic; }
 
     .person-chip {
-      display: inline-flex; align-items: center; gap: 5px;
+      display: inline-flex; align-items: center; gap: 4px;
       padding: 4px 10px; border-radius: 999px;
-      font-size: 13px; font-weight: 500;
-      border: 1px solid transparent;
+      font-size: 13px; font-weight: 500; border: 1px solid transparent;
     }
-    .person-chip.me {
-      box-shadow: inset 0 0 0 1.5px var(--text);
-      font-weight: 600;
-    }
+    .person-chip.me { box-shadow: inset 0 0 0 1.5px var(--text); font-weight: 600; }
+    .person-chip.helper-style { opacity: 0.78; }
     .person-chip .role-tag {
       font-size: 10px; opacity: 0.7; font-weight: 600; letter-spacing: 0.3px;
     }
+    .person-chip .helper-tag {
+      font-size: 9px; padding: 1px 5px; border-radius: 4px;
+      background: rgba(0,0,0,0.1); font-weight: 600; letter-spacing: 0.3px;
+    }
 
-    .lineup-team {
-      display: flex; gap: 10px; padding: 10px 0;
-      border-top: 1px solid var(--border);
-    }
+    .lineup-team { display: flex; gap: 10px; padding: 10px 0; border-top: 1px solid var(--border); }
     .lineup-team:first-child { border-top: none; padding-top: 4px; }
-    .lineup-team-label {
-      flex-shrink: 0; width: 56px;
-      display: flex; align-items: flex-start;
+    .lineup-team-label { flex-shrink: 0; width: 56px; display: flex; align-items: flex-start; }
+    .lineup-team-label .team-badge { font-size: 11px; padding: 2px 8px; }
+    .lineup-people { flex: 1; display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+
+    /* quick edit */
+    .qe-shift-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
     }
-    .lineup-team-label .team-badge {
-      font-size: 11px; padding: 2px 8px;
+    .qe-shift-btn {
+      padding: 12px 0; border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface); font-weight: 600; font-size: 16px;
+      letter-spacing: 1px; color: var(--text); transition: all 0.1s;
     }
-    .lineup-people {
-      flex: 1; display: flex; flex-wrap: wrap; gap: 6px; min-width: 0;
+    .qe-shift-btn.active {
+      background: var(--text); color: var(--bg); border-color: var(--text);
+    }
+    .qe-shift-btn-clear { color: var(--text-mute); font-size: 14px; }
+    .qe-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    .qe-role-btn {
+      flex: 1; min-width: 60px;
+      padding: 10px 0; border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface); font-size: 14px; color: var(--text-mute);
+    }
+    .qe-role-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+    .qe-toggle-label {
+      display: flex; align-items: center; gap: 10px; cursor: pointer;
+      padding: 10px 0;
+    }
+    .qe-toggle-label input { width: 18px; height: 18px; accent-color: var(--accent); }
+    .qe-team-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+    }
+    .qe-team-btn {
+      padding: 11px 4px; border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface); font-size: 13px; font-weight: 600; color: var(--text);
+    }
+    .qe-team-btn.active { box-shadow: inset 0 0 0 2px var(--text); }
+    .qe-current {
+      padding: 10px 14px; background: var(--surface-alt); border-radius: 10px;
+      font-size: 13px; color: var(--text-mute); margin-bottom: 4px;
     }
   </style>
 
@@ -351,9 +378,6 @@
     const fbApp = initializeApp(firebaseConfig);
     const db = getDatabase(fbApp);
 
-    // ============================================================
-    // 상수
-    // ============================================================
     const ADMIN_SABUN = "224051";
     const TEAMS = ["main", "A", "B", "C", "D", "S-616", "S-617", "S-act"];
     const SHIFT_CODES = ["D", "E", "N", "O", "T", "M", "V"];
@@ -362,6 +386,7 @@
       T: "Top", M: "Mid", V: "반차"
     };
     const HANDOVER_SHIFTS = ["D", "E", "N"];
+    const ROLE_KR = { front: "앞", back: "뒤", act: "act" };
 
     function teamColor(team) {
       if (team === "main") return { bg: "var(--t-main-bg)", text: "var(--t-main-text)", edge: "var(--t-main-edge)" };
@@ -372,9 +397,6 @@
       return { bg: "var(--t-S-bg)", text: "var(--t-S-text)", edge: "var(--t-S-edge)" };
     }
 
-    // ============================================================
-    // 공휴일 (2026-2027)
-    // ============================================================
     const HOLIDAYS = {
       "2026-01-01": "신정",
       "2026-02-16": "설날", "2026-02-17": "설날", "2026-02-18": "설날",
@@ -415,16 +437,40 @@
         .map(b => b.toString(16).padStart(2, "0")).join("");
     }
 
-    function parseDutyString(raw) {
-      const cleaned = raw.toUpperCase().replace(/\s+/g, "");
-      const valid = new Set(SHIFT_CODES);
+    // 입력 파서: D1E뒤Na 같은 modifier 지원
+    // allowRoles=false면 modifier 자체가 에러
+    function parseRoleChar(ch) {
+      if (ch === "1" || ch === "앞") return "front";
+      if (ch === "2" || ch === "뒤") return "back";
+      if (ch === "a") return "act";
+      return null;
+    }
+    function parseDutyString(raw, allowRoles) {
+      const cleaned = raw.replace(/\s+/g, "");
       const result = [];
-      for (let i = 0; i < cleaned.length; i++) {
-        const ch = cleaned[i];
-        if (!valid.has(ch)) {
-          throw new Error(`'${ch}' (${i + 1}번째 글자)는 사용할 수 없는 코드. 가능: ${SHIFT_CODES.join(", ")}`);
+      let i = 0;
+      while (i < cleaned.length) {
+        const orig = cleaned[i];
+        const ch = orig.toUpperCase();
+        if (!SHIFT_CODES.includes(ch)) {
+          throw new Error(`'${orig}' (${i + 1}번째 글자)는 사용할 수 없는 코드.`);
         }
-        result.push(ch);
+        let role = null;
+        if (i + 1 < cleaned.length) {
+          const r = parseRoleChar(cleaned[i + 1]);
+          if (r) {
+            if (!["D", "E", "N"].includes(ch)) {
+              throw new Error(`'${ch}' 뒤에는 앞/뒤/act 표시를 쓸 수 없어요. (${i + 2}번째 글자)`);
+            }
+            if (!allowRoles) {
+              throw new Error(`앞/뒤/act 표시는 A팀만 쓸 수 있어요. (${i + 2}번째 글자)`);
+            }
+            role = r;
+            i++;
+          }
+        }
+        result.push(role ? { shift: ch, role } : { shift: ch });
+        i++;
       }
       return result;
     }
@@ -458,11 +504,7 @@
     function getMonthInfo(year, month) {
       const first = new Date(year, month - 1, 1);
       const last = new Date(year, month, 0);
-      return {
-        first, last,
-        daysInMonth: last.getDate(),
-        startWeekday: first.getDay(),
-      };
+      return { first, last, daysInMonth: last.getDate(), startWeekday: first.getDay() };
     }
     function isoDate(year, month, day) {
       return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
@@ -500,7 +542,14 @@
     function getEffectiveTeam(duty, fallbackTeam) {
       if (!duty) return fallbackTeam;
       if (duty.helper && duty.helper.team) return duty.helper.team;
+      // T/M은 무조건 main 팀 근무 (T 대체자 포함)
+      if (duty.shift === "T" || duty.shift === "M") return "main";
       return duty.team || fallbackTeam;
+    }
+    function getEffectiveRole(duty) {
+      if (!duty) return null;
+      if (duty.helper) return duty.helper.role || null;
+      return duty.role || null;
     }
     function getPeopleByShift(allDuties, allUsers, monthKey, day, targetShift) {
       const m = allDuties?.[monthKey];
@@ -525,7 +574,6 @@
       }
       return groups;
     }
-
     function getHandoverConfig(myShift) {
       if (myShift === "D") return {
         prev: { offset: -1, shift: "N", labelTime: "어제 N" },
@@ -545,6 +593,46 @@
     const { useState, useEffect, useMemo, useRef } = React;
     const { createRoot } = ReactDOM;
 
+    // ============================================================
+    // useLongPress
+    // ============================================================
+    function useLongPress(onTap, onLongPress, delay = 450) {
+      const timer = useRef(null);
+      const longPressed = useRef(false);
+      const start = (e) => {
+        longPressed.current = false;
+        timer.current = setTimeout(() => {
+          longPressed.current = true;
+          if (navigator.vibrate) try { navigator.vibrate(40); } catch {}
+          onLongPress();
+        }, delay);
+      };
+      const cancel = () => {
+        if (timer.current) { clearTimeout(timer.current); timer.current = null; }
+      };
+      const handleClick = (e) => {
+        if (longPressed.current) {
+          e.preventDefault();
+          e.stopPropagation();
+          longPressed.current = false;
+          return;
+        }
+        onTap();
+      };
+      return {
+        onTouchStart: start,
+        onTouchEnd: cancel,
+        onTouchMove: cancel,
+        onTouchCancel: cancel,
+        onMouseDown: start,
+        onMouseUp: cancel,
+        onMouseLeave: cancel,
+        onContextMenu: (e) => e.preventDefault(),
+        onClick: handleClick,
+      };
+    }
+
+    // ============================================================
     function App() {
       const [me, setMe] = useState(null);
       const [bootDone, setBootDone] = useState(false);
@@ -570,19 +658,15 @@
         localStorage.setItem("61w-session", JSON.stringify({ sabun }));
         setMe({ sabun, ...userData });
       };
-      const handleLogout = () => {
-        localStorage.removeItem("61w-session");
-        setMe(null);
-      };
-      const handleProfileUpdate = (newData) => {
-        setMe(prev => ({ ...prev, ...newData }));
-      };
+      const handleLogout = () => { localStorage.removeItem("61w-session"); setMe(null); };
+      const handleProfileUpdate = (newData) => { setMe(prev => ({ ...prev, ...newData })); };
 
       if (!bootDone) return <div className="center-msg">불러오는 중…</div>;
       if (!me) return <AuthScreen onLogin={handleLogin} />;
       return <CalendarScreen me={me} onLogout={handleLogout} onProfileUpdate={handleProfileUpdate} />;
     }
 
+    // ============================================================
     function AuthScreen({ onLogin }) {
       const [mode, setMode] = useState("login");
       return mode === "login"
@@ -710,44 +794,30 @@
             <p className="auth-sub">필수 정보를 입력해 주세요</p>
           </div>
           <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <div className="field">
-              <label>사번</label>
+            <div className="field"><label>사번</label>
               <input type="tel" inputMode="numeric" value={sabun}
                 onChange={e => setSabun(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                placeholder="5~6자리 숫자" />
-            </div>
-            <div className="field">
-              <label>이름</label>
-              <input value={name} onChange={e => setName(e.target.value)} />
-            </div>
-            <div className="field">
-              <label>팀</label>
+                placeholder="5~6자리 숫자" /></div>
+            <div className="field"><label>이름</label>
+              <input value={name} onChange={e => setName(e.target.value)} /></div>
+            <div className="field"><label>팀</label>
               <select value={team} onChange={e => setTeam(e.target.value)}>
                 {TEAMS.map(t => <option key={t} value={t}>{t}</option>)}
-              </select>
-            </div>
-            <div className="field">
-              <label>입사일 (YYYYMMDD)</label>
+              </select></div>
+            <div className="field"><label>입사일 (YYYYMMDD)</label>
               <input type="tel" inputMode="numeric" value={hireDate}
                 onChange={e => setHireDate(formatHireDateInput(e.target.value))}
-                placeholder="20230515" />
-            </div>
-            <div className="field">
-              <label>전화번호</label>
+                placeholder="20230515" /></div>
+            <div className="field"><label>전화번호</label>
               <input type="tel" inputMode="numeric" value={phone}
                 onChange={e => setPhone(formatPhone(e.target.value))}
-                placeholder="01012345678" />
-            </div>
-            <div className="field">
-              <label>비밀번호</label>
+                placeholder="01012345678" /></div>
+            <div className="field"><label>비밀번호</label>
               <input type="password" value={password}
-                onChange={e => setPassword(e.target.value)} />
-            </div>
-            <div className="field">
-              <label>비밀번호 확인</label>
+                onChange={e => setPassword(e.target.value)} /></div>
+            <div className="field"><label>비밀번호 확인</label>
               <input type="password" value={password2}
-                onChange={e => setPassword2(e.target.value)} />
-            </div>
+                onChange={e => setPassword2(e.target.value)} /></div>
             {err && <div className="auth-error">{err}</div>}
             <button type="submit" className="btn-primary" disabled={busy}>
               {busy ? "등록 중…" : "가입하기"}
@@ -760,6 +830,7 @@
       );
     }
 
+    // ============================================================
     function CalendarScreen({ me, onLogout, onProfileUpdate }) {
       const today = todayInfo();
       const [year, setYear] = useState(today.year);
@@ -772,6 +843,7 @@
       const [showProfile, setShowProfile] = useState(false);
       const [showDutyInput, setShowDutyInput] = useState(false);
       const [openDay, setOpenDay] = useState(null);
+      const [quickEditDay, setQuickEditDay] = useState(null);
 
       const monthKey = getMonthKey(year, month);
       const prevMonthKey = adjacentMonthKey(year, month, -1);
@@ -800,13 +872,14 @@
         return () => unsub();
       }, []);
 
+      // 본인 듀티 (전체 duty 객체)
       const myDuties = useMemo(() => {
         const m = allDuties[monthKey];
         if (!m || !m[me.sabun]) return {};
         const out = {};
         Object.keys(m[me.sabun]).forEach(k => {
           const v = normalizeDuty(m[me.sabun][k]);
-          if (v) out[parseInt(k, 10)] = v.shift;
+          if (v) out[parseInt(k, 10)] = v;
         });
         return out;
       }, [allDuties, monthKey, me.sabun]);
@@ -849,7 +922,8 @@
             duties={myDuties}
             clinicOverrides={clinicOverrides}
             today={today} myTeam={me.team}
-            onCellClick={day => setOpenDay(day)}
+            onCellTap={day => setOpenDay(day)}
+            onCellLongPress={day => setQuickEditDay(day)}
           />
 
           <button className="fab" onClick={() => setShowDutyInput(true)}>
@@ -872,13 +946,20 @@
               clinicOverrides={clinicOverrides}
               onClose={() => setOpenDay(null)} />
           )}
+          {quickEditDay !== null && (
+            <QuickEditModal
+              year={year} month={month} day={quickEditDay}
+              me={me}
+              currentDuty={myDuties[quickEditDay] || null}
+              onClose={() => setQuickEditDay(null)} />
+          )}
         </>
       );
     }
 
-    function CalendarGrid({ year, month, duties, clinicOverrides, today, myTeam, onCellClick }) {
+    // ============================================================
+    function CalendarGrid({ year, month, duties, clinicOverrides, today, myTeam, onCellTap, onCellLongPress }) {
       const { daysInMonth, startWeekday } = getMonthInfo(year, month);
-      const tColor = teamColor(myTeam);
 
       const cells = [];
       for (let i = 0; i < startWeekday; i++) {
@@ -889,25 +970,16 @@
         const dow = (startWeekday + day - 1) % 7;
         const status = getClinicStatus(iso, dow, clinicOverrides);
         const isToday = (year === today.year && month === today.month && day === today.day);
-        const shift = duties[day];
+        const duty = duties[day];
         const isHoliday = !!HOLIDAYS[iso];
 
         cells.push(
-          <button key={day} className={`cal-cell ${isToday ? "today" : ""}`}
-            onClick={() => onCellClick(day)} type="button">
-            {isHoliday && <div className="holiday-dot" title={HOLIDAYS[iso]} />}
-            <div className={`cal-date ${status}`}>{day}</div>
-            <div className="duty-stack">
-              {shift && (
-                <div className="duty-pill"
-                  style={shift === "O"
-                    ? { background: "transparent", color: "var(--text-soft)", fontWeight: 500 }
-                    : { background: tColor.bg, color: tColor.text }}>
-                  {shift}
-                </div>
-              )}
-            </div>
-          </button>
+          <CalendarCell key={day}
+            day={day} duty={duty} status={status}
+            isToday={isToday} isHoliday={isHoliday} holidayName={HOLIDAYS[iso]}
+            myTeam={myTeam}
+            onTap={onCellTap} onLongPress={onCellLongPress}
+          />
         );
       }
 
@@ -925,6 +997,39 @@
       );
     }
 
+    function CalendarCell({ day, duty, status, isToday, isHoliday, holidayName, myTeam, onTap, onLongPress }) {
+      const lp = useLongPress(() => onTap(day), () => onLongPress(day));
+      const shift = duty?.shift;
+      const effTeam = duty ? getEffectiveTeam(duty, myTeam) : myTeam;
+      const tColor = teamColor(effTeam);
+      const role = getEffectiveRole(duty);
+      const isHelperVisual = !!duty?.helper;
+
+      let pillStyle = null;
+      if (shift === "O") {
+        pillStyle = { background: "transparent", color: "var(--text-soft)", fontWeight: 500 };
+      } else if (shift) {
+        pillStyle = { background: tColor.bg, color: tColor.text };
+      }
+
+      return (
+        <button {...lp} className={`cal-cell ${isToday ? "today" : ""}`} type="button">
+          {isHoliday && <div className="holiday-dot" title={holidayName} />}
+          {isHelperVisual && <div className="helper-dot" />}
+          <div className={`cal-date ${status}`}>{day}</div>
+          <div className="duty-stack">
+            {shift && (
+              <div className="duty-pill" style={pillStyle}>
+                <span>{shift}</span>
+                {role && <span className="role-mark">{role === "act" ? "a" : ROLE_KR[role]}</span>}
+              </div>
+            )}
+          </div>
+        </button>
+      );
+    }
+
+    // ============================================================
     function DayDetailModal({ year, month, day, me, allUsers, allDuties, clinicOverrides, onClose }) {
       const monthKey = getMonthKey(year, month);
       const iso = isoDate(year, month, day);
@@ -935,31 +1040,42 @@
       const myDuty = getDutyAt(allDuties, monthKey, me.sabun, day);
       const myShift = myDuty?.shift;
       const myEffectiveTeam = getEffectiveTeam(myDuty, me.team);
+      const myRole = getEffectiveRole(myDuty);
+      const iAmHelper = !!myDuty?.helper;
 
       const handover = HANDOVER_SHIFTS.includes(myShift) ? getHandoverConfig(myShift) : null;
-      const showHandover = handover && me.team !== "main";
+      const showHandover = handover && myEffectiveTeam !== "main";
+
+      // 인계 사람 필터 — 같은 effective team이고, A팀이면 같은 role까지 매칭
+      const filterForHandover = (sabuns, mk, dayN) => {
+        return sabuns.filter(s => {
+          const u = allUsers[s];
+          if (!u) return false;
+          const d = getDutyAt(allDuties, mk, s, dayN);
+          if (getEffectiveTeam(d, u.team) !== myEffectiveTeam) return false;
+          // A팀에서 본인이 role 있으면 같은 role만
+          if (myEffectiveTeam === "A" && myRole) {
+            return getEffectiveRole(d) === myRole;
+          }
+          return true;
+        });
+      };
 
       let prevPeople = [], nextPeople = [];
       if (showHandover) {
         const pd = shiftDate(year, month, day, handover.prev.offset);
         const pmk = getMonthKey(pd.year, pd.month);
-        const all = getPeopleByShift(allDuties, allUsers, pmk, pd.day, handover.prev.shift);
-        prevPeople = all.filter(s => {
-          const u = allUsers[s];
-          if (!u) return false;
-          const d = getDutyAt(allDuties, pmk, s, pd.day);
-          return getEffectiveTeam(d, u.team) === me.team;
-        });
+        prevPeople = filterForHandover(
+          getPeopleByShift(allDuties, allUsers, pmk, pd.day, handover.prev.shift),
+          pmk, pd.day
+        );
 
         const nd = shiftDate(year, month, day, handover.next.offset);
         const nmk = getMonthKey(nd.year, nd.month);
-        const allN = getPeopleByShift(allDuties, allUsers, nmk, nd.day, handover.next.shift);
-        nextPeople = allN.filter(s => {
-          const u = allUsers[s];
-          if (!u) return false;
-          const d = getDutyAt(allDuties, nmk, s, nd.day);
-          return getEffectiveTeam(d, u.team) === me.team;
-        });
+        nextPeople = filterForHandover(
+          getPeopleByShift(allDuties, allUsers, nmk, nd.day, handover.next.shift),
+          nmk, nd.day
+        );
       }
 
       const showLineup = HANDOVER_SHIFTS.includes(myShift);
@@ -968,6 +1084,8 @@
         const sabuns = getPeopleByShift(allDuties, allUsers, monthKey, day, myShift);
         lineup = groupByEffectiveTeam(sabuns, allUsers, allDuties, monthKey, day);
       }
+
+      const isActOrSAct = (myEffectiveTeam === "A" && myRole === "act") || myEffectiveTeam === "S-act";
 
       const dateColorClass = clinic === "morning" ? "morning" : clinic === "closed" ? "closed" : "full";
       const myTeamColor = teamColor(myEffectiveTeam);
@@ -999,9 +1117,11 @@
                   </span>
                   <span className="shift-meta">
                     {SHIFT_LABELS[myShift]}
+                    {myRole && <span className="meta-role">({ROLE_KR[myRole]})</span>}
                     <span className="meta-team" style={{ background: myTeamColor.bg, color: myTeamColor.text }}>
                       {myEffectiveTeam}
                     </span>
+                    {iAmHelper && <span className="meta-helper">helper</span>}
                   </span>
                 </div>
               ) : (
@@ -1013,11 +1133,17 @@
 
             {showHandover && (
               <div className="day-section">
-                <p className="day-section-title">{me.team}팀 인수인계</p>
+                <p className="day-section-title">
+                  {myEffectiveTeam}{myRole ? `(${ROLE_KR[myRole]})` : ""} 인수인계
+                </p>
                 <HandoverRow direction="prev" config={handover.prev}
-                  people={prevPeople} allUsers={allUsers} mySabun={me.sabun} myTeam={me.team} />
+                  people={prevPeople} allUsers={allUsers} allDuties={allDuties}
+                  mySabun={me.sabun} myEffectiveTeam={myEffectiveTeam}
+                  isActSlot={isActOrSAct} year={year} month={month} day={day} />
                 <HandoverRow direction="next" config={handover.next}
-                  people={nextPeople} allUsers={allUsers} mySabun={me.sabun} myTeam={me.team} />
+                  people={nextPeople} allUsers={allUsers} allDuties={allDuties}
+                  mySabun={me.sabun} myEffectiveTeam={myEffectiveTeam}
+                  isActSlot={isActOrSAct} year={year} month={month} day={day} />
               </div>
             )}
 
@@ -1032,7 +1158,7 @@
             {!showHandover && !showLineup && myShift && (
               <div className="day-section">
                 <p style={{ fontSize: 13, color: "var(--text-soft)", margin: 0, textAlign: "center", padding: "8px 0" }}>
-                  {me.team === "main"
+                  {myEffectiveTeam === "main"
                     ? "main 팀은 인수인계 표시가 없어요."
                     : "이 근무는 인수인계·라인업 표시가 없어요."}
                 </p>
@@ -1043,8 +1169,14 @@
       );
     }
 
-    function HandoverRow({ direction, config, people, allUsers, mySabun, myTeam }) {
+    function HandoverRow({ direction, config, people, allUsers, allDuties, mySabun, myEffectiveTeam, isActSlot, year, month, day }) {
       const arrow = direction === "prev" ? "←" : "→";
+
+      // 빈 메시지: act/S-act는 별도 문구
+      const emptyMsg = isActSlot
+        ? `${direction === "prev" ? "이전번" : "다음번"} acting이 없어요`
+        : `${direction === "prev" ? "이전번" : "다음번"} 근무자가 없어요`;
+
       return (
         <div className="handover-row">
           <div className="handover-arrow">{arrow}</div>
@@ -1053,14 +1185,31 @@
               {direction === "prev" ? "받음" : "넘김"} · {config.labelTime}
             </div>
             {people.length === 0 ? (
-              <div className="handover-empty">
-                {direction === "prev" ? "이전번 근무자가 없어요" : "다음번 근무자가 없어요"}
-              </div>
+              <div className="handover-empty">{emptyMsg}</div>
             ) : (
               <div className="handover-people">
-                {people.map(s => (
-                  <PersonChip key={s} sabun={s} user={allUsers[s]} isMe={s === mySabun} teamForColor={myTeam} />
-                ))}
+                {people.map(s => {
+                  // 그 사람의 그날 듀티 (인계 시점)
+                  const offset = config.offset;
+                  const targetDate = shiftDate(year, month, day, offset);
+                  const tmk = getMonthKey(targetDate.year, targetDate.month);
+                  const d = getDutyAt(allDuties, tmk, s, targetDate.day);
+                  const isHelper = !!d?.helper;
+                  const role = getEffectiveRole(d);
+                  // A팀 앞/뒤 매칭 시스템에서는 helper 강조 안 함 (spec)
+                  const isAFrontBackMatch = myEffectiveTeam === "A" && (role === "front" || role === "back");
+                  const showHelperStyle = isHelper && !isAFrontBackMatch;
+                  return (
+                    <PersonChip key={s}
+                      sabun={s} user={allUsers[s]}
+                      isMe={s === mySabun}
+                      teamForColor={myEffectiveTeam}
+                      role={role}
+                      isHelper={isHelper}
+                      helperStyle={showHelperStyle}
+                    />
+                  );
+                })}
               </div>
             )}
           </div>
@@ -1084,12 +1233,16 @@
                   {sabuns.map(s => {
                     const duty = getDutyAt(allDuties, monthKey, s, day);
                     const isHelper = !!duty?.helper;
+                    const role = getEffectiveRole(duty);
                     return (
                       <PersonChip key={s}
                         sabun={s} user={allUsers[s]}
                         isMe={s === mySabun}
                         teamForColor={team}
-                        isHelper={isHelper} />
+                        role={role}
+                        isHelper={isHelper}
+                        helperStyle={isHelper}
+                      />
                     );
                   })}
                 </div>
@@ -1100,7 +1253,7 @@
       );
     }
 
-    function PersonChip({ sabun, user, isMe, teamForColor, isHelper }) {
+    function PersonChip({ sabun, user, isMe, teamForColor, role, isHelper, helperStyle }) {
       if (!user) {
         return <span className="person-chip" style={{
           background: "var(--surface-alt)", color: "var(--text-soft)"
@@ -1108,17 +1261,21 @@
       }
       const c = teamColor(teamForColor || user.team);
       return (
-        <span className={`person-chip ${isMe ? "me" : ""}`}
+        <span className={`person-chip ${isMe ? "me" : ""} ${helperStyle ? "helper-style" : ""}`}
           style={{ background: c.bg, color: c.text }}>
           {user.name}
-          {isHelper && <span className="role-tag">helper</span>}
+          {role && <span className="role-tag">{ROLE_KR[role]}</span>}
+          {isHelper && <span className="helper-tag">helper</span>}
         </span>
       );
     }
 
+    // ============================================================
     function DutyInputModal({ year, month, sabun, myTeam, currentDuties, onClose }) {
       const { daysInMonth } = getMonthInfo(year, month);
+      const allowRoles = (myTeam === "A");
 
+      // 기존 듀티를 텍스트로 직렬화
       const initial = useMemo(() => {
         let maxDay = 0;
         for (const k of Object.keys(currentDuties)) {
@@ -1126,7 +1283,16 @@
           if (d > maxDay) maxDay = d;
         }
         let out = "";
-        for (let d = 1; d <= maxDay; d++) out += currentDuties[d] || "";
+        for (let d = 1; d <= maxDay; d++) {
+          const duty = currentDuties[d];
+          if (!duty) continue;
+          out += duty.shift;
+          if (allowRoles && duty.role && !duty.helper) {
+            if (duty.role === "front") out += "1";
+            else if (duty.role === "back") out += "2";
+            else if (duty.role === "act") out += "a";
+          }
+        }
         return out;
       }, []);
 
@@ -1135,13 +1301,13 @@
       const [busy, setBusy] = useState(false);
 
       const parsed = useMemo(() => {
-        try { return parseDutyString(text); } catch { return null; }
-      }, [text]);
+        try { return parseDutyString(text, allowRoles); } catch { return null; }
+      }, [text, allowRoles]);
 
       const save = async () => {
         setErr("");
         let codes;
-        try { codes = parseDutyString(text); }
+        try { codes = parseDutyString(text, allowRoles); }
         catch (e) { setErr(e.message); return; }
         if (codes.length > daysInMonth) {
           setErr(`이 달은 ${daysInMonth}일까지인데 ${codes.length}개가 입력됐어요.`);
@@ -1150,11 +1316,17 @@
         setBusy(true);
         try {
           const monthKey = `${year}-${String(month).padStart(2, "0")}`;
+          // 텍스트 입력으로는 helper를 만들 수 없음 → 기존 helper 듀티는 보존
+          // 단, 입력된 day의 경우 텍스트로 덮어쓰되 helper는 제거됨 (FAB 입력의 의미)
+          // 입력 안 된 day 중 기존이 helper면 그대로 유지하기 어려우니까 단순화: 입력된 day 수만큼 덮어쓰기, 나머지 삭제
           const updates = {};
           for (let d = 1; d <= daysInMonth; d++) {
             const dKey = String(d).padStart(2, "0");
             if (d <= codes.length) {
-              updates[`duties/${monthKey}/${sabun}/${dKey}`] = { shift: codes[d - 1], team: myTeam };
+              const c = codes[d - 1];
+              const data = { shift: c.shift, team: myTeam };
+              if (c.role) data.role = c.role;
+              updates[`duties/${monthKey}/${sabun}/${dKey}`] = data;
             } else {
               updates[`duties/${monthKey}/${sabun}/${dKey}`] = null;
             }
@@ -1179,10 +1351,16 @@
               <div className="duty-help">
                 1일부터 순서대로 한 글자씩 입력. 공백/줄바꿈 무시.<br />
                 <code>D</code> Day · <code>E</code> Evening · <code>N</code> Night · <code>O</code> Off · <code>T</code> Top · <code>M</code> Mid · <code>V</code> 반차
+                {allowRoles && (
+                  <>
+                    <br />A팀 역할: D/E/N 뒤에 <code>1</code>(앞) · <code>2</code>(뒤) · <code>a</code>(act) · <code>앞</code> · <code>뒤</code> 가능 (예: <code>D1E뒤Na</code>)
+                  </>
+                )}
+                <br /><span style={{ color: "var(--text-soft)" }}>※ helper 근무는 캘린더 셀을 길게 눌러 설정</span>
               </div>
               <textarea className="duty-textarea" value={text}
                 onChange={e => setText(e.target.value)}
-                placeholder="예: DENNOOD ENN OOD..." autoFocus />
+                placeholder={allowRoles ? "예: D1E뒤NOOD..." : "예: DENNOOD..."} autoFocus />
               <div className="day-counter">
                 {parsed ? `${parsed.length}일` : "—"} / {daysInMonth}일
               </div>
@@ -1198,6 +1376,217 @@
       );
     }
 
+    // ============================================================
+    // <QuickEditModal> — 셀 long-press 빠른 수정
+    // ============================================================
+    function QuickEditModal({ year, month, day, me, currentDuty, onClose }) {
+      const monthKey = getMonthKey(year, month);
+
+      const [shift, setShift] = useState(currentDuty?.shift || "");
+      // role: 본인이 A팀일 때 "내 팀에서의 역할"
+      const [role, setRole] = useState(currentDuty?.helper ? "" : (currentDuty?.role || ""));
+      const [isHelper, setIsHelper] = useState(!!currentDuty?.helper);
+      const [helperTeam, setHelperTeam] = useState(currentDuty?.helper?.team || "");
+      const [helperRole, setHelperRole] = useState(currentDuty?.helper?.role || "");
+      const [busy, setBusy] = useState(false);
+      const [err, setErr] = useState("");
+
+      const helperTeamOptions = TEAMS.filter(t => t !== me.team);
+
+      // 역할 보여줘야 하는지: shift D/E/N + (A팀 본인 OR helper로 A 가는 경우)
+      const showRoleSection = (() => {
+        if (!shift || !["D", "E", "N"].includes(shift)) return false;
+        if (isHelper) return helperTeam === "A";
+        return me.team === "A";
+      })();
+
+      const currentRole = isHelper ? helperRole : role;
+      const setCurrentRole = (v) => {
+        if (isHelper) setHelperRole(v);
+        else setRole(v);
+      };
+
+      // shift가 D/E/N 아니면 helper 의미 없음(B/C/D 등도 가능하지만 단순화 위해 D/E/N 외엔 helper 비활성화? 실제로는 가능. 일단 허용)
+      // T/M은 main 전용이라 shift T/M + helper team=main 의미 없음. 단, 다른 팀 사람이 T를 입력하는 게 = main 대체. 데이터는 그냥 shift T로 저장하면 됨 (T는 자동 main).
+      // → T/M 선택 시에는 helper 토글을 강제로 끔
+      useEffect(() => {
+        if (shift === "T" || shift === "M") {
+          setIsHelper(false); setHelperTeam(""); setHelperRole("");
+          setRole("");
+        }
+        if (shift === "O" || shift === "V") {
+          // O/V는 role 의미 없음
+          setRole("");
+          setHelperRole("");
+        }
+      }, [shift]);
+
+      const save = async () => {
+        setErr("");
+
+        if (!shift) {
+          // 빈 shift = 듀티 삭제
+          setBusy(true);
+          try {
+            const dKey = String(day).padStart(2, "0");
+            await remove(ref(db, `duties/${monthKey}/${me.sabun}/${dKey}`));
+            onClose();
+          } catch (e) {
+            console.error(e);
+            setErr("삭제 중 오류가 발생했어요.");
+            setBusy(false);
+          }
+          return;
+        }
+
+        // helper 모드인데 팀 미선택
+        if (isHelper && !helperTeam) {
+          setErr("helper 팀을 선택해 주세요.");
+          return;
+        }
+
+        // A팀 helper로 가는데 본인이 A팀 아님 → confirm
+        if (isHelper && helperTeam === "A" && me.team !== "A") {
+          if (!confirm("A팀 helper로 근무하는 게 맞나요?")) return;
+        }
+
+        const data = { shift, team: me.team };
+        if (isHelper) {
+          data.helper = { team: helperTeam };
+          if (helperTeam === "A" && helperRole) {
+            data.helper.role = helperRole;
+          }
+        } else {
+          if (me.team === "A" && role && ["D", "E", "N"].includes(shift)) {
+            data.role = role;
+          }
+        }
+
+        setBusy(true);
+        try {
+          const dKey = String(day).padStart(2, "0");
+          await set(ref(db, `duties/${monthKey}/${me.sabun}/${dKey}`), data);
+          onClose();
+        } catch (e) {
+          console.error(e);
+          setErr("저장 중 오류가 발생했어요.");
+          setBusy(false);
+        }
+      };
+
+      // 미리보기 텍스트
+      const previewParts = [];
+      if (shift) previewParts.push(SHIFT_LABELS[shift] || shift);
+      if (showRoleSection && currentRole) previewParts.push(`(${ROLE_KR[currentRole]})`);
+      if (isHelper && helperTeam) previewParts.push(`@ ${helperTeam} helper`);
+      const preview = shift ? previewParts.join(" ") : "(미입력)";
+
+      return (
+        <div className="modal-backdrop" onClick={onClose}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">{month}월 {day}일 빠른 수정</h2>
+              <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
+            </div>
+
+            <div className="qe-current">
+              <span style={{ color: "var(--text-soft)" }}>현재 선택: </span>
+              <span style={{ color: "var(--text)", fontWeight: 500 }}>{preview}</span>
+            </div>
+
+            <div className="modal-fields">
+              <div className="field">
+                <label>근무</label>
+                <div className="qe-shift-grid">
+                  {SHIFT_CODES.map(s => (
+                    <button key={s} type="button"
+                      className={`qe-shift-btn ${shift === s ? "active" : ""}`}
+                      onClick={() => setShift(s)}>
+                      {s}
+                    </button>
+                  ))}
+                  <button type="button"
+                    className={`qe-shift-btn qe-shift-btn-clear ${!shift ? "active" : ""}`}
+                    onClick={() => setShift("")}>
+                    ✕ 삭제
+                  </button>
+                </div>
+              </div>
+
+              {showRoleSection && (
+                <div className="field">
+                  <label>{isHelper ? "A팀 역할 (helper)" : "A팀 역할"}</label>
+                  <div className="qe-row">
+                    <button type="button"
+                      className={`qe-role-btn ${!currentRole ? "active" : ""}`}
+                      onClick={() => setCurrentRole("")}>
+                      기본
+                    </button>
+                    {Object.entries(ROLE_KR).map(([k, v]) => (
+                      <button key={k} type="button"
+                        className={`qe-role-btn ${currentRole === k ? "active" : ""}`}
+                        onClick={() => setCurrentRole(k)}>
+                        {v}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {shift && shift !== "T" && shift !== "M" && (
+                <div className="field">
+                  <label className="qe-toggle-label">
+                    <input type="checkbox" checked={isHelper}
+                      onChange={e => {
+                        setIsHelper(e.target.checked);
+                        if (!e.target.checked) {
+                          setHelperTeam(""); setHelperRole("");
+                        }
+                      }} />
+                    <span>다른 팀에 helper로 근무</span>
+                  </label>
+                </div>
+              )}
+
+              {isHelper && (
+                <div className="field">
+                  <label>helper 갈 팀</label>
+                  <div className="qe-team-grid">
+                    {helperTeamOptions.map(t => {
+                      const tc = teamColor(t);
+                      return (
+                        <button key={t} type="button"
+                          className={`qe-team-btn ${helperTeam === t ? "active" : ""}`}
+                          style={helperTeam === t
+                            ? { background: tc.bg, color: tc.text }
+                            : {}}
+                          onClick={() => {
+                            setHelperTeam(t);
+                            if (t !== "A") setHelperRole("");
+                          }}>
+                          {t}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {err && <div className="auth-error">{err}</div>}
+            </div>
+
+            <div className="modal-actions">
+              <button className="btn-primary" onClick={save} disabled={busy}>
+                {busy ? "저장 중…" : (shift ? "저장" : "이 날 듀티 삭제")}
+              </button>
+              <button className="btn-ghost" onClick={onClose}>취소</button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================================
     function ProfileModal({ me, onClose, onLogout, onProfileUpdate }) {
       const [editing, setEditing] = useState(false);
       const [showAdminWL, setShowAdminWL] = useState(false);
@@ -1257,7 +1646,7 @@
               </button>
             </div>
             <p style={{ fontSize: 11, color: "var(--text-soft)", textAlign: "center", marginTop: 24 }}>
-              61w · Phase 2
+              61w · Phase 3
             </p>
           </div>
         </div>
@@ -1300,26 +1689,18 @@
               <button className="modal-close" onClick={onCancel} aria-label="닫기">×</button>
             </div>
             <div className="modal-fields">
-              <div className="field">
-                <label>이름</label>
-                <input value={name} onChange={e => setName(e.target.value)} />
-              </div>
-              <div className="field">
-                <label>팀</label>
+              <div className="field"><label>이름</label>
+                <input value={name} onChange={e => setName(e.target.value)} /></div>
+              <div className="field"><label>팀</label>
                 <select value={team} onChange={e => setTeam(e.target.value)}>
                   {TEAMS.map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
-              </div>
-              <div className="field">
-                <label>입사일 (YYYYMMDD)</label>
+                </select></div>
+              <div className="field"><label>입사일 (YYYYMMDD)</label>
                 <input type="tel" inputMode="numeric" value={hireDate}
-                  onChange={e => setHireDate(formatHireDateInput(e.target.value))} />
-              </div>
-              <div className="field">
-                <label>전화번호</label>
+                  onChange={e => setHireDate(formatHireDateInput(e.target.value))} /></div>
+              <div className="field"><label>전화번호</label>
                 <input type="tel" inputMode="numeric" value={phone}
-                  onChange={e => setPhone(formatPhone(e.target.value))} />
-              </div>
+                  onChange={e => setPhone(formatPhone(e.target.value))} /></div>
               {err && <div className="auth-error">{err}</div>}
             </div>
             <div className="modal-actions">
