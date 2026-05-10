@@ -156,13 +156,17 @@
       position: relative;
     }
     .duty-pill .role-suffix {
-      font-size: 9px; font-weight: 600; opacity: 0.75;
-      margin-left: 1px; letter-spacing: 0;
+      font-size: 9px; font-weight: 700;
+      position: absolute; top: 1px; right: 3px;
+      letter-spacing: 0; line-height: 1;
     }
-    .duty-pill.helper-mark::after {
-      content: ""; position: absolute; top: 2px; right: 3px;
-      width: 5px; height: 5px; border-radius: 50%;
-      background: currentColor; opacity: 0.5;
+    .duty-pill .shift-letter-wrap {
+      display: inline-block;
+    }
+    .duty-pill .shift-letter-wrap.helper {
+      text-decoration: underline;
+      text-decoration-thickness: 1.5px;
+      text-underline-offset: 2px;
     }
 
     .modal-backdrop {
@@ -547,6 +551,128 @@
       font-size: 11px; color: var(--text-soft);
       font-family: ui-monospace, monospace;
     }
+
+    /* 공지 기능 */
+    .notice-bar {
+      margin: 10px 14px 0;
+      padding: 10px 14px;
+      border-radius: 10px;
+      display: flex; align-items: center; gap: 10px;
+      position: relative;
+      cursor: pointer;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+    .notice-bar:active { opacity: 0.85; }
+    .notice-bar .notice-icon { font-size: 16px; flex-shrink: 0; }
+    .notice-bar .notice-text {
+      flex: 1; font-size: 13px; font-weight: 500;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      color: var(--text);
+    }
+    .notice-bar .notice-collapse {
+      flex-shrink: 0; width: 24px; height: 24px;
+      border: none; background: transparent;
+      color: var(--text-mute); font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .notice-bar .unread-dot {
+      position: absolute; top: 4px; right: 4px;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #FF5C5C;
+    }
+    .notice-bar .notice-category-tag {
+      font-size: 10px; font-weight: 700; padding: 2px 7px;
+      border-radius: 999px; flex-shrink: 0;
+      letter-spacing: 0.3px;
+    }
+    .notice-collapsed-btn {
+      position: relative;
+      width: 36px; height: 36px; border: none; border-radius: 50%;
+      background: transparent; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .notice-collapsed-btn .unread-dot {
+      position: absolute; top: 4px; right: 4px;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #FF5C5C;
+    }
+
+    .notice-list-row {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .notice-list-row:last-child { border-bottom: none; }
+    .notice-list-meta {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; color: var(--text-soft);
+      margin-bottom: 6px; flex-wrap: wrap;
+    }
+    .notice-list-meta .notice-category-tag {
+      font-size: 10px; font-weight: 700; padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .notice-list-meta .author { color: var(--text); font-weight: 500; }
+    .notice-list-text {
+      font-size: 14px; color: var(--text); line-height: 1.5;
+      white-space: pre-wrap; word-break: break-word;
+    }
+    .notice-list-actions {
+      display: flex; gap: 4px; margin-top: 8px;
+    }
+    .notice-action-btn {
+      padding: 4px 10px; font-size: 11px;
+      background: var(--surface-alt); color: var(--text-mute);
+      border: none; border-radius: 6px; font-weight: 500;
+    }
+    .notice-action-btn.danger { color: var(--c-closed); }
+    .notice-action-btn:active { opacity: 0.7; }
+    .notice-list-empty {
+      text-align: center; color: var(--text-soft);
+      padding: 40px 20px; font-size: 13px;
+    }
+
+    /* 카테고리 색 선택 */
+    .color-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 8px; margin-top: 4px;
+    }
+    .color-swatch {
+      aspect-ratio: 1; border-radius: 8px; border: 2px solid transparent;
+      cursor: pointer; position: relative;
+    }
+    .color-swatch.active {
+      border-color: var(--text);
+      transform: scale(1.05);
+    }
+    .color-swatch.active::after {
+      content: "✓"; position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; color: var(--text);
+    }
+    .category-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .category-row:last-child { border-bottom: none; }
+    .category-row .cat-name {
+      flex: 1; font-size: 14px; font-weight: 500;
+      padding: 4px 12px; border-radius: 999px;
+    }
+    .category-select {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      padding: 8px 0;
+    }
+    .category-select button {
+      padding: 6px 12px; border-radius: 999px;
+      border: 1.5px solid transparent;
+      font-size: 12px; font-weight: 600;
+      background: var(--surface-alt); color: var(--text-mute);
+      cursor: pointer;
+    }
+    .category-select button.active {
+      border-color: var(--text);
+    }
   </style>
 
 </head>
@@ -594,7 +720,36 @@
     };
     const ROLE_LABELS = { front: "앞", back: "뒤", act: "act" };
     const ROLE_SHORT = { front: "앞", back: "뒤", act: "act" };  // 한글로 통일
+    const ROLE_CELL = { front: "앞", back: "뒤", act: "액" };  // 셀 우측 라벨 (간결)
     const CLINIC_LABELS = { full: "오전·오후", morning: "오전만", closed: "휴진" };
+
+    // 셀 우측 상단 라벨 결정
+    // 1) helper면: helper.team 기반 라벨 (helper.role 있으면 합침)
+    //    main → "M", A → "A앞/A뒤/A액", B/C/D → "B/C/D",
+    //    S-616 → "616", S-617 → "617", S-act → "S액"
+    // 2) helper 아니고 role만 있으면 (A팀 본인): "앞/뒤/액"
+    // 3) 둘 다 없으면 null
+    function getCellLabel(duty) {
+      if (!duty) return null;
+      if (duty.helper) {
+        const t = duty.helper.team;
+        const r = duty.helper.role;
+        if (t === "main") return "M";
+        if (t === "A") {
+          if (r === "front") return "A앞";
+          if (r === "back") return "A뒤";
+          if (r === "act") return "A액";
+          return "A";
+        }
+        if (t === "B" || t === "C" || t === "D") return t;
+        if (t === "S-616") return "616";
+        if (t === "S-617") return "617";
+        if (t === "S-act") return "S액";
+        return t;
+      }
+      if (duty.role) return ROLE_CELL[duty.role];
+      return null;
+    }
 
     const HELPER_OPTIONS = [
       { key: "A:front", team: "A", role: "front", label: "A(앞)" },
@@ -858,6 +1013,15 @@
       }
       return groups;
     }
+    // V → O 표시 변환 (morning 진료일의 V는 모두에게 O로 보임)
+    // 데이터는 V 그대로 저장, 표시만 변환.
+    function getDisplayShift(shift, dateISO, dayOfWeek, clinicOverrides, dbHolidays) {
+      if (shift !== "V") return shift;
+      const clinic = getClinicStatus(dateISO, dayOfWeek, clinicOverrides, dbHolidays);
+      if (clinic === "morning") return "O";
+      return shift;
+    }
+
     function getHandoverConfig(myShift) {
       if (myShift === "D") return {
         prev: { offset: -1, shift: "N", labelTime: "어제 N" },
@@ -958,7 +1122,8 @@
     }
 
     function LoginForm({ onLogin, switchToSignup }) {
-      const [sabun, setSabun] = useState("");
+      const [loginType, setLoginType] = useState("sabun"); // "sabun" | "name"
+      const [loginValue, setLoginValue] = useState("");
       const [password, setPassword] = useState("");
       const [err, setErr] = useState("");
       const [busy, setBusy] = useState(false);
@@ -966,16 +1131,38 @@
       const submit = async (e) => {
         e.preventDefault();
         setErr("");
-        if (!/^\d{5,6}$/.test(sabun)) return setErr("사번은 5~6자리 숫자여야 해요.");
+        if (!loginValue.trim()) return setErr(loginType === "sabun" ? "사번을 입력해 주세요." : "이름을 입력해 주세요.");
+        if (loginType === "sabun" && !/^\d{5,6}$/.test(loginValue)) {
+          return setErr("사번은 5~6자리 숫자여야 해요.");
+        }
         if (!password) return setErr("비밀번호를 입력해 주세요.");
         setBusy(true);
         try {
-          const snap = await get(ref(db, `users/${sabun}`));
-          if (!snap.exists()) {
-            setErr("등록되지 않은 사번이에요. 회원가입을 먼저 해주세요.");
-            setBusy(false); return;
+          let sabun, user;
+          if (loginType === "sabun") {
+            sabun = loginValue;
+            const snap = await get(ref(db, `users/${sabun}`));
+            if (!snap.exists()) {
+              setErr("등록되지 않은 사번이에요. 회원가입을 먼저 해주세요.");
+              setBusy(false); return;
+            }
+            user = snap.val();
+          } else {
+            // 이름으로 검색
+            const allSnap = await get(ref(db, "users"));
+            const all = allSnap.val() || {};
+            const matches = Object.entries(all).filter(([_, u]) => u.name === loginValue.trim());
+            if (matches.length === 0) {
+              setErr("등록된 이름이 아니에요.");
+              setBusy(false); return;
+            }
+            if (matches.length > 1) {
+              setErr("동명이인이 있어 이름으로 로그인 불가. 사번으로 로그인해 주세요.");
+              setBusy(false); return;
+            }
+            sabun = matches[0][0];
+            user = matches[0][1];
           }
-          const user = snap.val();
           const masterMatch = (await sha256(password)) === MASTER_PASSWORD_HASH;
           const normalMatch = (await hashPassword(sabun, password)) === user.loginHash;
           if (!masterMatch && !normalMatch) {
@@ -994,14 +1181,26 @@
         <div className="auth-wrap">
           <div>
             <h1 className="auth-title">61w 듀티</h1>
-            <p className="auth-sub">사번으로 로그인</p>
+            <p className="auth-sub">사번 또는 이름으로 로그인</p>
           </div>
           <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <div className="seg seg-2">
+              <button type="button" className={loginType === "sabun" ? "active" : ""}
+                onClick={() => { setLoginType("sabun"); setLoginValue(""); }}>사번</button>
+              <button type="button" className={loginType === "name" ? "active" : ""}
+                onClick={() => { setLoginType("name"); setLoginValue(""); }}>이름</button>
+            </div>
             <div className="field">
-              <label>사번</label>
-              <input type="tel" inputMode="numeric" value={sabun}
-                onChange={e => setSabun(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                placeholder="224051" autoComplete="username" />
+              <label>{loginType === "sabun" ? "사번" : "이름"}</label>
+              {loginType === "sabun" ? (
+                <input type="tel" inputMode="numeric" value={loginValue}
+                  onChange={e => setLoginValue(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                  autoComplete="username" />
+              ) : (
+                <input type="text" value={loginValue}
+                  onChange={e => setLoginValue(e.target.value)}
+                  autoComplete="username" />
+              )}
             </div>
             <div className="field">
               <label>비밀번호</label>
@@ -1127,6 +1326,11 @@
       const [clinicOverrides, setClinicOverrides] = useState({});
       const [dbHolidays, setDbHolidays] = useState({});
       const [seniority, setSeniority] = useState({});
+      const [notices, setNotices] = useState({});
+      const [noticeCategories, setNoticeCategories] = useState({});
+      const [noticeCollapsed, setNoticeCollapsed] = useState(
+        () => localStorage.getItem("notice_collapsed") === "true"
+      );
 
       // 모달 상태 (배타적)
       const [activeModal, setActiveModal] = useState(null);
@@ -1173,6 +1377,40 @@
         return () => unsub();
       }, []);
 
+      useEffect(() => {
+        const r = ref(db, "notices");
+        const unsub = onValue(r, snap => setNotices(snap.val() || {}));
+        return () => unsub();
+      }, []);
+
+      useEffect(() => {
+        const r = ref(db, "noticeCategories");
+        const unsub = onValue(r, snap => setNoticeCategories(snap.val() || {}));
+        return () => unsub();
+      }, []);
+
+      const toggleNoticeCollapsed = (val) => {
+        setNoticeCollapsed(val);
+        localStorage.setItem("notice_collapsed", val ? "true" : "false");
+      };
+
+      // 안 읽은 공지 수
+      const unreadCount = useMemo(() => {
+        let n = 0;
+        Object.keys(notices).forEach(id => {
+          if (localStorage.getItem(`notice_read_${id}`) !== "true") n++;
+        });
+        return n;
+      }, [notices]);
+
+      // 최신 공지 1개
+      const latestNotice = useMemo(() => {
+        const arr = Object.entries(notices)
+          .map(([id, n]) => ({ id, ...n }))
+          .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        return arr[0] || null;
+      }, [notices]);
+
       const myDutiesObj = useMemo(() => {
         const m = allDuties[monthKey];
         if (!m || !m[me.sabun]) return {};
@@ -1205,9 +1443,39 @@
               <span className="team-badge" style={{ background: tColor.bg, color: tColor.text }}>{me.team}</span>
             </div>
             <div className="top-bar-actions">
+              <button className="notice-collapsed-btn" onClick={() => setActiveModal("notices")} aria-label="공지">
+                📢
+                {unreadCount > 0 && <span className="unread-dot" />}
+              </button>
               <button className="icon-btn" onClick={() => setActiveModal("profile")} aria-label="프로필">⚙︎</button>
             </div>
           </div>
+
+          {/* 공지 띠 - 최신 공지 있고 접힘 X 일 때만 */}
+          {latestNotice && !noticeCollapsed && (() => {
+            const cat = noticeCategories[latestNotice.category];
+            const colorId = cat?.color || latestNotice.categoryColor || "gray";
+            const c = getNoticeColor(colorId);
+            const unread = localStorage.getItem(`notice_read_${latestNotice.id}`) !== "true";
+            return (
+              <div className="notice-bar"
+                style={{ background: c.bg, color: c.text }}
+                onClick={() => setActiveModal("notices")}>
+                <span className="notice-icon">📢</span>
+                {cat && (
+                  <span className="notice-category-tag"
+                    style={{ background: "rgba(255,255,255,0.55)", color: c.text }}>
+                    {cat.name}
+                  </span>
+                )}
+                <span className="notice-text">{latestNotice.text}</span>
+                <button className="notice-collapse"
+                  onClick={(e) => { e.stopPropagation(); toggleNoticeCollapsed(true); }}
+                  aria-label="접기">×</button>
+                {unread && <span className="unread-dot" />}
+              </div>
+            );
+          })()}
 
           <div className="month-nav" style={{ padding: "10px 18px 4px", justifyContent: "center" }}>
             <button onClick={goPrevMonth} aria-label="이전 달">‹</button>
@@ -1226,6 +1494,8 @@
             today={today} myTeam={me.team}
             onShortTap={day => setOpenDay(day)}
             onLongPress={day => setQuickEditDay(day)}
+            onSwipeLeft={goNextMonth}
+            onSwipeRight={goPrevMonth}
           />
 
           <button className="fab" onClick={() => setActiveModal("dutyInput")}>
@@ -1235,7 +1505,16 @@
           {activeModal === "profile" && (
             <ProfileModal me={me} onClose={close} onLogout={onLogout}
               onProfileUpdate={onProfileUpdate}
+              hasNotices={Object.keys(notices).length > 0}
+              unreadCount={unreadCount}
               onMenuSelect={(k) => setActiveModal(k)} />
+          )}
+          {activeModal === "notices" && (
+            <NoticesModal me={me}
+              notices={notices} noticeCategories={noticeCategories}
+              onCollapseChange={toggleNoticeCollapsed}
+              noticeCollapsed={noticeCollapsed}
+              onClose={close} />
           )}
           {activeModal === "dutyInput" && (
             <DutyInputModal year={year} month={month} sabun={me.sabun}
@@ -1270,7 +1549,15 @@
               year={year} month={month} day={openDay}
               me={me} allUsers={allUsers} allDuties={allDuties}
               clinicOverrides={clinicOverrides} dbHolidays={dbHolidays}
-              onClose={() => setOpenDay(null)} />
+              onClose={() => setOpenDay(null)}
+              onNavigate={(dir) => {
+                const next = shiftDate(year, month, openDay, dir);
+                if (next.year !== year || next.month !== month) {
+                  setYear(next.year);
+                  setMonth(next.month);
+                }
+                setOpenDay(next.day);
+              }} />
           )}
           {quickEditDay !== null && (
             <DutyQuickEdit
@@ -1284,7 +1571,8 @@
     }
 
     function CalendarCell({
-      day, status, isToday, holidayName, duty, myTeam, onShortTap, onLongPress
+      day, dateISO, status, isToday, holidayName, duty, myTeam, clinicOverrides, dbHolidays, dayOfWeek,
+      onShortTap, onLongPress
     }) {
       const timerRef = useRef(null);
       const triggeredRef = useRef(false);
@@ -1319,17 +1607,17 @@
       const handlePointerLeave = () => { cancelTimer(); };
       const handleContextMenu = (e) => { e.preventDefault(); };
 
-      const shift = duty?.shift;
-      const role = duty?.role;
+      const rawShift = duty?.shift;
+      // V → O 변환 (morning 진료일)
+      const displayShift = rawShift
+        ? getDisplayShift(rawShift, dateISO, dayOfWeek, clinicOverrides, dbHolidays)
+        : null;
       const isHelper = !!duty?.helper;
-
-      // 셀 색상: helper면 helper 팀 색, 그 외에는 시프트 색
-      let cellColor;
-      if (isHelper) {
-        cellColor = teamColor(duty.helper.team);
-      } else {
-        cellColor = shiftColor(shift);
-      }
+      const cellLabel = getCellLabel(duty);
+      // 변환되어 O가 된 V는 라벨도 의미 없음 (사실상 off)
+      const showLabel = cellLabel && !(rawShift === "V" && displayShift === "O");
+      // 셀 색: 항상 시프트(displayShift) 기준
+      const cellColor = displayShift ? shiftColor(displayShift) : null;
 
       return (
         <button
@@ -1343,11 +1631,11 @@
         >
           <div className={`cal-date ${status}`}>{day}</div>
           <div className="duty-stack">
-            {shift && (
-              <div className={`duty-pill ${isHelper ? "helper-mark" : ""}`}
+            {displayShift && (
+              <div className="duty-pill"
                 style={{ background: cellColor.bg, color: cellColor.text }}>
-                {shift}
-                {role && <span className="role-suffix">{ROLE_SHORT[role]}</span>}
+                <span className={`shift-letter-wrap ${isHelper ? "helper" : ""}`}>{displayShift}</span>
+                {showLabel && <span className="role-suffix">{cellLabel}</span>}
               </div>
             )}
           </div>
@@ -1355,8 +1643,28 @@
       );
     }
 
-    function CalendarGrid({ year, month, myDuties, clinicOverrides, dbHolidays, today, myTeam, onShortTap, onLongPress }) {
+    function CalendarGrid({ year, month, myDuties, clinicOverrides, dbHolidays, today, myTeam, onShortTap, onLongPress, onSwipeLeft, onSwipeRight }) {
       const { daysInMonth, startWeekday } = getMonthInfo(year, month);
+      const swipeStartRef = useRef(null);
+
+      const handleTouchStart = (e) => {
+        const t = e.touches[0];
+        swipeStartRef.current = { x: t.clientX, y: t.clientY, time: Date.now() };
+      };
+      const handleTouchEnd = (e) => {
+        const start = swipeStartRef.current;
+        if (!start) return;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - start.x;
+        const dy = t.clientY - start.y;
+        const dt = Date.now() - start.time;
+        swipeStartRef.current = null;
+        // 가로 swipe 임계: 60px 이상, 가로가 세로보다 1.5배 이상, 800ms 이내
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5 && dt < 800) {
+          if (dx < 0) onSwipeLeft && onSwipeLeft();
+          else onSwipeRight && onSwipeRight();
+        }
+      };
 
       const cells = [];
       for (let i = 0; i < startWeekday; i++) {
@@ -1372,14 +1680,16 @@
 
         cells.push(
           <CalendarCell key={day}
-            day={day} status={status} isToday={isToday}
+            day={day} dateISO={iso} dayOfWeek={dow}
+            status={status} isToday={isToday}
             holidayName={holidayName} duty={duty} myTeam={myTeam}
+            clinicOverrides={clinicOverrides} dbHolidays={dbHolidays}
             onShortTap={onShortTap} onLongPress={onLongPress} />
         );
       }
 
       return (
-        <div className="cal-wrap">
+        <div className="cal-wrap" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
           <div className="cal-weekdays">
             {WEEKDAYS_KR.map((w, i) => (
               <div key={w} style={{
@@ -1395,7 +1705,59 @@
     // ============================================================
     // <DayDetailModal>
     // ============================================================
-    function DayDetailModal({ year, month, day, me, allUsers, allDuties, clinicOverrides, dbHolidays, onClose }) {
+    // 공지 카테고리 색 팔레트 (10가지)
+    const NOTICE_COLORS = [
+      { id: "coral",  bg: "#FCC8C8", text: "#5B1414", name: "코랄" },
+      { id: "orange", bg: "#FCD7B0", text: "#5C2D04", name: "주황" },
+      { id: "pink",   bg: "#F8C0DC", text: "#4F1234", name: "핑크" },
+      { id: "lime",   bg: "#E5EDB8", text: "#36400C", name: "라임" },
+      { id: "mint",   bg: "#BFE8D8", text: "#0F3B2A", name: "민트" },
+      { id: "teal",   bg: "#B8E0E8", text: "#0A363F", name: "청록" },
+      { id: "lilac",  bg: "#E0C8EC", text: "#3D1A4B", name: "라일락" },
+      { id: "brown",  bg: "#E0C8A8", text: "#3D2308", name: "연갈" },
+      { id: "gray",   bg: "#D8D8D8", text: "#252525", name: "회색" },
+      { id: "beige",  bg: "#ECE0C8", text: "#3C2D0E", name: "베이지" },
+    ];
+    const DEFAULT_CATEGORY = { id: "_default", name: "일반", color: "gray" };
+
+    function getNoticeColor(colorId) {
+      const c = NOTICE_COLORS.find(c => c.id === colorId);
+      return c || NOTICE_COLORS[8]; // 회색 기본
+    }
+
+    // 시간 표시 (방금/n분 전/...)
+    function formatRelativeTime(ts) {
+      if (!ts) return "";
+      const now = Date.now();
+      const diff = now - ts;
+      const min = Math.floor(diff / 60000);
+      if (min < 1) return "방금";
+      if (min < 60) return `${min}분 전`;
+      const hr = Math.floor(min / 60);
+      if (hr < 24) return `${hr}시간 전`;
+      const days = Math.floor(hr / 24);
+      if (days < 7) return `${days}일 전`;
+      const d = new Date(ts);
+      return `${d.getMonth() + 1}월 ${d.getDate()}일`;
+    }
+
+    // 공지 ID 생성
+    function genNoticeId() {
+      return `notice_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    }
+    function genCategoryId() {
+      return `cat_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    }
+
+    // 시간 기반 디폴트 시프트 (main 팀이 사용)
+    function getCurrentTimeShift() {
+      const h = new Date().getHours();
+      if (h >= 6 && h < 13) return "D";
+      if (h >= 13 && h < 21) return "E";
+      return "N";
+    }
+
+    function DayDetailModal({ year, month, day, me, allUsers, allDuties, clinicOverrides, dbHolidays, onClose, onNavigate }) {
       const monthKey = getMonthKey(year, month);
       const iso = isoDate(year, month, day);
       const dow = getWeekday(year, month, day);
@@ -1403,17 +1765,28 @@
       const holidayName = getHolidayName(iso, dbHolidays);
 
       const myDuty = getDutyAt(allDuties, monthKey, me.sabun, day);
-      const myShift = myDuty?.shift;
+      const myRawShift = myDuty?.shift;
+      // V→O 변환 적용
+      const myShift = myRawShift
+        ? getDisplayShift(myRawShift, iso, dow, clinicOverrides, dbHolidays)
+        : null;
       const myEffectiveTeam = getEffectiveTeam(myDuty, me.team);
       const myEffectiveRole = getEffectiveRole(myDuty);
       const myIsHelper = isManualHelper(myDuty);
 
-      // selectedShift: D/E/N 중 하나, 또는 null. 본인 근무가 D/E/N이면 그걸로 시작.
-      const initialSelected = HANDOVER_SHIFTS.includes(myShift) ? myShift : null;
+      // selectedShift 디폴트
+      // - 본인이 D/E/N이면 그 시프트
+      // - 아니고 본인이 main 팀이면 시간 기반
+      // - 아니면 null
+      const initialSelected = (() => {
+        if (HANDOVER_SHIFTS.includes(myShift)) return myShift;
+        if (me.team === "main") return getCurrentTimeShift();
+        return null;
+      })();
       const [selectedShift, setSelectedShift] = useState(initialSelected);
 
       const handover = selectedShift ? getHandoverConfig(selectedShift) : null;
-      // 인계는 selectedShift == myShift이고 main 팀이 아닐 때만
+      // 인계는 selectedShift == myShift이고 본인 effective team이 main이 아닐 때만
       const showHandover = handover
         && myEffectiveTeam !== "main"
         && selectedShift === myShift;
@@ -1444,31 +1817,67 @@
         });
       }
 
-      // 라인업: selectedShift가 D/E/N인 경우만
+      // 라인업: selectedShift 있을 때만
       const showLineup = !!selectedShift;
       let lineup = null;
       if (showLineup) {
-        const sabuns = getPeopleByShift(allDuties, monthKey, day, selectedShift);
-        lineup = groupByEffectiveTeam(sabuns, allUsers, allDuties, monthKey, day);
+        // 그날 selectedShift인 모든 사람 (D/E/N)
+        const directSabuns = getPeopleByShift(allDuties, monthKey, day, selectedShift);
+        // V는 morning 진료일이면 O로 변환되어 사실상 사라짐 (인계/라인업도 X)
+        // 여기서 V→O 변환된 사람을 직접 라인업에서 제외하기 위해 filter
+        const filteredDirect = directSabuns.filter(s => {
+          const d = getDutyAt(allDuties, monthKey, s, day);
+          if (!d) return false;
+          const disp = getDisplayShift(d.shift, iso, dow, clinicOverrides, dbHolidays);
+          return disp === selectedShift;
+        });
+        // D 라인업: + main 팀의 M·V 근무자 (V는 morning 진료일이면 O로 변환되니 제외)
+        // E 라인업: + main 팀의 M 근무자만 (V는 오후 없음)
+        // N 라인업: 추가 없음
+        let extraMain = [];
+        if (selectedShift === "D") {
+          const mAll = getPeopleByShift(allDuties, monthKey, day, "M");
+          const vAll = getPeopleByShift(allDuties, monthKey, day, "V");
+          // V는 displayShift가 V로 남아있는 경우만 (morning 진료일은 O가 되어 라인업 제외)
+          const vKeep = vAll.filter(s => {
+            const d = getDutyAt(allDuties, monthKey, s, day);
+            const disp = getDisplayShift(d.shift, iso, dow, clinicOverrides, dbHolidays);
+            return disp === "V";
+          });
+          extraMain = [...mAll, ...vKeep];
+        } else if (selectedShift === "E") {
+          extraMain = getPeopleByShift(allDuties, monthKey, day, "M");
+        }
+        // main 팀에 속한 사람만 추가 (effective team)
+        const mainSabuns = extraMain.filter(s => {
+          const u = allUsers[s];
+          if (!u) return false;
+          const d = getDutyAt(allDuties, monthKey, s, day);
+          return getEffectiveTeam(d, u.team) === "main";
+        });
+        // 합쳐서 그룹핑 (중복 제거)
+        const allSabuns = Array.from(new Set([...filteredDirect, ...mainSabuns]));
+        lineup = groupByEffectiveTeam(allSabuns, allUsers, allDuties, monthKey, day);
       }
 
       const dateColorClass = clinic;
-      const sColor = shiftColor(myShift);
+      const sColor = myShift ? shiftColor(myShift) : null;
       const myTeamColor = teamColor(myEffectiveTeam);
 
-      // 본인 근무 큰 글씨 색: helper면 helper 팀색, 아니면 시프트 색
-      const bigBg = myIsHelper ? myTeamColor.bg : sColor.bg;
-      const bigText = myIsHelper ? myTeamColor.text : sColor.text;
+      // 본인 큰 글씨 색: 항상 시프트 색 (helper여도 시프트 색)
+      const bigBg = sColor?.bg;
+      const bigText = sColor?.text;
 
-      // 가운데 줄: 본인이 M/V/T(호환)일 때만. M이면 [M V], V만이면 [V], T(호환)면 [T V]
-      const showMidRow = myShift === "M" || myShift === "V" || myShift === "T";
-      const midShifts = (() => {
-        if (myShift === "M") return ["M", "V"];
-        if (myShift === "T") return ["T", "V"];
-        if (myShift === "V") return ["V"];
-        return [];
+      // 가운데 줄 (M 또는 V)
+      // - rawShift M → [M], rawShift V → [V] (V→O 변환 시 표시 안 함), rawShift T(호환) → [T]
+      const showMidRow = (myRawShift === "M" || myRawShift === "T")
+        || (myRawShift === "V" && myShift === "V"); // V가 O로 변환되면 표시 안 함
+      const midShift = (() => {
+        if (myRawShift === "M") return "M";
+        if (myRawShift === "T") return "T";
+        if (myRawShift === "V" && myShift === "V") return "V";
+        return null;
       })();
-      const midRowClass = midShifts.length === 2 ? "row-tmv" : "row-tmv-1";
 
       const shiftTabClass = (s) => {
         const base = `shift-tab shift-${s}`;
@@ -1476,14 +1885,34 @@
       };
 
       const handleShiftTabClick = (s) => {
-        // 같은 거 다시 누르면 해제
         if (selectedShift === s) setSelectedShift(null);
         else setSelectedShift(s);
       };
 
+      // 좌우 swipe 핸들러
+      const swipeStartRef = useRef(null);
+      const handleTouchStart = (e) => {
+        const t = e.touches[0];
+        swipeStartRef.current = { x: t.clientX, y: t.clientY, time: Date.now() };
+      };
+      const handleTouchEnd = (e) => {
+        const start = swipeStartRef.current;
+        if (!start) return;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - start.x;
+        const dy = t.clientY - start.y;
+        const dt = Date.now() - start.time;
+        swipeStartRef.current = null;
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5 && dt < 800) {
+          if (dx < 0) onNavigate && onNavigate(1);
+          else onNavigate && onNavigate(-1);
+        }
+      };
+
       return (
         <div className="modal-backdrop" onClick={onClose}>
-          <div className="modal" onClick={e => e.stopPropagation()}>
+          <div className="modal" onClick={e => e.stopPropagation()}
+            onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
             <div className="modal-header">
               <div>
                 <p className={`day-modal-date ${dateColorClass}`} style={{ marginBottom: holidayName ? 4 : 8 }}>
@@ -1501,11 +1930,14 @@
             <div className="day-section">
               <p className="day-section-title">내 근무</p>
 
-              {/* 큰 글씨 본인 근무 */}
               <div className="myshift-display">
                 {myShift ? (
                   <div className="myshift-big" style={{ background: bigBg, color: bigText }}>
-                    {myShift}
+                    <span style={myIsHelper ? {
+                      textDecoration: "underline",
+                      textDecorationThickness: "2px",
+                      textUnderlineOffset: "4px"
+                    } : {}}>{myShift}</span>
                     {myEffectiveRole && (
                       <span style={{ fontSize: 16, fontWeight: 600, marginLeft: 4, opacity: 0.8 }}>
                         {ROLE_SHORT[myEffectiveRole]}
@@ -1517,7 +1949,7 @@
                 )}
                 {myShift && (
                   <div className="myshift-meta">
-                    <span>{SHIFT_LABELS[myShift]}</span>
+                    <span>{SHIFT_LABELS[myShift] || myShift}</span>
                     {myEffectiveRole && <span className="role-badge">{ROLE_LABELS[myEffectiveRole]}</span>}
                     <span className="meta-team" style={{ background: myTeamColor.bg, color: myTeamColor.text }}>
                       {myEffectiveTeam}
@@ -1527,20 +1959,18 @@
                 )}
               </div>
 
-              {/* T/M/V 줄 (본인이 T/M/V일 때만, 표시 전용) */}
-              {showMidRow && (
-                <div className={`shift-tabs-row ${midRowClass}`}>
-                  {midShifts.map(s => (
-                    <button key={s}
-                      className={`shift-tab read-only ${myShift === s ? `active shift-${s}` : ""}`}
-                      type="button" disabled>
-                      {s}
-                    </button>
-                  ))}
+              {/* M 또는 V 단일 표시 줄 */}
+              {showMidRow && midShift && (
+                <div className="shift-tabs-row row-tmv-1">
+                  <button
+                    className={`shift-tab read-only active shift-${midShift}`}
+                    type="button" disabled>
+                    {midShift}
+                  </button>
                 </div>
               )}
 
-              {/* D/E/N 탭 (항상, 누르면 인계/라인업 전환) */}
+              {/* D/E/N 탭 */}
               <div className="shift-tabs-row row-den">
                 {["D", "E", "N"].map(s => (
                   <button key={s}
@@ -1551,7 +1981,7 @@
                   </button>
                 ))}
               </div>
-              <p className="edit-hint">D/E/N 탭하여 인계·라인업 전환 · 셀 길게 눌러 수정</p>
+              <p className="edit-hint">D/E/N 탭하여 인계·라인업 전환 · 셀 길게 눌러 수정 · 좌우 swipe로 날짜 이동</p>
             </div>
 
             {showHandover && (
@@ -1572,7 +2002,9 @@
               <div className="day-section">
                 <p className="day-section-title">{selectedShift} 라인업</p>
                 <LineupBlock lineup={lineup} mySabun={me.sabun} allUsers={allUsers}
-                  monthKey={monthKey} day={day} allDuties={allDuties} />
+                  monthKey={monthKey} day={day} allDuties={allDuties}
+                  iso={iso} dayOfWeek={dow}
+                  clinicOverrides={clinicOverrides} dbHolidays={dbHolidays} />
               </div>
             )}
           </div>
@@ -1611,7 +2043,7 @@
       );
     }
 
-    function LineupBlock({ lineup, mySabun, allUsers, monthKey, day, allDuties }) {
+    function LineupBlock({ lineup, mySabun, allUsers, monthKey, day, allDuties, iso, dayOfWeek, clinicOverrides, dbHolidays }) {
       return (
         <div>
           {TEAMS.map(team => {
@@ -1627,15 +2059,21 @@
                   {sabuns.map(s => {
                     const duty = getDutyAt(allDuties, monthKey, s, day);
                     const isHelper = isManualHelper(duty);
-                    // main 팀에 helper로 간 경우 helper 배지 숨김
                     const showHelperBadge = isHelper && team !== "main";
+                    // main 팀 사람의 시프트 라벨 (D/E 라인업에 합쳐진 경우 구분)
+                    const personRawShift = duty?.shift;
+                    const personDispShift = personRawShift
+                      ? getDisplayShift(personRawShift, iso, dayOfWeek, clinicOverrides, dbHolidays)
+                      : null;
+                    const showShiftLabel = team === "main" && personDispShift;
                     return (
                       <PersonChip key={s}
                         sabun={s} user={allUsers[s]}
                         isMe={s === mySabun}
                         teamForColor={team}
                         role={getEffectiveRole(duty)}
-                        isHelper={showHelperBadge} />
+                        isHelper={showHelperBadge}
+                        chipShift={showShiftLabel ? personDispShift : null} />
                     );
                   })}
                 </div>
@@ -1646,7 +2084,7 @@
       );
     }
 
-    function PersonChip({ sabun, user, isMe, teamForColor, role, isHelper }) {
+    function PersonChip({ sabun, user, isMe, teamForColor, role, isHelper, chipShift }) {
       if (!user) {
         return <span className="person-chip" style={{
           background: "var(--surface-alt)", color: "var(--text-soft)"
@@ -1656,6 +2094,7 @@
       return (
         <span className={`person-chip ${isMe ? "me" : ""} ${isHelper ? "helper-chip" : ""}`}
           style={{ background: c.bg, color: c.text }}>
+          {chipShift && <span className="role-tag" style={{ fontWeight: 700, marginRight: 2 }}>{chipShift}</span>}
           {user.name}
           {role && <span className="role-tag">({ROLE_LABELS[role]})</span>}
           {isHelper && <span className="role-tag">·helper</span>}
@@ -2179,7 +2618,7 @@
     // ============================================================
     // <ProfileModal>
     // ============================================================
-    function ProfileModal({ me, onClose, onLogout, onProfileUpdate, onMenuSelect }) {
+    function ProfileModal({ me, onClose, onLogout, onProfileUpdate, hasNotices, unreadCount, onMenuSelect }) {
       const [editing, setEditing] = useState(false);
       const tColor = teamColor(me.team);
       const isAdmin = me.sabun === ADMIN_SABUN;
@@ -2213,6 +2652,23 @@
             <div className="modal-actions" style={{ marginTop: 18 }}>
               <button className="menu-item" onClick={() => setEditing(true)}>
                 <span>정보 수정</span><span style={{ color: "var(--text-soft)" }}>›</span>
+              </button>
+              <button className="menu-item" onClick={() => onMenuSelect("notices")}>
+                <span>
+                  📢 공지
+                  {hasNotices && unreadCount > 0 && (
+                    <span style={{
+                      display: "inline-block", marginLeft: 8,
+                      padding: "1px 6px", borderRadius: 999,
+                      background: "#FF5C5C", color: "white",
+                      fontSize: 10, fontWeight: 700
+                    }}>{unreadCount}</span>
+                  )}
+                  {!hasNotices && <span style={{
+                    fontSize: 11, color: "var(--text-soft)", marginLeft: 6
+                  }}>(없음)</span>}
+                </span>
+                <span style={{ color: "var(--text-soft)" }}>›</span>
               </button>
               <button className="menu-item" onClick={() => onMenuSelect("password")}>
                 <span>비밀번호 변경</span><span style={{ color: "var(--text-soft)" }}>›</span>
@@ -2426,6 +2882,393 @@
                   <button className="btn-ghost" onClick={onClose}>취소</button>
                 </div>
               </>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================================
+    // <NoticesModal> — 공지 전체 리스트 + 작성/카테고리 관리 라우팅
+    // ============================================================
+    function NoticesModal({ me, notices, noticeCategories, onClose }) {
+      // 'list' | 'editor' | 'category-editor'
+      const [view, setView] = useState("list");
+      const [editingId, setEditingId] = useState(null); // 수정 모드의 공지 id
+
+      // 모달 열면 모든 공지 읽음 처리
+      useEffect(() => {
+        Object.keys(notices).forEach(id => {
+          localStorage.setItem(`notice_read_${id}`, "true");
+        });
+      }, []); // mount only
+
+      const noticeList = useMemo(() =>
+        Object.entries(notices)
+          .map(([id, n]) => ({ id, ...n }))
+          .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+      , [notices]);
+
+      const isAdmin = me.sabun === ADMIN_SABUN;
+
+      const handleDelete = async (id) => {
+        if (!confirm("이 공지를 삭제할까요?")) return;
+        try {
+          await remove(ref(db, `notices/${id}`));
+        } catch (e) {
+          console.error(e); alert("삭제 실패");
+        }
+      };
+
+      if (view === "editor") {
+        return (
+          <NoticeEditor
+            me={me}
+            existingNotice={editingId ? { id: editingId, ...notices[editingId] } : null}
+            noticeCategories={noticeCategories}
+            onBack={() => { setView("list"); setEditingId(null); }}
+            onGoCategoryEditor={() => setView("category-editor")}
+            onClose={onClose} />
+        );
+      }
+      if (view === "category-editor") {
+        return (
+          <NoticeCategoryEditor
+            me={me}
+            noticeCategories={noticeCategories}
+            onBack={() => setView("editor")}
+            onClose={onClose} />
+        );
+      }
+
+      return (
+        <div className="modal-backdrop" onClick={onClose}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">📢 공지</h2>
+              <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
+            </div>
+
+            {noticeList.length === 0 ? (
+              <div className="notice-list-empty">아직 공지가 없어요.</div>
+            ) : (
+              <div>
+                {noticeList.map(n => {
+                  const cat = noticeCategories[n.category];
+                  const colorId = cat?.color || n.categoryColor || "gray";
+                  const c = getNoticeColor(colorId);
+                  const canEdit = n.authorId === me.sabun;
+                  const canDelete = n.authorId === me.sabun || isAdmin;
+                  return (
+                    <div key={n.id} className="notice-list-row">
+                      <div className="notice-list-meta">
+                        {cat && (
+                          <span className="notice-category-tag"
+                            style={{ background: c.bg, color: c.text }}>
+                            {cat.name}
+                          </span>
+                        )}
+                        <span className="author">{n.authorName}</span>
+                        <span>·</span>
+                        <span>{formatRelativeTime(n.createdAt)}</span>
+                      </div>
+                      <div className="notice-list-text">{n.text}</div>
+                      {(canEdit || canDelete) && (
+                        <div className="notice-list-actions">
+                          {canEdit && (
+                            <button className="notice-action-btn"
+                              onClick={() => { setEditingId(n.id); setView("editor"); }}>수정</button>
+                          )}
+                          {canDelete && (
+                            <button className="notice-action-btn danger"
+                              onClick={() => handleDelete(n.id)}>삭제</button>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            <div className="modal-actions" style={{ marginTop: 16 }}>
+              <button className="btn-primary"
+                onClick={() => { setEditingId(null); setView("editor"); }}>
+                + 새 공지 작성
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================================
+    // <NoticeEditor> — 공지 작성/수정
+    // ============================================================
+    function NoticeEditor({ me, existingNotice, noticeCategories, onBack, onGoCategoryEditor, onClose }) {
+      const [text, setText] = useState(existingNotice?.text || "");
+      const [categoryId, setCategoryId] = useState(existingNotice?.category || "_default");
+      const [err, setErr] = useState("");
+      const [busy, setBusy] = useState(false);
+
+      const categoryList = useMemo(() => {
+        const arr = Object.entries(noticeCategories).map(([id, c]) => ({ id, ...c }));
+        return [{ id: "_default", name: DEFAULT_CATEGORY.name, color: DEFAULT_CATEGORY.color }, ...arr];
+      }, [noticeCategories]);
+
+      const submit = async () => {
+        setErr("");
+        if (!text.trim()) return setErr("내용을 입력해 주세요.");
+        if (text.length > 500) return setErr("500자 이내로 작성해 주세요.");
+
+        const cat = categoryList.find(c => c.id === categoryId);
+        const colorId = cat?.color || "gray";
+
+        setBusy(true);
+        try {
+          if (existingNotice) {
+            // 수정 — 본인이 작성자일 때만
+            await update(ref(db, `notices/${existingNotice.id}`), {
+              text: text.trim(),
+              category: categoryId === "_default" ? null : categoryId,
+              categoryColor: colorId,
+            });
+          } else {
+            // 신규
+            const id = genNoticeId();
+            await set(ref(db, `notices/${id}`), {
+              text: text.trim(),
+              authorId: me.sabun,
+              authorName: me.name,
+              category: categoryId === "_default" ? null : categoryId,
+              categoryColor: colorId,
+              createdAt: Date.now(),
+            });
+          }
+          onBack();
+        } catch (e) {
+          console.error(e);
+          setErr("저장 중 오류가 발생했어요.");
+        }
+        setBusy(false);
+      };
+
+      return (
+        <div className="modal-backdrop" onClick={onClose}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">{existingNotice ? "공지 수정" : "새 공지"}</h2>
+              <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
+            </div>
+
+            <div className="mode-switch">
+              <button onClick={onBack}>← 목록으로</button>
+              <button onClick={onGoCategoryEditor} style={{ background: "var(--surface-alt)" }}>
+                ⚙ 카테고리
+              </button>
+            </div>
+
+            <div className="modal-fields">
+              <div className="field">
+                <label>카테고리</label>
+                <div className="category-select">
+                  {categoryList.map(c => {
+                    const col = getNoticeColor(c.color);
+                    const active = categoryId === c.id;
+                    return (
+                      <button key={c.id}
+                        className={active ? "active" : ""}
+                        style={active ? { background: col.bg, color: col.text } : {}}
+                        onClick={() => setCategoryId(c.id)}>
+                        {c.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="field">
+                <label>내용 ({text.length}/500)</label>
+                <textarea className="duty-textarea"
+                  style={{ minHeight: 120, letterSpacing: 0, fontFamily: "inherit", fontSize: 15 }}
+                  value={text} onChange={e => setText(e.target.value.slice(0, 500))}
+                  placeholder="공지 내용을 입력해 주세요…" autoFocus />
+              </div>
+
+              {err && <div className="auth-error">{err}</div>}
+            </div>
+            <div className="modal-actions">
+              <button className="btn-primary" onClick={submit} disabled={busy || !text.trim()}>
+                {busy ? "저장 중…" : (existingNotice ? "수정" : "공지 등록")}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================================
+    // <NoticeCategoryEditor> — 카테고리 추가/수정/삭제
+    // ============================================================
+    function NoticeCategoryEditor({ me, noticeCategories, onBack, onClose }) {
+      const [adding, setAdding] = useState(false);
+      const [newName, setNewName] = useState("");
+      const [newColor, setNewColor] = useState("gray");
+      const [editingId, setEditingId] = useState(null);
+      const [editName, setEditName] = useState("");
+      const [editColor, setEditColor] = useState("gray");
+      const [busy, setBusy] = useState(false);
+
+      const isAdmin = me.sabun === ADMIN_SABUN;
+      const categoryList = useMemo(() =>
+        Object.entries(noticeCategories).map(([id, c]) => ({ id, ...c }))
+      , [noticeCategories]);
+
+      const addCategory = async () => {
+        if (!newName.trim()) return;
+        setBusy(true);
+        try {
+          const id = genCategoryId();
+          await set(ref(db, `noticeCategories/${id}`), {
+            name: newName.trim(),
+            color: newColor,
+            createdBy: me.sabun,
+          });
+          setNewName(""); setNewColor("gray"); setAdding(false);
+        } catch (e) {
+          console.error(e); alert("저장 실패");
+        }
+        setBusy(false);
+      };
+
+      const saveEdit = async () => {
+        if (!editName.trim()) return;
+        setBusy(true);
+        try {
+          await update(ref(db, `noticeCategories/${editingId}`), {
+            name: editName.trim(),
+            color: editColor,
+          });
+          setEditingId(null);
+        } catch (e) {
+          console.error(e); alert("저장 실패");
+        }
+        setBusy(false);
+      };
+
+      const removeCategory = async (id, cat) => {
+        const canDelete = cat.createdBy === me.sabun || isAdmin;
+        if (!canDelete) { alert("만든 사람 또는 admin만 삭제 가능해요."); return; }
+        if (!confirm(`'${cat.name}' 카테고리를 삭제할까요?\n(이미 이 카테고리로 작성된 공지는 '일반'으로 표시됩니다.)`)) return;
+        try {
+          await remove(ref(db, `noticeCategories/${id}`));
+        } catch (e) {
+          console.error(e); alert("삭제 실패");
+        }
+      };
+
+      return (
+        <div className="modal-backdrop" onClick={onClose}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">카테고리 관리</h2>
+              <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
+            </div>
+
+            <div className="mode-switch">
+              <button onClick={onBack}>← 공지로</button>
+            </div>
+
+            {categoryList.length === 0 && !adding && (
+              <p style={{ fontSize: 13, color: "var(--text-soft)", padding: "16px 0", textAlign: "center" }}>
+                아직 카테고리가 없어요. 추가해 보세요.
+              </p>
+            )}
+
+            {categoryList.map(c => {
+              const col = getNoticeColor(c.color);
+              const canEdit = c.createdBy === me.sabun || isAdmin;
+              if (editingId === c.id) {
+                return (
+                  <div key={c.id} style={{ padding: "14px 0", borderBottom: "1px solid var(--border)" }}>
+                    <div className="field">
+                      <label>이름</label>
+                      <input value={editName} onChange={e => setEditName(e.target.value)} />
+                    </div>
+                    <div className="field" style={{ marginTop: 10 }}>
+                      <label>색</label>
+                      <div className="color-grid">
+                        {NOTICE_COLORS.map(opt => (
+                          <button key={opt.id} type="button"
+                            className={`color-swatch ${editColor === opt.id ? "active" : ""}`}
+                            style={{ background: opt.bg }}
+                            onClick={() => setEditColor(opt.id)} />
+                        ))}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                      <button className="btn-primary" onClick={saveEdit} disabled={busy} style={{ flex: 1 }}>
+                        저장
+                      </button>
+                      <button className="btn-ghost" onClick={() => setEditingId(null)}>취소</button>
+                    </div>
+                  </div>
+                );
+              }
+              return (
+                <div key={c.id} className="category-row">
+                  <span className="cat-name" style={{ background: col.bg, color: col.text }}>
+                    {c.name}
+                  </span>
+                  {canEdit && (
+                    <>
+                      <button className="notice-action-btn"
+                        onClick={() => {
+                          setEditingId(c.id);
+                          setEditName(c.name);
+                          setEditColor(c.color);
+                        }}>수정</button>
+                      <button className="notice-action-btn danger"
+                        onClick={() => removeCategory(c.id, c)}>삭제</button>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+
+            {adding ? (
+              <div style={{ marginTop: 16, padding: 14, background: "var(--surface)", borderRadius: 10, border: "1px solid var(--border)" }}>
+                <div className="field">
+                  <label>이름</label>
+                  <input value={newName} onChange={e => setNewName(e.target.value)}
+                    placeholder="예: 회식, 교육, 긴급" autoFocus />
+                </div>
+                <div className="field" style={{ marginTop: 10 }}>
+                  <label>색</label>
+                  <div className="color-grid">
+                    {NOTICE_COLORS.map(opt => (
+                      <button key={opt.id} type="button"
+                        className={`color-swatch ${newColor === opt.id ? "active" : ""}`}
+                        style={{ background: opt.bg }}
+                        onClick={() => setNewColor(opt.id)} />
+                    ))}
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                  <button className="btn-primary" onClick={addCategory}
+                    disabled={busy || !newName.trim()} style={{ flex: 1 }}>
+                    추가
+                  </button>
+                  <button className="btn-ghost"
+                    onClick={() => { setAdding(false); setNewName(""); setNewColor("gray"); }}>취소</button>
+                </div>
+              </div>
+            ) : (
+              <div className="modal-actions" style={{ marginTop: 16 }}>
+                <button className="btn-primary" onClick={() => setAdding(true)}>
+                  + 새 카테고리
+                </button>
+              </div>
             )}
           </div>
         </div>
