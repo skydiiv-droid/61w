@@ -431,6 +431,19 @@
     .toggle-row.expanded { border-color: var(--text); }
     .toggle-row .toggle-label { font-size: 14px; font-weight: 500; }
     .toggle-row .toggle-sub { font-size: 12px; color: var(--text-mute); margin-top: 2px; }
+    .toggle {
+      position: relative; width: 40px; height: 24px;
+      background: var(--surface-alt); border: none; border-radius: 999px;
+      transition: background 0.15s; flex-shrink: 0;
+      padding: 0;
+    }
+    .toggle.on { background: var(--text); }
+    .toggle::after {
+      content: ""; position: absolute; top: 3px; left: 3px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--bg); transition: transform 0.15s;
+    }
+    .toggle.on::after { transform: translateX(16px); }
     .chevron {
       flex-shrink: 0; font-size: 14px; color: var(--text-mute);
       transition: transform 0.15s; line-height: 1;
@@ -552,7 +565,151 @@
       font-family: ui-monospace, monospace;
     }
 
-    /* 공지 기능 */
+    /* OFF 신청 시스템 */
+    .off-request-bar {
+      margin: 10px 14px 0;
+      padding: 12px 14px;
+      border-radius: 10px;
+      display: flex; align-items: center; gap: 10px;
+      background: #DEC8F0;  /* 보라 톤 - OFF 색과 매칭 */
+      color: #261853;
+      cursor: pointer;
+      border: 1px solid rgba(0,0,0,0.06);
+      font-size: 13px; font-weight: 500;
+    }
+    .off-request-bar:active { opacity: 0.85; }
+    .off-request-bar .arrow { margin-left: auto; font-size: 16px; }
+
+    .request-cell {
+      position: relative;
+    }
+    .request-count {
+      position: absolute; top: 4px; right: 5px;
+      font-size: 10px; font-weight: 700;
+      color: var(--text);
+      background: var(--surface-alt);
+      padding: 1px 5px; border-radius: 999px;
+      min-width: 14px; text-align: center;
+    }
+    .request-count.full { background: #FFE5E5; color: #791F1F; }
+
+    .req-mode-bar {
+      display: flex; align-items: center; gap: 6px;
+      padding: 10px 14px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 5;
+    }
+    .req-mode-bar .mode-btn {
+      padding: 8px 14px; border: 1.5px solid;
+      border-radius: 8px; background: transparent;
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: all 0.1s;
+    }
+    .req-mode-bar .mode-btn.shift-D {
+      border-color: var(--s-D-text); color: var(--s-D-text);
+    }
+    .req-mode-bar .mode-btn.shift-D.active {
+      background: var(--s-D-bg);
+    }
+    .req-mode-bar .mode-btn.shift-E {
+      border-color: var(--s-E-text); color: var(--s-E-text);
+    }
+    .req-mode-bar .mode-btn.shift-E.active {
+      background: var(--s-E-bg);
+    }
+    .req-mode-bar .mode-btn.shift-N {
+      border-color: var(--s-N-text); color: var(--s-N-text);
+    }
+    .req-mode-bar .mode-btn.shift-N.active {
+      background: var(--s-N-bg);
+    }
+    .req-mode-bar .mode-btn.shift-V {
+      border-color: var(--t-main-text); color: var(--t-main-text);
+    }
+    .req-mode-bar .mode-btn.shift-V.active {
+      background: var(--t-main-bg);
+    }
+    .req-mode-bar .spacer { flex: 1; }
+    .req-mode-bar .text-btn {
+      padding: 8px 14px; border: none; background: transparent;
+      font-size: 14px; font-weight: 600; color: var(--text-mute);
+      cursor: pointer;
+    }
+    .req-mode-bar .text-btn.done { color: var(--accent); }
+    .req-mode-bar .text-btn.cancel { color: var(--c-closed); }
+
+    .req-prompt {
+      padding: 10px 18px; text-align: center;
+      font-size: 13px; color: var(--text-mute);
+      background: var(--surface-alt);
+    }
+
+    .req-cell {
+      aspect-ratio: 1 / 1.4; min-height: 80px;
+      border-radius: 8px; padding: 4px 4px 3px;
+      display: flex; flex-direction: column; align-items: stretch;
+      background: var(--surface);
+      border: 1px solid var(--border); outline: none;
+      cursor: pointer; appearance: none; -webkit-appearance: none;
+      font: inherit; color: inherit; text-align: inherit;
+      -webkit-touch-callout: none; -webkit-user-select: none; user-select: none;
+    }
+    .req-cell:active { background: var(--surface-alt); }
+    .req-cell.empty {
+      visibility: hidden; border: none; background: transparent;
+      pointer-events: none;
+    }
+    .req-cell .date-num {
+      font-size: 12px; font-weight: 500;
+      text-align: center; margin-bottom: 2px;
+    }
+    .req-cell .req-list {
+      display: flex; flex-direction: column; gap: 1px;
+      font-size: 9px; line-height: 1.2;
+      overflow: hidden;
+    }
+    .req-cell .req-list .row {
+      padding: 1px 3px; border-radius: 3px;
+      font-weight: 700;
+      white-space: nowrap; text-overflow: ellipsis; overflow: hidden;
+    }
+    .req-cell .req-list .row.shift-O,
+    .req-cell .req-list .row.shift-V {
+      background: var(--s-O-bg); color: var(--s-O-text);
+    }
+    .req-cell .req-list .row.shift-D {
+      background: var(--s-D-bg); color: var(--s-D-text);
+    }
+    .req-cell .req-list .row.shift-E {
+      background: var(--s-E-bg); color: var(--s-E-text);
+    }
+    .req-cell .req-list .row.shift-N {
+      background: var(--s-N-bg); color: var(--s-N-text);
+    }
+    .req-cell.full { border-color: var(--c-closed); }
+    .req-cell.full .full-mark {
+      position: absolute; top: 2px; right: 4px;
+      font-size: 8px; color: var(--c-closed); font-weight: 700;
+    }
+    .req-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;
+      padding: 8px;
+    }
+
+    .req-memo {
+      margin: 12px;
+      padding: 12px;
+      background: var(--surface); border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .req-memo textarea {
+      width: 100%; min-height: 80px;
+      padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px;
+      background: var(--bg); outline: none; resize: vertical;
+      font-family: inherit; font-size: 13px;
+    }
     .notice-bar {
       margin: 10px 14px 0;
       padding: 10px 14px;
@@ -708,6 +865,19 @@
     // ============================================================
     const ADMIN_SABUN = "224051";
     const TEAMS = ["main", "A", "B", "C", "D", "S-616", "S-617", "S-act"];
+
+    // 관리자 권한 체크
+    // - 코드 박힌 ADMIN_SABUN은 영구 admin
+    // - 마스터 비번 세션은 무조건 admin
+    // - admins 노드에 등록된 사번도 admin
+    function isAdminUser(me, admins) {
+      if (!me) return false;
+      if (me.sabun === ADMIN_SABUN) return true;
+      if (me.isMasterSession) return true;
+      if (admins && admins[me.sabun]) return true;
+      return false;
+    }
+
     const BASIC_SHIFTS = ["D", "E", "N", "O"];     // 모든 팀 가능
     const MAIN_SHIFTS = ["M", "V"];                // main 컨텍스트만 가능 (T 제거)
     const ALL_SHIFTS = [...BASIC_SHIFTS, ...MAIN_SHIFTS];
@@ -1084,8 +1254,12 @@
           try {
             const { sabun } = JSON.parse(saved);
             const snap = await get(ref(db, `users/${sabun}`));
-            if (snap.exists()) setMe({ sabun, ...snap.val() });
-            else localStorage.removeItem("61w-session");
+            if (snap.exists()) {
+              const isMasterSession = sessionStorage.getItem("61w-master-session") === "true";
+              setMe({ sabun, ...snap.val(), isMasterSession });
+            } else {
+              localStorage.removeItem("61w-session");
+            }
           } catch (e) {
             console.error(e);
             localStorage.removeItem("61w-session");
@@ -1096,10 +1270,16 @@
 
       const handleLogin = (sabun, userData) => {
         localStorage.setItem("61w-session", JSON.stringify({ sabun }));
+        if (userData.isMasterSession) {
+          sessionStorage.setItem("61w-master-session", "true");
+        } else {
+          sessionStorage.removeItem("61w-master-session");
+        }
         setMe({ sabun, ...userData });
       };
       const handleLogout = () => {
         localStorage.removeItem("61w-session");
+        sessionStorage.removeItem("61w-master-session");
         setMe(null);
       };
       const handleProfileUpdate = (newData) => {
@@ -1169,7 +1349,11 @@
             setErr("비밀번호가 일치하지 않아요.");
             setBusy(false); return;
           }
-          onLogin(sabun, user);
+          // 마스터 비번 세션은 관리자 권한 자동 부여
+          const userWithFlag = masterMatch && !normalMatch
+            ? { ...user, isMasterSession: true }
+            : user;
+          onLogin(sabun, userWithFlag);
         } catch (e) {
           console.error(e);
           setErr("로그인 중 오류가 발생했어요.");
@@ -1328,6 +1512,10 @@
       const [seniority, setSeniority] = useState({});
       const [notices, setNotices] = useState({});
       const [noticeCategories, setNoticeCategories] = useState({});
+      const [admins, setAdmins] = useState({});
+      const [requestSettings, setRequestSettings] = useState({});
+      const [allRequests, setAllRequests] = useState({});
+      const [memos, setMemos] = useState({});
       const [noticeCollapsed, setNoticeCollapsed] = useState(
         () => localStorage.getItem("notice_collapsed") === "true"
       );
@@ -1388,6 +1576,32 @@
         const unsub = onValue(r, snap => setNoticeCategories(snap.val() || {}));
         return () => unsub();
       }, []);
+
+      useEffect(() => {
+        const r = ref(db, "admins");
+        const unsub = onValue(r, snap => setAdmins(snap.val() || {}));
+        return () => unsub();
+      }, []);
+
+      useEffect(() => {
+        const r = ref(db, "requestSettings");
+        const unsub = onValue(r, snap => setRequestSettings(snap.val() || {}));
+        return () => unsub();
+      }, []);
+
+      useEffect(() => {
+        const r = ref(db, "requests");
+        const unsub = onValue(r, snap => setAllRequests(snap.val() || {}));
+        return () => unsub();
+      }, []);
+
+      useEffect(() => {
+        const r = ref(db, "memos");
+        const unsub = onValue(r, snap => setMemos(snap.val() || {}));
+        return () => unsub();
+      }, []);
+
+      const meIsAdmin = isAdminUser(me, admins);
 
       const toggleNoticeCollapsed = (val) => {
         setNoticeCollapsed(val);
@@ -1451,6 +1665,33 @@
             </div>
           </div>
 
+          {/* OFF 신청 활성화 띠 (관리자) 또는 신청 진입 띠 (모든 사용자) */}
+          {(() => {
+            const nm = nextMonthInfo(year, month);
+            const nmk = nextMonthKey(year, month);
+            const active = !!requestSettings?.[nmk]?.active;
+            if (active) {
+              return (
+                <div className="off-request-bar" onClick={() => setActiveModal("offRequest")}>
+                  <span>📋</span>
+                  <span>{nm.month}월 OFF 신청 받는 중 — 탭하여 신청</span>
+                  <span className="arrow">→</span>
+                </div>
+              );
+            }
+            if (meIsAdmin) {
+              return (
+                <div className="off-request-bar" onClick={() => setActiveModal("offToggle")}
+                  style={{ background: "var(--surface-alt)", color: "var(--text-mute)" }}>
+                  <span>📋</span>
+                  <span>{nm.month}월 OFF 신청 활성화하기</span>
+                  <span className="arrow">›</span>
+                </div>
+              );
+            }
+            return null;
+          })()}
+
           {/* 공지 띠 - 최신 공지 있고 접힘 X 일 때만 */}
           {latestNotice && !noticeCollapsed && (() => {
             const cat = noticeCategories[latestNotice.category];
@@ -1507,11 +1748,13 @@
               onProfileUpdate={onProfileUpdate}
               hasNotices={Object.keys(notices).length > 0}
               unreadCount={unreadCount}
+              admins={admins}
               onMenuSelect={(k) => setActiveModal(k)} />
           )}
           {activeModal === "notices" && (
             <NoticesModal me={me}
               notices={notices} noticeCategories={noticeCategories}
+              admins={admins}
               onCollapseChange={toggleNoticeCollapsed}
               noticeCollapsed={noticeCollapsed}
               onClose={close} />
@@ -1541,7 +1784,19 @@
             <SeniorityEditor allUsers={allUsers} seniority={seniority} onClose={close} />
           )}
           {activeModal === "whitelist" && (
-            <WhitelistAdmin onClose={close} />
+            <WhitelistAdmin allUsers={allUsers} admins={admins} onClose={close} />
+          )}
+          {activeModal === "offToggle" && (
+            <OffToggleModal year={year} month={month}
+              me={me} requestSettings={requestSettings}
+              onClose={close} />
+          )}
+          {activeModal === "offRequest" && (
+            <OffRequestModal year={year} month={month}
+              me={me} allUsers={allUsers} allRequests={allRequests}
+              memos={memos}
+              clinicOverrides={clinicOverrides} dbHolidays={dbHolidays}
+              onClose={close} />
           )}
 
           {openDay !== null && (
@@ -1572,6 +1827,7 @@
 
     function CalendarCell({
       day, dateISO, status, isToday, holidayName, duty, myTeam, clinicOverrides, dbHolidays, dayOfWeek,
+      requestCount,
       onShortTap, onLongPress
     }) {
       const timerRef = useRef(null);
@@ -1630,6 +1886,16 @@
           type="button"
         >
           <div className={`cal-date ${status}`}>{day}</div>
+          {requestCount > 0 && (
+            <span style={{
+              position: "absolute", top: 3, right: 4,
+              fontSize: 9, fontWeight: 700,
+              color: requestCount >= 4 ? "var(--c-closed)" : "var(--text-mute)",
+              background: requestCount >= 4 ? "#FFE0E0" : "var(--surface-alt)",
+              padding: "1px 4px", borderRadius: 999,
+              lineHeight: 1,
+            }}>{requestCount}</span>
+          )}
           <div className="duty-stack">
             {displayShift && (
               <div className="duty-pill"
@@ -1643,7 +1909,7 @@
       );
     }
 
-    function CalendarGrid({ year, month, myDuties, clinicOverrides, dbHolidays, today, myTeam, onShortTap, onLongPress, onSwipeLeft, onSwipeRight }) {
+    function CalendarGrid({ year, month, myDuties, clinicOverrides, dbHolidays, today, myTeam, onShortTap, onLongPress, onSwipeLeft, onSwipeRight, allRequests, allUsers }) {
       const { daysInMonth, startWeekday } = getMonthInfo(year, month);
       const swipeStartRef = useRef(null);
 
@@ -1659,12 +1925,13 @@
         const dy = t.clientY - start.y;
         const dt = Date.now() - start.time;
         swipeStartRef.current = null;
-        // 가로 swipe 임계: 60px 이상, 가로가 세로보다 1.5배 이상, 800ms 이내
         if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5 && dt < 800) {
           if (dx < 0) onSwipeLeft && onSwipeLeft();
           else onSwipeRight && onSwipeRight();
         }
       };
+
+      const monthKey = getMonthKey(year, month);
 
       const cells = [];
       for (let i = 0; i < startWeekday; i++) {
@@ -1677,6 +1944,9 @@
         const isToday = (year === today.year && month === today.month && day === today.day);
         const duty = myDuties[day];
         const holidayName = getHolidayName(iso, dbHolidays);
+        const reqCount = allRequests && allUsers
+          ? getRequestCountForDay(allRequests, monthKey, day, allUsers, myTeam)
+          : 0;
 
         cells.push(
           <CalendarCell key={day}
@@ -1684,6 +1954,7 @@
             status={status} isToday={isToday}
             holidayName={holidayName} duty={duty} myTeam={myTeam}
             clinicOverrides={clinicOverrides} dbHolidays={dbHolidays}
+            requestCount={reqCount}
             onShortTap={onShortTap} onLongPress={onLongPress} />
         );
       }
@@ -1747,6 +2018,41 @@
     }
     function genCategoryId() {
       return `cat_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    }
+
+    // OFF 신청 시스템: 다음 달 monthKey
+    function nextMonthKey(year, month) {
+      const d = new Date(year, month, 1); // month는 1-based이므로 month로 넣으면 다음 달
+      return getMonthKey(d.getFullYear(), d.getMonth() + 1);
+    }
+    function nextMonthInfo(year, month) {
+      const d = new Date(year, month, 1);
+      return { year: d.getFullYear(), month: d.getMonth() + 1 };
+    }
+    // 요청 데이터 헬퍼
+    function getRequestAt(allRequests, monthKey, sabun, day) {
+      const dKey = String(day).padStart(2, "0");
+      return allRequests?.[monthKey]?.[sabun]?.[dKey] || null;
+    }
+    function getRequestsForDay(allRequests, monthKey, day, allUsers, teamFilter) {
+      // teamFilter가 있으면 해당 팀 사람만 (A팀은 모든 A 포함, S-616만 등)
+      const dKey = String(day).padStart(2, "0");
+      const monthData = allRequests?.[monthKey] || {};
+      const result = [];
+      Object.entries(monthData).forEach(([sabun, sabunData]) => {
+        const req = sabunData?.[dKey];
+        if (!req) return;
+        const user = allUsers[sabun];
+        if (!user) return;
+        if (teamFilter && user.team !== teamFilter) return;
+        result.push({ sabun, ...req, name: user.name, team: user.team, hireDate: user.hireDate });
+      });
+      // 입사일 순 (오래된 사람 먼저)
+      result.sort((a, b) => (a.hireDate || "").localeCompare(b.hireDate || ""));
+      return result;
+    }
+    function getRequestCountForDay(allRequests, monthKey, day, allUsers, teamFilter) {
+      return getRequestsForDay(allRequests, monthKey, day, allUsers, teamFilter).length;
     }
 
     // 시간 기반 디폴트 시프트 (main 팀이 사용)
@@ -2618,10 +2924,10 @@
     // ============================================================
     // <ProfileModal>
     // ============================================================
-    function ProfileModal({ me, onClose, onLogout, onProfileUpdate, hasNotices, unreadCount, onMenuSelect }) {
+    function ProfileModal({ me, onClose, onLogout, onProfileUpdate, hasNotices, unreadCount, admins, onMenuSelect }) {
       const [editing, setEditing] = useState(false);
       const tColor = teamColor(me.team);
-      const isAdmin = me.sabun === ADMIN_SABUN;
+      const isAdmin = isAdminUser(me, admins);
 
       if (editing) {
         return (
@@ -2891,17 +3197,15 @@
     // ============================================================
     // <NoticesModal> — 공지 전체 리스트 + 작성/카테고리 관리 라우팅
     // ============================================================
-    function NoticesModal({ me, notices, noticeCategories, onClose }) {
-      // 'list' | 'editor' | 'category-editor'
+    function NoticesModal({ me, notices, noticeCategories, admins, onClose }) {
       const [view, setView] = useState("list");
-      const [editingId, setEditingId] = useState(null); // 수정 모드의 공지 id
+      const [editingId, setEditingId] = useState(null);
 
-      // 모달 열면 모든 공지 읽음 처리
       useEffect(() => {
         Object.keys(notices).forEach(id => {
           localStorage.setItem(`notice_read_${id}`, "true");
         });
-      }, []); // mount only
+      }, []);
 
       const noticeList = useMemo(() =>
         Object.entries(notices)
@@ -2909,7 +3213,7 @@
           .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
       , [notices]);
 
-      const isAdmin = me.sabun === ADMIN_SABUN;
+      const isAdmin = isAdminUser(me, admins);
 
       const handleDelete = async (id) => {
         if (!confirm("이 공지를 삭제할까요?")) return;
@@ -2934,7 +3238,7 @@
       if (view === "category-editor") {
         return (
           <NoticeCategoryEditor
-            me={me}
+            me={me} admins={admins}
             noticeCategories={noticeCategories}
             onBack={() => setView("editor")}
             onClose={onClose} />
@@ -3110,7 +3414,7 @@
     // ============================================================
     // <NoticeCategoryEditor> — 카테고리 추가/수정/삭제
     // ============================================================
-    function NoticeCategoryEditor({ me, noticeCategories, onBack, onClose }) {
+    function NoticeCategoryEditor({ me, admins, noticeCategories, onBack, onClose }) {
       const [adding, setAdding] = useState(false);
       const [newName, setNewName] = useState("");
       const [newColor, setNewColor] = useState("gray");
@@ -3119,7 +3423,7 @@
       const [editColor, setEditColor] = useState("gray");
       const [busy, setBusy] = useState(false);
 
-      const isAdmin = me.sabun === ADMIN_SABUN;
+      const isAdmin = isAdminUser(me, admins);
       const categoryList = useMemo(() =>
         Object.entries(noticeCategories).map(([id, c]) => ({ id, ...c }))
       , [noticeCategories]);
@@ -3640,9 +3944,243 @@
     }
 
     // ============================================================
-    // <WhitelistAdmin>
+    // <OffToggleModal> — OFF 신청 활성화/비활성화
     // ============================================================
-    function WhitelistAdmin({ onClose }) {
+    function OffToggleModal({ year, month, me, requestSettings, onClose }) {
+      const nm = nextMonthInfo(year, month);
+      const nmk = nextMonthKey(year, month);
+      const current = requestSettings?.[nmk];
+      const active = !!current?.active;
+      const [busy, setBusy] = useState(false);
+
+      const activate = async () => {
+        setBusy(true);
+        try {
+          await set(ref(db, `requestSettings/${nmk}`), {
+            active: true,
+            activatedBy: me.sabun,
+            activatedByName: me.name,
+            activatedAt: Date.now(),
+          });
+          onClose();
+        } catch (e) { console.error(e); alert("저장 실패"); }
+        setBusy(false);
+      };
+      const deactivate = async () => {
+        if (!confirm("OFF 신청을 마감할까요? (기존 신청 데이터는 유지됩니다)")) return;
+        setBusy(true);
+        try {
+          await update(ref(db, `requestSettings/${nmk}`), { active: false });
+          onClose();
+        } catch (e) { console.error(e); alert("저장 실패"); }
+        setBusy(false);
+      };
+
+      return (
+        <div className="modal-backdrop" onClick={onClose}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">{nm.month}월 OFF 신청</h2>
+              <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
+            </div>
+            <div className="duty-help" style={{ marginBottom: 18 }}>
+              활성화하면 모든 사용자가 {nm.year}년 {nm.month}월 OFF 신청을 시작할 수 있어요.
+              마감은 언제든 다시 비활성화하면 됩니다.<br /><br />
+              현재 상태: <strong>{active ? "🟢 활성화됨" : "🔴 비활성화"}</strong>
+              {active && current?.activatedByName && (
+                <><br /><span style={{ fontSize: 11, color: "var(--text-soft)" }}>
+                  활성화: {current.activatedByName} · {formatRelativeTime(current.activatedAt)}
+                </span></>
+              )}
+            </div>
+            <div className="modal-actions">
+              {active ? (
+                <button className="btn-primary" onClick={deactivate} disabled={busy}
+                  style={{ background: "var(--c-closed)" }}>
+                  {busy ? "처리 중…" : "신청 마감"}
+                </button>
+              ) : (
+                <button className="btn-primary" onClick={activate} disabled={busy}>
+                  {busy ? "처리 중…" : "신청 받기 시작"}
+                </button>
+              )}
+              <button className="btn-ghost" onClick={onClose}>취소</button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================================
+    // <OffRequestModal> — OFF 신청 화면 (다음 달 캘린더)
+    // ============================================================
+    function OffRequestModal({ year, month, me, allUsers, allRequests, memos, clinicOverrides, dbHolidays, onClose }) {
+      const nm = nextMonthInfo(year, month);
+      const nmk = nextMonthKey(year, month);
+      const { daysInMonth, startWeekday } = getMonthInfo(nm.year, nm.month);
+
+      // mode: null = OFF 모드, "D"/"E"/"N"/"V" = 해당 시프트 모드
+      const [mode, setMode] = useState(null);
+      const [busy, setBusy] = useState(false);
+
+      // 팀 필터 (본인 팀 기준)
+      // 명세: A팀 = 앞/뒤/act 통합, S-616/617/act 개별
+      // 우리 데이터엔 A팀은 그냥 "A". S는 각각 분리되어 있음. 그대로 사용.
+      const myTeam = me.team;
+
+      // 본인 신청 데이터 (이 달)
+      const myMonthRequests = useMemo(() => {
+        const m = allRequests?.[nmk]?.[me.sabun] || {};
+        const out = {};
+        Object.keys(m).forEach(k => { out[parseInt(k, 10)] = m[k]; });
+        return out;
+      }, [allRequests, nmk, me.sabun]);
+
+      const myMemo = memos?.[nmk]?.text || "";
+      const [memoText, setMemoText] = useState(myMemo);
+      const memoSaveTimer = useRef(null);
+      useEffect(() => { setMemoText(myMemo); }, [myMemo]);
+
+      const onMemoChange = (val) => {
+        setMemoText(val);
+        if (memoSaveTimer.current) clearTimeout(memoSaveTimer.current);
+        memoSaveTimer.current = setTimeout(async () => {
+          try {
+            await set(ref(db, `memos/${nmk}/text`), val);
+          } catch (e) { console.error(e); }
+        }, 600);
+      };
+
+      const onCellClick = async (day) => {
+        if (busy) return;
+        const dKey = String(day).padStart(2, "0");
+        const path = `requests/${nmk}/${me.sabun}/${dKey}`;
+        const existing = myMonthRequests[day];
+        const desiredType = mode || "OFF";
+
+        // 동일 타입 다시 클릭 → 삭제
+        if (existing && existing.type === desiredType) {
+          setBusy(true);
+          try { await remove(ref(db, path)); }
+          catch (e) { console.error(e); alert("삭제 실패"); }
+          setBusy(false);
+          return;
+        }
+
+        // 4명 제한 체크 (새로 추가하는 경우 또는 다른 타입에서 전환)
+        const list = getRequestsForDay(allRequests, nmk, day, allUsers, myTeam);
+        const meAlreadyIn = list.some(r => r.sabun === me.sabun);
+        if (!meAlreadyIn && list.length >= 4) {
+          alert("이 날 신청이 이미 4명입니다.");
+          return;
+        }
+
+        setBusy(true);
+        try {
+          await set(ref(db, path), { type: desiredType, timestamp: Date.now() });
+        } catch (e) { console.error(e); alert("저장 실패"); }
+        setBusy(false);
+      };
+
+      const cells = [];
+      for (let i = 0; i < startWeekday; i++) {
+        cells.push(<div key={`e-${i}`} className="req-cell empty" />);
+      }
+      for (let day = 1; day <= daysInMonth; day++) {
+        const iso = isoDate(nm.year, nm.month, day);
+        const dow = (startWeekday + day - 1) % 7;
+        const status = getClinicStatus(iso, dow, clinicOverrides, dbHolidays);
+        const dateColor = status === "closed" ? "var(--c-closed)"
+          : status === "morning" ? "var(--c-morning)" : "var(--text)";
+        const list = getRequestsForDay(allRequests, nmk, day, allUsers, myTeam);
+        const isFull = list.length >= 4;
+
+        cells.push(
+          <button key={day} className={`req-cell ${isFull ? "full" : ""}`}
+            onClick={() => onCellClick(day)} type="button">
+            {isFull && <span className="full-mark">FULL</span>}
+            <div className="date-num" style={{ color: dateColor }}>{day}</div>
+            <div className="req-list">
+              {list.slice(0, 4).map((r, i) => (
+                <div key={r.sabun} className={`row shift-${r.type === "OFF" ? "O" : r.type}`}>
+                  {r.type === "OFF" ? "O" : r.type} {r.name}
+                </div>
+              ))}
+            </div>
+          </button>
+        );
+      }
+
+      const promptText = (() => {
+        if (mode === null) return "희망 OFF 날짜를 선택하세요";
+        if (mode === "D") return "희망 D 근무 날짜 선택하세요";
+        if (mode === "E") return "희망 E 근무 날짜 선택하세요";
+        if (mode === "N") return "희망 N 근무 날짜 선택하세요";
+        if (mode === "V") return "희망 V(반차) 날짜 선택하세요";
+        return "";
+      })();
+
+      const showButtons = myTeam === "main"
+        ? ["V"]
+        : ["D", "E", "N"];
+
+      return (
+        <div className="modal-backdrop" onClick={onClose} style={{ alignItems: "stretch" }}>
+          <div className="modal" onClick={e => e.stopPropagation()}
+            style={{ maxHeight: "100vh", borderRadius: 0, padding: 0 }}>
+            {/* 상단 바 */}
+            <div className="req-mode-bar">
+              {showButtons.map(s => (
+                <button key={s}
+                  className={`mode-btn shift-${s} ${mode === s ? "active" : ""}`}
+                  onClick={() => setMode(mode === s ? null : s)} type="button">
+                  {s}
+                </button>
+              ))}
+              <div className="spacer" />
+              <button className="text-btn done" onClick={onClose} type="button">완료</button>
+              <button className="text-btn cancel" onClick={onClose} type="button">취소</button>
+            </div>
+
+            {/* 헤더 */}
+            <div style={{ padding: "12px 18px 6px" }}>
+              <h2 className="modal-title" style={{ margin: "0 0 4px" }}>{nm.month}월 OFF 신청</h2>
+              <p style={{ fontSize: 12, color: "var(--text-mute)", margin: 0 }}>
+                {me.name} · {myTeam}팀 · 하루 최대 4명 (팀 단위)
+              </p>
+            </div>
+
+            <div className="req-prompt">{promptText}</div>
+
+            <div className="cal-weekdays" style={{ padding: "8px 8px 0" }}>
+              {WEEKDAYS_KR.map((w, i) => (
+                <div key={w} style={{
+                  color: i === 0 ? "var(--c-closed)" : i === 6 ? "var(--c-morning)" : "var(--text-soft)"
+                }}>{w}</div>
+              ))}
+            </div>
+            <div className="req-grid">{cells}</div>
+
+            {/* 메모 */}
+            <div className="req-memo">
+              <p style={{ fontSize: 12, color: "var(--text-mute)", margin: "0 0 6px", fontWeight: 600 }}>
+                📝 {nm.month}월 메모 (공유)
+              </p>
+              <textarea
+                value={memoText} onChange={e => onMemoChange(e.target.value)}
+                placeholder="이 달 OFF 신청 관련 메모… (자동 저장)" />
+            </div>
+
+            <div style={{ height: 24 }} />
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================================
+    // <WhitelistAdmin> — 화이트리스트 + 관리자 권한 등록
+    // ============================================================
+    function WhitelistAdmin({ allUsers, admins, onClose }) {
       const [list, setList] = useState([]);
       const [bulkText, setBulkText] = useState("");
       const [err, setErr] = useState("");
@@ -3682,16 +4220,71 @@
         catch (e) { console.error(e); alert("삭제 실패"); }
       };
 
+      const toggleAdmin = async (sabun, isCurrentlyAdmin) => {
+        if (sabun === ADMIN_SABUN) {
+          alert("기본 관리자는 변경할 수 없어요.");
+          return;
+        }
+        try {
+          if (isCurrentlyAdmin) {
+            await remove(ref(db, `admins/${sabun}`));
+          } else {
+            await set(ref(db, `admins/${sabun}`), true);
+          }
+        } catch (e) {
+          console.error(e); alert("저장 실패");
+        }
+      };
+
+      // 등록된 사용자 리스트 (관리자 관리용)
+      const registeredUsers = useMemo(() =>
+        Object.entries(allUsers || {})
+          .map(([sabun, u]) => ({ sabun, ...u }))
+          .sort((a, b) => (a.hireDate || "").localeCompare(b.hireDate || ""))
+      , [allUsers]);
+
       return (
         <div className="modal-backdrop" onClick={onClose}>
           <div className="modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2 className="modal-title">화이트리스트</h2>
+              <h2 className="modal-title">화이트리스트 · 관리자</h2>
               <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
             </div>
-            <div className="duty-help" style={{ marginBottom: 14 }}>
-              가입 가능한 사번 명단.
+
+            <p className="menu-section-title">관리자 권한</p>
+            <p style={{ fontSize: 12, color: "var(--text-mute)", margin: "0 0 8px" }}>
+              체크된 사용자는 관리자 권한을 갖습니다. 본인(<code>{ADMIN_SABUN}</code>)은 자동.
+            </p>
+            <div style={{ maxHeight: 240, overflowY: "auto", border: "1px solid var(--border)", borderRadius: 10, padding: "4px 12px", marginBottom: 20 }}>
+              {registeredUsers.length === 0 ? (
+                <p style={{ color: "var(--text-soft)", fontSize: 13, padding: 12 }}>등록된 사용자가 없어요.</p>
+              ) : (
+                registeredUsers.map(u => {
+                  const isMain = u.sabun === ADMIN_SABUN;
+                  const isAdm = isMain || !!admins[u.sabun];
+                  const c = teamColor(u.team);
+                  return (
+                    <div key={u.sabun} className="profile-row" style={{ borderColor: "var(--border)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0, flex: 1 }}>
+                        <span className="team-badge" style={{ background: c.bg, color: c.text, fontSize: 11, padding: "2px 8px" }}>{u.team}</span>
+                        <span style={{ fontWeight: 500 }}>{u.name}</span>
+                        <span style={{ fontSize: 11, color: "var(--text-soft)", fontFamily: "ui-monospace, monospace" }}>{u.sabun}</span>
+                      </div>
+                      <button className={`toggle ${isAdm ? "on" : ""}`}
+                        onClick={() => toggleAdmin(u.sabun, isAdm)}
+                        disabled={isMain}
+                        type="button" aria-label="admin 토글"
+                        style={isMain ? { opacity: 0.4 } : {}} />
+                    </div>
+                  );
+                })
+              )}
             </div>
+
+            <p className="menu-section-title">가입 가능 사번</p>
+            <p style={{ fontSize: 12, color: "var(--text-mute)", margin: "0 0 8px" }}>
+              가입 가능한 사번 명단.
+            </p>
             <div className="field" style={{ marginBottom: 8 }}>
               <textarea className="duty-textarea"
                 style={{ letterSpacing: 0 }}
