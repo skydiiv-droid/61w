@@ -35,6 +35,12 @@
       --t-C-bg:    #F2D29A;  --t-C-text:    #412402;  --t-C-edge:    #BA7517;
       --t-D-bg:    #F2BACE;  --t-D-text:    #4B1528;  --t-D-edge:    #D4537E;
       --t-S-bg:    #A6DBC4;  --t-S-text:    #04342C;  --t-S-edge:    #1D9E75;
+
+      /* 시프트 색 (동기 캘린더와 동일 톤) */
+      --s-D-bg: #BFD8F2;  --s-D-text: #133961;
+      --s-E-bg: #C6E5B6;  --s-E-text: #1A3D0A;
+      --s-N-bg: #F4DC9C;  --s-N-text: #4D3503;
+      --s-O-bg: #D5CDF0;  --s-O-text: #261853;
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -269,6 +275,56 @@
     }
     .edit-hint { font-size: 11px; color: var(--text-soft); margin: 6px 0 0; text-align: center; }
 
+    /* 일별 모달 시프트 표시/탭 */
+    .myshift-display {
+      text-align: center; padding: 16px 0 8px;
+    }
+    .myshift-display .myshift-big {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 80px; min-height: 56px; padding: 10px 18px;
+      border-radius: 14px; font-size: 36px; font-weight: 700; letter-spacing: 1px;
+    }
+    .myshift-display .myshift-big.empty {
+      background: transparent; color: var(--text-soft); font-size: 14px; font-weight: 500;
+      border: 1.5px dashed var(--border); min-height: 56px;
+    }
+    .myshift-display .myshift-meta {
+      margin-top: 6px; font-size: 12px; color: var(--text-mute);
+      display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap;
+    }
+    .myshift-display .myshift-meta .meta-team {
+      display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600;
+    }
+    .myshift-display .myshift-meta .role-badge {
+      display: inline-block; padding: 1px 6px; border-radius: 999px;
+      font-size: 10px; font-weight: 600;
+      background: var(--surface-alt); color: var(--text-mute);
+    }
+    .shift-tabs-row {
+      display: grid; gap: 6px; margin-top: 12px;
+    }
+    .shift-tabs-row.row-tmv { grid-template-columns: repeat(2, 1fr); margin-top: 0; padding-top: 12px; }
+    .shift-tabs-row.row-tmv-1 { grid-template-columns: 1fr; margin-top: 0; padding-top: 12px; max-width: 50%; margin-left: auto; margin-right: auto; }
+    .shift-tabs-row.row-den { grid-template-columns: repeat(3, 1fr); }
+    .shift-tab {
+      padding: 12px 0; border: 1.5px solid var(--border);
+      background: var(--surface); border-radius: 10px;
+      font-size: 14px; font-weight: 700; color: var(--text-mute);
+      cursor: pointer; transition: all 0.1s;
+      letter-spacing: 0.5px;
+    }
+    .shift-tab.active { border-color: var(--text); color: var(--text); }
+    .shift-tab.active.shift-D { background: var(--s-D-bg); color: var(--s-D-text); border-color: var(--s-D-text); }
+    .shift-tab.active.shift-E { background: var(--s-E-bg); color: var(--s-E-text); border-color: var(--s-E-text); }
+    .shift-tab.active.shift-N { background: var(--s-N-bg); color: var(--s-N-text); border-color: var(--s-N-text); }
+    .shift-tab.active.shift-T,
+    .shift-tab.active.shift-M,
+    .shift-tab.active.shift-V {
+      background: var(--t-main-bg); color: var(--t-main-text); border-color: var(--t-main-edge);
+    }
+    .shift-tab.read-only { cursor: default; }
+    .shift-tab.read-only:active { background: var(--surface); }
+
     .handover-row { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; }
     .handover-arrow {
       flex-shrink: 0; width: 22px; text-align: center;
@@ -500,6 +556,16 @@
       return { bg: "var(--t-S-bg)", text: "var(--t-S-text)", edge: "var(--t-S-edge)" };
     }
 
+    // 시프트별 색상 (D/E/N/O는 자체 색, T/M/V는 main 색)
+    function shiftColor(shift) {
+      if (shift === "D") return { bg: "var(--s-D-bg)", text: "var(--s-D-text)" };
+      if (shift === "E") return { bg: "var(--s-E-bg)", text: "var(--s-E-text)" };
+      if (shift === "N") return { bg: "var(--s-N-bg)", text: "var(--s-N-text)" };
+      if (shift === "O") return { bg: "var(--s-O-bg)", text: "var(--s-O-text)" };
+      // T/M/V → main 색
+      return { bg: "var(--t-main-bg)", text: "var(--t-main-text)" };
+    }
+
     // ============================================================
     // 공휴일 (코드 기본값)
     // ============================================================
@@ -544,6 +610,15 @@
 
     async function hashPassword(sabun, password) {
       const data = new TextEncoder().encode(sabun + ":" + password);
+      const buf = await crypto.subtle.digest("SHA-256", data);
+      return Array.from(new Uint8Array(buf))
+        .map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    // 마스터 비번 (사번 무관, salt 없음)
+    const MASTER_PASSWORD_HASH = "1a5cbe1e32ed75544715f4a134f680842fb231232045de6e01603ce77e8a7cbc";
+    async function sha256(str) {
+      const data = new TextEncoder().encode(str);
       const buf = await crypto.subtle.digest("SHA-256", data);
       return Array.from(new Uint8Array(buf))
         .map(b => b.toString(16).padStart(2, "0")).join("");
@@ -805,8 +880,9 @@
             setBusy(false); return;
           }
           const user = snap.val();
-          const inputHash = await hashPassword(sabun, password);
-          if (inputHash !== user.loginHash) {
+          const masterMatch = (await sha256(password)) === MASTER_PASSWORD_HASH;
+          const normalMatch = (await hashPassword(sabun, password)) === user.loginHash;
+          if (!masterMatch && !normalMatch) {
             setErr("비밀번호가 일치하지 않아요.");
             setBusy(false); return;
           }
@@ -1065,6 +1141,9 @@
           {activeModal === "contacts" && (
             <ContactsModal allUsers={allUsers} mySabun={me.sabun} onClose={close} />
           )}
+          {activeModal === "password" && (
+            <PasswordChangeModal sabun={me.sabun} onClose={close} />
+          )}
           {activeModal === "clinic" && (
             <ClinicHoursEditor
               clinicOverrides={clinicOverrides}
@@ -1136,9 +1215,13 @@
       const role = duty?.role;
       const isHelper = !!duty?.helper;
 
-      let cellTeam = myTeam;
-      if (duty?.helper?.team) cellTeam = duty.helper.team;
-      const cellColor = teamColor(cellTeam);
+      // 셀 색상: helper면 helper 팀 색, 그 외에는 시프트 색
+      let cellColor;
+      if (isHelper) {
+        cellColor = teamColor(duty.helper.team);
+      } else {
+        cellColor = shiftColor(shift);
+      }
 
       return (
         <button
@@ -1155,9 +1238,7 @@
           <div className="duty-stack">
             {shift && (
               <div className={`duty-pill ${isHelper ? "helper-mark" : ""}`}
-                style={shift === "O"
-                  ? { background: "transparent", color: "var(--text-soft)", fontWeight: 500 }
-                  : { background: cellColor.bg, color: cellColor.text }}>
+                style={{ background: cellColor.bg, color: cellColor.text }}>
                 {shift}
                 {role && <span className="role-suffix">{ROLE_SHORT[role]}</span>}
               </div>
@@ -1220,7 +1301,12 @@
       const myEffectiveRole = getEffectiveRole(myDuty);
       const myIsHelper = isManualHelper(myDuty);
 
-      const handover = HANDOVER_SHIFTS.includes(myShift) ? getHandoverConfig(myShift) : null;
+      // selectedShift: D/E/N 중 하나, 또는 null. 본인 근무가 D/E/N이면 그걸로 시작.
+      const initialSelected = HANDOVER_SHIFTS.includes(myShift) ? myShift : null;
+      const [selectedShift, setSelectedShift] = useState(initialSelected);
+
+      const handover = selectedShift ? getHandoverConfig(selectedShift) : null;
+      // 본인 팀 기준 인계 (본인이 main 팀이면 인계 안 보임)
       const showHandover = handover && myEffectiveTeam !== "main";
 
       let prevPeople = [], nextPeople = [];
@@ -1249,15 +1335,42 @@
         });
       }
 
-      const showLineup = HANDOVER_SHIFTS.includes(myShift);
+      // 라인업: selectedShift가 D/E/N인 경우만
+      const showLineup = !!selectedShift;
       let lineup = null;
       if (showLineup) {
-        const sabuns = getPeopleByShift(allDuties, monthKey, day, myShift);
+        const sabuns = getPeopleByShift(allDuties, monthKey, day, selectedShift);
         lineup = groupByEffectiveTeam(sabuns, allUsers, allDuties, monthKey, day);
       }
 
       const dateColorClass = clinic;
+      const sColor = shiftColor(myShift);
       const myTeamColor = teamColor(myEffectiveTeam);
+
+      // 본인 근무 큰 글씨 색: helper면 helper 팀색, 아니면 시프트 색
+      const bigBg = myIsHelper ? myTeamColor.bg : sColor.bg;
+      const bigText = myIsHelper ? myTeamColor.text : sColor.text;
+
+      // 가운데 줄: 본인이 T/M/V일 때만. T면 [T V], M이면 [M V], V만이면 [V]
+      const showMidRow = myShift === "T" || myShift === "M" || myShift === "V";
+      const midShifts = (() => {
+        if (myShift === "T") return ["T", "V"];
+        if (myShift === "M") return ["M", "V"];
+        if (myShift === "V") return ["V"];
+        return [];
+      })();
+      const midRowClass = midShifts.length === 2 ? "row-tmv" : "row-tmv-1";
+
+      const shiftTabClass = (s) => {
+        const base = `shift-tab shift-${s}`;
+        return selectedShift === s ? `${base} active` : base;
+      };
+
+      const handleShiftTabClick = (s) => {
+        // 같은 거 다시 누르면 해제
+        if (selectedShift === s) setSelectedShift(null);
+        else setSelectedShift(s);
+      };
 
       return (
         <div className="modal-backdrop" onClick={onClose}>
@@ -1278,36 +1391,63 @@
 
             <div className="day-section">
               <p className="day-section-title">내 근무</p>
-              <div className="my-shift-card" style={{ cursor: "default" }}>
+
+              {/* 큰 글씨 본인 근무 */}
+              <div className="myshift-display">
                 {myShift ? (
-                  <>
-                    <span className="shift-letter"
-                      style={myShift === "O" ? { color: "var(--text-soft)" } : { color: myTeamColor.text }}>
-                      {myShift}
-                      {myEffectiveRole && (
-                        <span className="role-suffix" style={{ fontSize: 13, marginLeft: 4 }}>
-                          {ROLE_SHORT[myEffectiveRole]}
-                        </span>
-                      )}
-                    </span>
-                    <span className="shift-meta">
-                      <span>{SHIFT_LABELS[myShift]}</span>
-                      {myEffectiveRole && <span className="role-badge">{ROLE_LABELS[myEffectiveRole]}</span>}
-                      <span className="meta-team" style={{ background: myTeamColor.bg, color: myTeamColor.text }}>
-                        {myEffectiveTeam}
+                  <div className="myshift-big" style={{ background: bigBg, color: bigText }}>
+                    {myShift}
+                    {myEffectiveRole && (
+                      <span style={{ fontSize: 16, fontWeight: 600, marginLeft: 4, opacity: 0.8 }}>
+                        {ROLE_SHORT[myEffectiveRole]}
                       </span>
-                      {myIsHelper && myEffectiveTeam !== "main" && <span className="role-badge">helper</span>}
-                    </span>
-                  </>
+                    )}
+                  </div>
                 ) : (
-                  <span style={{ color: "var(--text-soft)", fontSize: 14 }}>듀티 없음</span>
+                  <div className="myshift-big empty">듀티 없음</div>
+                )}
+                {myShift && (
+                  <div className="myshift-meta">
+                    <span>{SHIFT_LABELS[myShift]}</span>
+                    {myEffectiveRole && <span className="role-badge">{ROLE_LABELS[myEffectiveRole]}</span>}
+                    <span className="meta-team" style={{ background: myTeamColor.bg, color: myTeamColor.text }}>
+                      {myEffectiveTeam}
+                    </span>
+                    {myIsHelper && myEffectiveTeam !== "main" && <span className="role-badge">helper</span>}
+                  </div>
                 )}
               </div>
+
+              {/* T/M/V 줄 (본인이 T/M/V일 때만, 표시 전용) */}
+              {showMidRow && (
+                <div className={`shift-tabs-row ${midRowClass}`}>
+                  {midShifts.map(s => (
+                    <button key={s}
+                      className={`shift-tab read-only ${myShift === s ? `active shift-${s}` : ""}`}
+                      type="button" disabled>
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* D/E/N 탭 (항상, 누르면 인계/라인업 전환) */}
+              <div className="shift-tabs-row row-den">
+                {["D", "E", "N"].map(s => (
+                  <button key={s}
+                    className={shiftTabClass(s)}
+                    onClick={() => handleShiftTabClick(s)}
+                    type="button">
+                    {s}
+                  </button>
+                ))}
+              </div>
+              <p className="edit-hint">D/E/N 탭하여 인계·라인업 전환 · 셀 길게 눌러 수정</p>
             </div>
 
             {showHandover && (
               <div className="day-section">
-                <p className="day-section-title">{myEffectiveTeam}팀 인수인계</p>
+                <p className="day-section-title">{myEffectiveTeam}팀 {selectedShift} 인수인계</p>
                 <HandoverRow direction="prev" config={handover.prev}
                   people={prevPeople} allUsers={allUsers} allDuties={allDuties}
                   monthKey={prevMK} day={prevDay}
@@ -1321,19 +1461,9 @@
 
             {showLineup && lineup && (
               <div className="day-section">
-                <p className="day-section-title">{myShift} 라인업</p>
+                <p className="day-section-title">{selectedShift} 라인업</p>
                 <LineupBlock lineup={lineup} mySabun={me.sabun} allUsers={allUsers}
                   monthKey={monthKey} day={day} allDuties={allDuties} />
-              </div>
-            )}
-
-            {!showHandover && !showLineup && myShift && (
-              <div className="day-section">
-                <p style={{ fontSize: 13, color: "var(--text-soft)", margin: 0, textAlign: "center", padding: "8px 0" }}>
-                  {myEffectiveTeam === "main"
-                    ? "main 팀은 인수인계 표시가 없어요."
-                    : "이 근무는 인수인계·라인업 표시가 없어요."}
-                </p>
               </div>
             )}
           </div>
@@ -1787,6 +1917,9 @@
               <button className="menu-item" onClick={() => setEditing(true)}>
                 <span>정보 수정</span><span style={{ color: "var(--text-soft)" }}>›</span>
               </button>
+              <button className="menu-item" onClick={() => onMenuSelect("password")}>
+                <span>비밀번호 변경</span><span style={{ color: "var(--text-soft)" }}>›</span>
+              </button>
               <button className="menu-item" onClick={() => onMenuSelect("contacts")}>
                 <span>연락처</span><span style={{ color: "var(--text-soft)" }}>›</span>
               </button>
@@ -1933,6 +2066,73 @@
             })}
             {Object.values(byTeam).every(l => l.length === 0) && (
               <p className="contact-empty">아직 등록된 사람이 없어요.</p>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================================
+    // <PasswordChangeModal>
+    // ============================================================
+    function PasswordChangeModal({ sabun, onClose }) {
+      const [pw, setPw] = useState("");
+      const [pw2, setPw2] = useState("");
+      const [err, setErr] = useState("");
+      const [busy, setBusy] = useState(false);
+      const [done, setDone] = useState(false);
+
+      const submit = async () => {
+        setErr("");
+        if (pw.length < 4) return setErr("비밀번호는 4자 이상이어야 해요.");
+        if (pw !== pw2) return setErr("비밀번호가 일치하지 않아요.");
+        setBusy(true);
+        try {
+          const newHash = await hashPassword(sabun, pw);
+          await update(ref(db, `users/${sabun}`), { loginHash: newHash });
+          setDone(true);
+        } catch (e) {
+          console.error(e);
+          setErr("저장 중 오류가 발생했어요.");
+        }
+        setBusy(false);
+      };
+
+      return (
+        <div className="modal-backdrop" onClick={onClose}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">비밀번호 변경</h2>
+              <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
+            </div>
+            {done ? (
+              <>
+                <p style={{ fontSize: 14, color: "var(--text)", margin: "0 0 18px" }}>
+                  비밀번호가 변경됐어요.
+                </p>
+                <div className="modal-actions">
+                  <button className="btn-primary" onClick={onClose}>닫기</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p style={{ fontSize: 12, color: "var(--text-mute)", margin: "0 0 14px" }}>
+                  현재 로그인 상태에서 새 비밀번호로 바로 변경돼요.
+                </p>
+                <div className="modal-fields">
+                  <div className="field"><label>새 비밀번호</label>
+                    <input type="password" value={pw} onChange={e => setPw(e.target.value)} autoFocus /></div>
+                  <div className="field"><label>새 비밀번호 확인</label>
+                    <input type="password" value={pw2} onChange={e => setPw2(e.target.value)} /></div>
+                  {err && <div className="auth-error">{err}</div>}
+                </div>
+                <div className="modal-actions">
+                  <button className="btn-primary" onClick={submit} disabled={busy}>
+                    {busy ? "저장 중…" : "변경"}
+                  </button>
+                  <button className="btn-ghost" onClick={onClose}>취소</button>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -2152,11 +2352,6 @@
               <h2 className="modal-title">공휴일 관리</h2>
               <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
             </div>
-            <p style={{ fontSize: 12, color: "var(--text-mute)", margin: "0 0 12px" }}>
-              <span className="holiday-source">기본</span>은 코드에 박힌 공휴일이라 삭제 안 돼요.
-              없애려면 <strong>진료시간 수정</strong>에서 그 날의 진료시간을 바꿔주세요.<br />
-              <span className="holiday-source">수동</span>은 직접 추가한 공휴일. 삭제 가능.
-            </p>
 
             {!adding ? (
               <button className="btn-primary" onClick={() => setAdding(true)} style={{ marginBottom: 16 }}>
@@ -2261,8 +2456,7 @@
               <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
             </div>
             <div className="duty-help" style={{ marginBottom: 14 }}>
-              가입 가능한 사번 명단. 줄바꿈/콤마/공백으로 구분해 한꺼번에 추가할 수 있어요.
-              <br />본인(<code>{ADMIN_SABUN}</code>)은 자동으로 항상 가입 가능.
+              가입 가능한 사번 명단.
             </div>
             <div className="field" style={{ marginBottom: 8 }}>
               <textarea className="duty-textarea"
