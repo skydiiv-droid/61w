@@ -1527,8 +1527,8 @@
       const [quickEditDay, setQuickEditDay] = useState(null); // 빠른 수정 (길게 탭)
 
       const monthKey = getMonthKey(year, month);
-      const prevMonthKey = adjacentMonthKey(year, month, -1);
-      const nextMonthKey = adjacentMonthKey(year, month, 1);
+      const prevMK = adjacentMonthKey(year, month, -1);
+      const nextMK = adjacentMonthKey(year, month, 1);
 
       useEffect(() => {
         const r = ref(db, "users");
@@ -1537,7 +1537,7 @@
       }, []);
 
       useEffect(() => {
-        const keys = [prevMonthKey, monthKey, nextMonthKey];
+        const keys = [prevMK, monthKey, nextMK];
         const unsubs = keys.map(mk => {
           const r = ref(db, `duties/${mk}`);
           return onValue(r, snap => {
@@ -1545,7 +1545,7 @@
           });
         });
         return () => unsubs.forEach(u => u());
-      }, [prevMonthKey, monthKey, nextMonthKey]);
+      }, [prevMK, monthKey, nextMK]);
 
       useEffect(() => {
         const r = ref(db, "clinicHours");
