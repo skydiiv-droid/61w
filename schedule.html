@@ -29,12 +29,14 @@
       --c-full: #1F1B17;
       --c-morning: #2C5BB0;
       --c-closed: #C73E3E;
-      --t-main-bg: #D8D5FB;  --t-main-text: #26215C;  --t-main-edge: #7F77DD;
-      --t-A-bg:    #F8C9B6;  --t-A-text:    #4A1B0C;  --t-A-edge:    #D85A30;
-      --t-B-bg:    #C8E2A0;  --t-B-text:    #173404;  --t-B-edge:    #639922;
-      --t-C-bg:    #F2D29A;  --t-C-text:    #412402;  --t-C-edge:    #BA7517;
-      --t-D-bg:    #F2BACE;  --t-D-text:    #4B1528;  --t-D-edge:    #D4537E;
-      --t-S-bg:    #A6DBC4;  --t-S-text:    #04342C;  --t-S-edge:    #1D9E75;
+      --t-main-bg: #EFC5DA;  --t-main-text: #3D1428;  --t-main-edge: #C84880;
+      --t-A-bg:    #F4C5B0;  --t-A-text:    #421B0A;  --t-A-edge:    #E26A40;
+      --t-B-bg:    #DDBFA0;  --t-B-text:    #2D1A0A;  --t-B-edge:    #7E5230;
+      --t-C-bg:    #E5D29B;  --t-C-text:    #3A2A06;  --t-C-edge:    #A07820;
+      --t-D-bg:    #E5C3B0;  --t-D-text:    #3A1B0F;  --t-D-edge:    #A85838;
+      --t-S616-bg: #B5D6E0;  --t-S616-text: #0F2D38;  --t-S616-edge: #3F889E;
+      --t-S617-bg: #B5DFD0;  --t-S617-text: #0F3830;  --t-S617-edge: #3F9E8A;
+      --t-Sact-bg: #DDEFF0;  --t-Sact-text: #385C5C;  --t-Sact-edge: #9CC8C9;
 
       /* 시프트 색 (동기 캘린더와 동일 톤) */
       --s-D-bg: #BFD8F2;  --s-D-text: #133961;
@@ -155,7 +157,7 @@
     }
     .duty-pill .role-suffix {
       font-size: 9px; font-weight: 600; opacity: 0.75;
-      vertical-align: super; margin-left: 1px; letter-spacing: 0;
+      margin-left: 1px; letter-spacing: 0;
     }
     .duty-pill.helper-mark::after {
       content: ""; position: absolute; top: 2px; right: 3px;
@@ -204,6 +206,42 @@
     }
     .duty-textarea:focus { border-color: var(--accent); }
     .day-counter { font-size: 12px; color: var(--text-mute); text-align: right; }
+
+    .mode-switch {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 12px; background: var(--surface-alt); border-radius: 8px;
+      margin-bottom: 14px;
+    }
+    .mode-switch button {
+      padding: 6px 14px; border: none; border-radius: 6px;
+      background: var(--surface); color: var(--text);
+      font-size: 13px; font-weight: 600;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+    .mode-switch button:active { opacity: 0.7; }
+    .mode-switch .mode-label {
+      font-size: 13px; color: var(--text-mute); font-weight: 500;
+    }
+
+    .bulk-textarea {
+      width: 100%; min-height: 280px;
+      padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px;
+      background: var(--surface); font-family: ui-monospace, SFMono-Regular, monospace;
+      font-size: 13px; letter-spacing: 1px; line-height: 1.5;
+      outline: none; resize: vertical;
+      white-space: pre; overflow-x: auto;
+    }
+    .bulk-textarea:focus { border-color: var(--accent); }
+
+    .bulk-result {
+      padding: 12px; border-radius: 10px;
+      background: var(--surface); border: 1px solid var(--border);
+      font-size: 12px; line-height: 1.6;
+      max-height: 200px; overflow-y: auto;
+    }
+    .bulk-result .ok { color: var(--text); }
+    .bulk-result .fail { color: var(--c-closed); }
+    .bulk-result .row { padding: 3px 0; }
 
     .profile-row {
       display: flex; justify-content: space-between; align-items: center;
@@ -486,6 +524,29 @@
       padding: 1px 6px; border-radius: 999px; font-size: 10px; font-weight: 600;
       background: var(--surface-alt); color: var(--text-soft);
     }
+
+    /* seniority editor */
+    .seniority-team-section { padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .seniority-team-section:last-child { border-bottom: none; }
+    .seniority-team-header {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+    }
+    .seniority-team-header .team-badge { font-size: 12px; padding: 3px 10px; }
+    .seniority-row {
+      display: grid; grid-template-columns: 56px 1fr auto;
+      gap: 10px; align-items: center; padding: 8px 0;
+    }
+    .seniority-row input {
+      padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface); outline: none; text-align: center;
+      font-family: ui-monospace, monospace; font-size: 14px;
+    }
+    .seniority-row input:focus { border-color: var(--accent); }
+    .seniority-row .name { font-size: 14px; font-weight: 500; }
+    .seniority-row .hire {
+      font-size: 11px; color: var(--text-soft);
+      font-family: ui-monospace, monospace;
+    }
   </style>
 
 </head>
@@ -522,16 +583,17 @@
     const ADMIN_SABUN = "224051";
     const TEAMS = ["main", "A", "B", "C", "D", "S-616", "S-617", "S-act"];
     const BASIC_SHIFTS = ["D", "E", "N", "O"];     // 모든 팀 가능
-    const MAIN_SHIFTS = ["T", "M", "V"];           // main 컨텍스트만 가능
+    const MAIN_SHIFTS = ["M", "V"];                // main 컨텍스트만 가능 (T 제거)
     const ALL_SHIFTS = [...BASIC_SHIFTS, ...MAIN_SHIFTS];
     const ROLE_SHIFTS = ["D", "E", "N"];           // role 적용 가능 shift
     const HANDOVER_SHIFTS = ["D", "E", "N"];
     const SHIFT_LABELS = {
       D: "Day", E: "Evening", N: "Night", O: "Off",
-      T: "Top", M: "Mid", V: "반차"
+      T: "Top",                                    // 호환용 (기존 데이터 표시)
+      M: "Mid", V: "반차"
     };
     const ROLE_LABELS = { front: "앞", back: "뒤", act: "act" };
-    const ROLE_SHORT = { front: "1", back: "2", act: "a" };
+    const ROLE_SHORT = { front: "앞", back: "뒤", act: "act" };  // 한글로 통일
     const CLINIC_LABELS = { full: "오전·오후", morning: "오전만", closed: "휴진" };
 
     const HELPER_OPTIONS = [
@@ -548,21 +610,26 @@
     ];
 
     function teamColor(team) {
-      if (team === "main") return { bg: "var(--t-main-bg)", text: "var(--t-main-text)", edge: "var(--t-main-edge)" };
-      if (team === "A")    return { bg: "var(--t-A-bg)",    text: "var(--t-A-text)",    edge: "var(--t-A-edge)" };
-      if (team === "B")    return { bg: "var(--t-B-bg)",    text: "var(--t-B-text)",    edge: "var(--t-B-edge)" };
-      if (team === "C")    return { bg: "var(--t-C-bg)",    text: "var(--t-C-text)",    edge: "var(--t-C-edge)" };
-      if (team === "D")    return { bg: "var(--t-D-bg)",    text: "var(--t-D-text)",    edge: "var(--t-D-edge)" };
-      return { bg: "var(--t-S-bg)", text: "var(--t-S-text)", edge: "var(--t-S-edge)" };
+      if (team === "main")  return { bg: "var(--t-main-bg)", text: "var(--t-main-text)", edge: "var(--t-main-edge)" };
+      if (team === "A")     return { bg: "var(--t-A-bg)",    text: "var(--t-A-text)",    edge: "var(--t-A-edge)" };
+      if (team === "B")     return { bg: "var(--t-B-bg)",    text: "var(--t-B-text)",    edge: "var(--t-B-edge)" };
+      if (team === "C")     return { bg: "var(--t-C-bg)",    text: "var(--t-C-text)",    edge: "var(--t-C-edge)" };
+      if (team === "D")     return { bg: "var(--t-D-bg)",    text: "var(--t-D-text)",    edge: "var(--t-D-edge)" };
+      if (team === "S-616") return { bg: "var(--t-S616-bg)", text: "var(--t-S616-text)", edge: "var(--t-S616-edge)" };
+      if (team === "S-617") return { bg: "var(--t-S617-bg)", text: "var(--t-S617-text)", edge: "var(--t-S617-edge)" };
+      return { bg: "var(--t-Sact-bg)", text: "var(--t-Sact-text)", edge: "var(--t-Sact-edge)" };
     }
 
-    // 시프트별 색상 (D/E/N/O는 자체 색, T/M/V는 main 색)
+    // 시프트별 색상
+    // D/E/N: 시프트 자체 색
+    // O, V: 보라 (V는 O와 동일)
+    // M, T(호환): main 팀 색
     function shiftColor(shift) {
       if (shift === "D") return { bg: "var(--s-D-bg)", text: "var(--s-D-text)" };
       if (shift === "E") return { bg: "var(--s-E-bg)", text: "var(--s-E-text)" };
       if (shift === "N") return { bg: "var(--s-N-bg)", text: "var(--s-N-text)" };
-      if (shift === "O") return { bg: "var(--s-O-bg)", text: "var(--s-O-text)" };
-      // T/M/V → main 색
+      if (shift === "O" || shift === "V") return { bg: "var(--s-O-bg)", text: "var(--s-O-text)" };
+      // M, T → main 색
       return { bg: "var(--t-main-bg)", text: "var(--t-main-text)" };
     }
 
@@ -807,6 +874,35 @@
       return null;
     }
 
+    // 사용자 정렬 비교: seniority 우선, 없으면 입사일
+    // 작을수록 선임
+    function compareUsersBySeniority(a, b, seniorityMap) {
+      const sa = seniorityMap?.[a.sabun];
+      const sb = seniorityMap?.[b.sabun];
+      const hasA = sa != null;
+      const hasB = sb != null;
+      if (hasA && hasB) {
+        if (sa !== sb) return sa - sb;
+        return (a.hireDate || "").localeCompare(b.hireDate || "");
+      }
+      if (hasA) return -1;
+      if (hasB) return 1;
+      return (a.hireDate || "").localeCompare(b.hireDate || "");
+    }
+
+    // 팀 → 정렬 순서로 사용자 그룹핑
+    function groupUsersByTeam(allUsers, seniorityMap) {
+      const groups = {};
+      for (const t of TEAMS) groups[t] = [];
+      Object.entries(allUsers).forEach(([sabun, user]) => {
+        if (groups[user.team]) groups[user.team].push({ sabun, ...user });
+      });
+      for (const t of TEAMS) {
+        groups[t].sort((a, b) => compareUsersBySeniority(a, b, seniorityMap));
+      }
+      return groups;
+    }
+
     const { useState, useEffect, useMemo, useRef } = React;
     const { createRoot } = ReactDOM;
 
@@ -1030,6 +1126,7 @@
       const [allDuties, setAllDuties] = useState({});
       const [clinicOverrides, setClinicOverrides] = useState({});
       const [dbHolidays, setDbHolidays] = useState({});
+      const [seniority, setSeniority] = useState({});
 
       // 모달 상태 (배타적)
       const [activeModal, setActiveModal] = useState(null);
@@ -1067,6 +1164,12 @@
       useEffect(() => {
         const r = ref(db, "holidays");
         const unsub = onValue(r, snap => setDbHolidays(snap.val() || {}));
+        return () => unsub();
+      }, []);
+
+      useEffect(() => {
+        const r = ref(db, "seniority");
+        const unsub = onValue(r, snap => setSeniority(snap.val() || {}));
         return () => unsub();
       }, []);
 
@@ -1136,10 +1239,12 @@
           )}
           {activeModal === "dutyInput" && (
             <DutyInputModal year={year} month={month} sabun={me.sabun}
-              myTeam={me.team} currentDuties={myDutiesObj} onClose={close} />
+              myTeam={me.team} currentDuties={myDutiesObj}
+              allUsers={allUsers} allDuties={allDuties} seniority={seniority}
+              onClose={close} />
           )}
           {activeModal === "contacts" && (
-            <ContactsModal allUsers={allUsers} mySabun={me.sabun} onClose={close} />
+            <ContactsModal allUsers={allUsers} mySabun={me.sabun} seniority={seniority} onClose={close} />
           )}
           {activeModal === "password" && (
             <PasswordChangeModal sabun={me.sabun} onClose={close} />
@@ -1152,6 +1257,9 @@
           )}
           {activeModal === "holidays" && (
             <HolidaysEditor dbHolidays={dbHolidays} onClose={close} />
+          )}
+          {activeModal === "seniority" && (
+            <SeniorityEditor allUsers={allUsers} seniority={seniority} onClose={close} />
           )}
           {activeModal === "whitelist" && (
             <WhitelistAdmin onClose={close} />
@@ -1233,7 +1341,6 @@
           onContextMenu={handleContextMenu}
           type="button"
         >
-          {holidayName && <div className="holiday-dot" title={holidayName} />}
           <div className={`cal-date ${status}`}>{day}</div>
           <div className="duty-stack">
             {shift && (
@@ -1306,8 +1413,10 @@
       const [selectedShift, setSelectedShift] = useState(initialSelected);
 
       const handover = selectedShift ? getHandoverConfig(selectedShift) : null;
-      // 본인 팀 기준 인계 (본인이 main 팀이면 인계 안 보임)
-      const showHandover = handover && myEffectiveTeam !== "main";
+      // 인계는 selectedShift == myShift이고 main 팀이 아닐 때만
+      const showHandover = handover
+        && myEffectiveTeam !== "main"
+        && selectedShift === myShift;
 
       let prevPeople = [], nextPeople = [];
       let prevMK = monthKey, prevDay = day, nextMK = monthKey, nextDay = day;
@@ -1351,11 +1460,11 @@
       const bigBg = myIsHelper ? myTeamColor.bg : sColor.bg;
       const bigText = myIsHelper ? myTeamColor.text : sColor.text;
 
-      // 가운데 줄: 본인이 T/M/V일 때만. T면 [T V], M이면 [M V], V만이면 [V]
-      const showMidRow = myShift === "T" || myShift === "M" || myShift === "V";
+      // 가운데 줄: 본인이 M/V/T(호환)일 때만. M이면 [M V], V만이면 [V], T(호환)면 [T V]
+      const showMidRow = myShift === "M" || myShift === "V" || myShift === "T";
       const midShifts = (() => {
-        if (myShift === "T") return ["T", "V"];
         if (myShift === "M") return ["M", "V"];
+        if (myShift === "T") return ["T", "V"];
         if (myShift === "V") return ["V"];
         return [];
       })();
@@ -1604,15 +1713,14 @@
       }, [helperOn]);
 
       const pickHelper = (opt) => {
-        // 같은 옵션 다시 누르면 해제
         if (helperKey === opt.key) {
           setHelperKey(null);
           return;
         }
         setHelperKey(opt.key);
-        // main으로 가면 시프트 자동 T (단, 현재 시프트가 BASIC인 경우만 변경)
+        // main으로 가면 시프트 자동 M (현재 시프트가 BASIC인 경우만 변경)
         if (opt.team === "main" && BASIC_SHIFTS.includes(shift)) {
-          setShift("T");
+          setShift("M");
         }
       };
 
@@ -1726,13 +1834,6 @@
                           </span>
                         )}
                       </div>
-                      <div className="toggle-sub">
-                        {helperKey
-                          ? "다시 탭하여 닫기 · 같은 옵션 다시 탭하면 해제"
-                          : me.team === "main"
-                            ? "탭하여 다른 팀 helper 옵션 열기"
-                            : "main 선택 시 T/M/V 가능"}
-                      </div>
                     </div>
                     <span className={`chevron ${helperOn ? "up" : ""}`}>⌄</span>
                   </button>
@@ -1755,8 +1856,7 @@
 
               {(shift === "T" || shift === "M") && isMainContext && (
                 <div className="duty-help">
-                  {shift === "T" ? "T(Top, 병동과장)" : "M(Mid, 8am-5pm)"} 근무는 main 팀 라인업에 표시돼요.
-                  {me.team !== "main" && " (helper 표기 없음)"}
+                  {shift === "T" ? "T(Top, 호환용)" : "M(Mid, 8am-5pm)"} 근무는 main 팀에 표시돼요.
                 </div>
               )}
 
@@ -1782,8 +1882,10 @@
     // ============================================================
     // <DutyInputModal>
     // ============================================================
-    function DutyInputModal({ year, month, sabun, myTeam, currentDuties, onClose }) {
+    function DutyInputModal({ year, month, sabun, myTeam, currentDuties, allUsers, allDuties, seniority, onClose }) {
       const { daysInMonth } = getMonthInfo(year, month);
+      const [mode, setMode] = useState("me"); // "me" | "bulk"
+
       const initial = useMemo(() => serializeDuties(currentDuties, daysInMonth), []);
 
       const [text, setText] = useState(initial);
@@ -1831,7 +1933,7 @@
       // 도움말 분기
       const teamHelp = myTeam === "main" ? (
         <>
-          <strong>main 팀 시프트</strong>: <code>T</code> Top · <code>M</code> Mid · <code>V</code> 반차
+          <strong>main 팀 시프트</strong>: <code>M</code> Mid · <code>V</code> 반차
         </>
       ) : myTeam === "A" ? (
         <>
@@ -1840,6 +1942,16 @@
         </>
       ) : null;
 
+      if (mode === "bulk") {
+        return (
+          <BulkDutyInput
+            year={year} month={month}
+            allUsers={allUsers} allDuties={allDuties} seniority={seniority}
+            onBack={() => setMode("me")}
+            onClose={onClose} />
+        );
+      }
+
       return (
         <div className="modal-backdrop" onClick={onClose}>
           <div className="modal" onClick={e => e.stopPropagation()}>
@@ -1847,6 +1959,12 @@
               <h2 className="modal-title">{month}월 듀티 입력</h2>
               <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
             </div>
+
+            <div className="mode-switch">
+              <span className="mode-label">본인 듀티 입력 중</span>
+              <button onClick={() => setMode("bulk")}>전체 일괄 입력 →</button>
+            </div>
+
             <div className="modal-fields">
               <div className="duty-help">
                 1일부터 순서대로 한 글자씩 입력. 공백/줄바꿈 무시.<br />
@@ -1858,7 +1976,7 @@
               <textarea className="duty-textarea" value={text}
                 onChange={e => setText(e.target.value)}
                 placeholder={
-                  myTeam === "main" ? "예: TTOOTTM..." :
+                  myTeam === "main" ? "예: MMOOMMOM..." :
                   myTeam === "A" ? "예: D1E뒤NaOOD..." : "예: DENNOOD..."}
                 autoFocus />
               <div className="day-counter">
@@ -1872,6 +1990,185 @@
               </button>
               <p style={{ fontSize: 11, color: "var(--text-soft)", textAlign: "center", margin: 0 }}>
                 ※ 이 입력은 월 전체를 덮어써요. helper 설정은 일별 수정에서.
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================================
+    // <BulkDutyInput> — 전체 사용자 듀티 일괄 입력
+    // 형식: 한 줄 = 한 사람. "[팀] 이름 듀티텍스트" 또는 "이름 듀티텍스트"
+    // 정책 B: 성공한 줄만 저장, 실패한 줄 보고
+    // ============================================================
+    function BulkDutyInput({ year, month, allUsers, allDuties, seniority, onBack, onClose }) {
+      const { daysInMonth } = getMonthInfo(year, month);
+      const monthKey = getMonthKey(year, month);
+
+      // prefill 텍스트 생성
+      const initialText = useMemo(() => {
+        const groups = groupUsersByTeam(allUsers, seniority);
+        const lines = [];
+        for (const team of TEAMS) {
+          for (const u of groups[team]) {
+            const monthData = allDuties[monthKey]?.[u.sabun] || {};
+            const dutyMap = {};
+            Object.keys(monthData).forEach(k => {
+              const v = normalizeDuty(monthData[k]);
+              if (v && !v.helper) {  // helper 데이터는 일괄 입력에서 표현 못 하므로 제외
+                dutyMap[parseInt(k, 10)] = v;
+              }
+            });
+            const dutyText = serializeDuties(dutyMap, daysInMonth).replace(/\s/g, "");
+            lines.push(`[${team}] ${u.name} ${dutyText}`);
+          }
+        }
+        return lines.join("\n");
+      }, [allUsers, allDuties, seniority, monthKey, daysInMonth]);
+
+      const [text, setText] = useState(initialText);
+      const [busy, setBusy] = useState(false);
+      const [results, setResults] = useState(null); // {ok: [], fail: [{line, name, reason}]}
+
+      // 이름 → 사용자 lookup (allUsers 안에서 동명이인 검사)
+      const nameMap = useMemo(() => {
+        const m = {};
+        Object.entries(allUsers).forEach(([sabun, u]) => {
+          if (!m[u.name]) m[u.name] = [];
+          m[u.name].push({ sabun, ...u });
+        });
+        return m;
+      }, [allUsers]);
+
+      const submit = async () => {
+        setBusy(true);
+        setResults(null);
+
+        const lines = text.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+        const ok = [];
+        const fail = [];
+        const updates = {};
+
+        for (const line of lines) {
+          const parts = line.split(/\s+/);
+          let name, dutyText;
+          if (parts[0]?.startsWith("[")) {
+            name = parts[1];
+            dutyText = parts.slice(2).join("");
+          } else {
+            name = parts[0];
+            dutyText = parts.slice(1).join("");
+          }
+          if (!name) {
+            fail.push({ line, name: "(이름 없음)", reason: "이름이 비어있어요" });
+            continue;
+          }
+          const matches = nameMap[name];
+          if (!matches || matches.length === 0) {
+            fail.push({ line, name, reason: "등록된 사용자가 아니에요" });
+            continue;
+          }
+          if (matches.length > 1) {
+            fail.push({ line, name, reason: `동명이인 ${matches.length}명 존재 — 사번으로 구분 필요` });
+            continue;
+          }
+          const user = matches[0];
+          let codes;
+          try {
+            codes = parseDutyStringV3(dutyText, user.team);
+          } catch (e) {
+            fail.push({ line, name, reason: e.message });
+            continue;
+          }
+          if (codes.length > daysInMonth) {
+            fail.push({ line, name, reason: `${daysInMonth}일을 초과 (${codes.length}일)` });
+            continue;
+          }
+          // updates에 적용
+          for (let d = 1; d <= daysInMonth; d++) {
+            const dKey = String(d).padStart(2, "0");
+            const path = `duties/${monthKey}/${user.sabun}/${dKey}`;
+            if (d <= codes.length) {
+              const code = codes[d - 1];
+              const payload = { shift: code.shift, team: user.team };
+              if (code.role) payload.role = code.role;
+              updates[path] = payload;
+            } else {
+              updates[path] = null;
+            }
+          }
+          ok.push({ name, count: codes.length });
+        }
+
+        try {
+          if (Object.keys(updates).length > 0) {
+            await update(ref(db), updates);
+          }
+          setResults({ ok, fail });
+        } catch (e) {
+          console.error(e);
+          alert("저장 중 오류 — 다시 시도해 주세요.");
+        }
+        setBusy(false);
+      };
+
+      return (
+        <div className="modal-backdrop" onClick={onClose}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">{month}월 전체 일괄 입력</h2>
+              <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
+            </div>
+
+            <div className="mode-switch">
+              <span className="mode-label">전체 일괄 입력 중</span>
+              <button onClick={onBack}>← 본인 입력으로</button>
+            </div>
+
+            <div className="modal-fields">
+              <div className="duty-help">
+                한 줄 = 한 사람. 형식: <code>[팀] 이름 듀티</code> 또는 <code>이름 듀티</code><br />
+                대괄호 [팀]은 시각적 구분용 — 저장 시 무시. 첫 단어가 이름.<br />
+                각 사람의 팀에 맞는 입력 규칙 적용 (A팀 1/2/a, main M/V).<br />
+                <strong>helper 근무는 일괄 입력에 표시되지 않으니, 일별 캘린더에서 별도로 설정.</strong>
+              </div>
+              <textarea className="bulk-textarea" value={text}
+                onChange={e => setText(e.target.value)} spellCheck={false} />
+
+              {results && (
+                <div className="bulk-result">
+                  {results.ok.length > 0 && (
+                    <div className="row ok">
+                      ✓ <strong>{results.ok.length}명 저장됨</strong>: {results.ok.map(r => `${r.name}(${r.count}일)`).join(", ")}
+                    </div>
+                  )}
+                  {results.fail.length > 0 && (
+                    <>
+                      <div className="row fail">
+                        ✗ <strong>{results.fail.length}건 실패</strong>:
+                      </div>
+                      {results.fail.map((f, i) => (
+                        <div key={i} className="row fail" style={{ paddingLeft: 14 }}>
+                          {f.name} — {f.reason}
+                        </div>
+                      ))}
+                    </>
+                  )}
+                  {results.fail.length === 0 && results.ok.length > 0 && (
+                    <div style={{ color: "var(--text-soft)", marginTop: 6, fontSize: 11 }}>
+                      모든 줄 저장 완료
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="modal-actions">
+              <button className="btn-primary" onClick={submit} disabled={busy}>
+                {busy ? "저장 중…" : "성공한 줄만 저장"}
+              </button>
+              <p style={{ fontSize: 11, color: "var(--text-soft)", textAlign: "center", margin: 0 }}>
+                ※ 실패한 줄은 저장 안 됨. 결과 확인 후 고쳐서 다시 시도.
               </p>
             </div>
           </div>
@@ -1929,6 +2226,11 @@
               <button className="menu-item" onClick={() => onMenuSelect("holidays")}>
                 <span>공휴일 관리</span><span style={{ color: "var(--text-soft)" }}>›</span>
               </button>
+              {isAdmin && (
+                <button className="menu-item" onClick={() => onMenuSelect("seniority")}>
+                  <span>연차 순서 관리</span><span style={{ color: "var(--text-soft)" }}>›</span>
+                </button>
+              )}
               {isAdmin && (
                 <button className="menu-item" onClick={() => onMenuSelect("whitelist")}>
                   <span>화이트리스트 관리</span><span style={{ color: "var(--text-soft)" }}>›</span>
@@ -2010,21 +2312,12 @@
     // ============================================================
     // <ContactsModal>
     // ============================================================
-    function ContactsModal({ allUsers, mySabun, onClose }) {
-      // 팀별 그룹핑
-      const byTeam = useMemo(() => {
-        const groups = {};
-        for (const t of TEAMS) groups[t] = [];
-        Object.entries(allUsers).forEach(([sabun, user]) => {
-          const team = user.team;
-          if (groups[team]) groups[team].push({ sabun, ...user });
-        });
-        // 각 팀 안에서 입사일 기준 정렬 (선임 먼저)
-        for (const t of TEAMS) {
-          groups[t].sort((a, b) => (a.hireDate || "").localeCompare(b.hireDate || ""));
-        }
-        return groups;
-      }, [allUsers]);
+    function ContactsModal({ allUsers, mySabun, seniority, onClose }) {
+      // 팀별 그룹핑 + seniority/입사일 정렬
+      const byTeam = useMemo(
+        () => groupUsersByTeam(allUsers, seniority),
+        [allUsers, seniority]
+      );
 
       return (
         <div className="modal-backdrop" onClick={onClose}>
@@ -2034,7 +2327,7 @@
               <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
             </div>
             <p style={{ fontSize: 12, color: "var(--text-mute)", margin: "0 0 8px" }}>
-              팀별 입사일 순. 전화번호 탭하면 통화 앱이 열려요.
+              팀별 연차 순. 전화번호 탭하면 통화 앱이 열려요.
             </p>
             {TEAMS.map(team => {
               const list = byTeam[team] || [];
@@ -2400,6 +2693,104 @@
                 </div>
               ))
             )}
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================================
+    // <SeniorityEditor> — admin 전용 연차 순서 관리
+    // ============================================================
+    function SeniorityEditor({ allUsers, seniority, onClose }) {
+      // 로컬 상태: { sabun: stringValue }
+      const [local, setLocal] = useState(() => {
+        const out = {};
+        Object.keys(allUsers).forEach(s => {
+          const v = seniority?.[s];
+          out[s] = v != null ? String(v) : "";
+        });
+        return out;
+      });
+      const [busy, setBusy] = useState(false);
+      const [savedMsg, setSavedMsg] = useState("");
+
+      const groups = useMemo(
+        () => groupUsersByTeam(allUsers, seniority),
+        [allUsers, seniority]
+      );
+
+      const setVal = (sabun, val) => {
+        // 빈 값 또는 양의 정수만 허용
+        if (val === "" || /^\d{1,4}$/.test(val)) {
+          setLocal(prev => ({ ...prev, [sabun]: val }));
+        }
+      };
+
+      const save = async () => {
+        setBusy(true);
+        setSavedMsg("");
+        try {
+          const updates = {};
+          Object.keys(local).forEach(s => {
+            const v = local[s];
+            if (v === "") {
+              updates[`seniority/${s}`] = null;
+            } else {
+              updates[`seniority/${s}`] = parseInt(v, 10);
+            }
+          });
+          await update(ref(db), updates);
+          setSavedMsg("저장됨");
+          setTimeout(() => setSavedMsg(""), 1500);
+        } catch (e) {
+          console.error(e);
+          alert("저장 실패");
+        }
+        setBusy(false);
+      };
+
+      return (
+        <div className="modal-backdrop" onClick={onClose}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">연차 순서 관리</h2>
+              <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
+            </div>
+            <div className="duty-help" style={{ marginBottom: 14 }}>
+              작은 숫자가 선임. 비우면 입사일 기준으로 자동 정렬돼요.<br />
+              경력직·재입사로 입사일 순서와 다른 경우만 숫자 입력하면 됨.
+            </div>
+
+            {TEAMS.map(team => {
+              const list = groups[team] || [];
+              if (list.length === 0) return null;
+              const c = teamColor(team);
+              return (
+                <div key={team} className="seniority-team-section">
+                  <div className="seniority-team-header">
+                    <span className="team-badge" style={{ background: c.bg, color: c.text }}>{team}</span>
+                    <span style={{ fontSize: 12, color: "var(--text-soft)" }}>{list.length}명</span>
+                  </div>
+                  {list.map(u => (
+                    <div key={u.sabun} className="seniority-row">
+                      <input
+                        type="tel" inputMode="numeric"
+                        value={local[u.sabun] || ""}
+                        onChange={e => setVal(u.sabun, e.target.value)}
+                        placeholder="—" />
+                      <span className="name">{u.name}</span>
+                      <span className="hire">{isoToHireDate(u.hireDate)}</span>
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
+
+            <div className="modal-actions" style={{ marginTop: 18 }}>
+              <button className="btn-primary" onClick={save} disabled={busy}>
+                {busy ? "저장 중…" : (savedMsg || "저장")}
+              </button>
+            </div>
           </div>
         </div>
       );
