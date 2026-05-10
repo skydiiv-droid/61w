@@ -1761,6 +1761,32 @@
             onSwipeRight={goPrevMonth}
           />
 
+          {/* 관리자 OFF 신청 현황 버튼 */}
+          {meIsAdmin && (() => {
+            const nmk = nextMonthKey(year, month);
+            const hasAny = Object.keys(allRequests?.[nmk] || {}).length > 0;
+            if (!hasAny) return null;
+            return (
+              <div style={{
+                display: "flex", gap: 8, padding: "0 14px 80px",
+                justifyContent: "center", flexWrap: "wrap",
+              }}>
+                <button onClick={() => setActiveModal("offAdminView")}
+                  style={{
+                    padding: "8px 14px", fontSize: 12, fontWeight: 600,
+                    border: "1px solid var(--border)", background: "var(--surface)",
+                    borderRadius: 8, color: "var(--text)",
+                  }}>📋 OFF 신청 현황 (캘린더)</button>
+                <button onClick={() => setActiveModal("offSummary")}
+                  style={{
+                    padding: "8px 14px", fontSize: 12, fontWeight: 600,
+                    border: "1px solid var(--border)", background: "var(--surface)",
+                    borderRadius: 8, color: "var(--text)",
+                  }}>📋 OFF 현황 요약</button>
+              </div>
+            );
+          })()}
+
           <button className="fab" onClick={() => setActiveModal("dutyInput")}>
             ✎ {month}월 듀티 입력
           </button>
@@ -1818,6 +1844,20 @@
               me={me} allUsers={allUsers} allRequests={allRequests}
               memos={memos}
               clinicOverrides={clinicOverrides} dbHolidays={dbHolidays}
+              onClose={close} />
+          )}
+          {activeModal === "offAdminView" && (
+            <OffRequestModal year={year} month={month}
+              me={me} allUsers={allUsers} allRequests={allRequests}
+              memos={memos}
+              clinicOverrides={clinicOverrides} dbHolidays={dbHolidays}
+              forceReadOnly={true}
+              onClose={close} />
+          )}
+          {activeModal === "offSummary" && (
+            <OffAdminSummary year={year} month={month}
+              allUsers={allUsers} allRequests={allRequests}
+              seniority={seniority}
               onClose={close} />
           )}
 
@@ -3054,6 +3094,11 @@
                 <span>공휴일 관리</span><span style={{ color: "var(--text-soft)" }}>›</span>
               </button>
               {isAdmin && (
+                <button className="menu-item" onClick={() => onMenuSelect("offSummary")}>
+                  <span>📋 OFF 신청 현황 요약</span><span style={{ color: "var(--text-soft)" }}>›</span>
+                </button>
+              )}
+              {isAdmin && (
                 <button className="menu-item" onClick={() => onMenuSelect("seniority")}>
                   <span>연차 순서 관리</span><span style={{ color: "var(--text-soft)" }}>›</span>
                 </button>
@@ -4079,17 +4124,15 @@
     // ============================================================
     // <OffRequestModal> — OFF 신청 화면 (다음 달 캘린더)
     // ============================================================
-    function OffRequestModal({ year, month, me, allUsers, allRequests, memos, clinicOverrides, dbHolidays, onClose }) {
+    function OffRequestModal({ year, month, me, allUsers, allRequests, memos, clinicOverrides, dbHolidays, onClose, forceReadOnly }) {
       const nm = nextMonthInfo(year, month);
       const nmk = nextMonthKey(year, month);
       const { daysInMonth, startWeekday } = getMonthInfo(nm.year, nm.month);
 
-      // mode: null = OFF 모드, "D"/"E"/"N"/"V" = 해당 시프트 모드
       const [mode, setMode] = useState(null);
       const [busy, setBusy] = useState(false);
-      // 보고 있는 팀 (본인 팀이면 편집 가능, 다른 팀이면 read-only)
       const [viewTeam, setViewTeam] = useState(me.team);
-      const isReadOnly = viewTeam !== me.team;
+      const isReadOnly = !!forceReadOnly || viewTeam !== me.team;
 
       // 본인 신청 데이터 (이 달, 본인 팀일 때만 의미)
       const myMonthRequests = useMemo(() => {
@@ -4212,7 +4255,9 @@
 
             {/* 헤더 + 팀 드롭다운 */}
             <div style={{ padding: "12px 18px 6px" }}>
-              <h2 className="modal-title" style={{ margin: "0 0 8px" }}>{nm.month}월 OFF 신청</h2>
+              <h2 className="modal-title" style={{ margin: "0 0 8px" }}>
+                {forceReadOnly ? `${nm.month}월 OFF 신청 현황` : `${nm.month}월 OFF 신청`}
+              </h2>
               <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "var(--text-mute)", flexWrap: "wrap" }}>
                 <span>{me.name}</span>
                 <span>·</span>
@@ -4258,6 +4303,76 @@
             )}
 
             <div style={{ height: 24 }} />
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================================
+    // <OffAdminSummary> — 사람 기준 OFF 신청 요약 (admin)
+    // ============================================================
+    function OffAdminSummary({ year, month, allUsers, allRequests, seniority, onClose }) {
+      const nm = nextMonthInfo(year, month);
+      const nmk = nextMonthKey(year, month);
+      const monthData = allRequests?.[nmk] || {};
+
+      // 팀별 사용자 그룹핑 (입사일 순 — 명세상)
+      const groups = useMemo(
+        () => groupUsersByTeam(allUsers, seniority),
+        [allUsers, seniority]
+      );
+
+      // 사람별 요약 — "7일 OFF, 8일 OFF, 16일 D" 형태
+      const summarizePerson = (sabun) => {
+        const sabunData = monthData[sabun];
+        if (!sabunData) return null;
+        const entries = Object.entries(sabunData)
+          .map(([k, v]) => ({ day: parseInt(k, 10), type: v.type, timestamp: v.timestamp }))
+          .sort((a, b) => a.day - b.day);
+        if (entries.length === 0) return null;
+        return entries.map(e => `${e.day}일 ${e.type}`).join(", ");
+      };
+
+      return (
+        <div className="modal-backdrop" onClick={onClose}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">{nm.month}월 OFF 현황 요약</h2>
+              <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
+            </div>
+            <p style={{ fontSize: 12, color: "var(--text-mute)", margin: "0 0 12px" }}>
+              팀별 입사일 순. 신청한 내용이 한 줄로 표시돼요.
+            </p>
+
+            {TEAMS.map(team => {
+              const list = groups[team] || [];
+              if (list.length === 0) return null;
+              const c = teamColor(team);
+              return (
+                <div key={team} className="seniority-team-section">
+                  <div className="seniority-team-header">
+                    <span className="team-badge" style={{ background: c.bg, color: c.text }}>{team}</span>
+                    <span style={{ fontSize: 12, color: "var(--text-soft)" }}>{list.length}명</span>
+                  </div>
+                  {list.map(u => {
+                    const summary = summarizePerson(u.sabun);
+                    return (
+                      <div key={u.sabun} style={{
+                        padding: "8px 0", borderBottom: "1px solid var(--border)",
+                        fontSize: 13,
+                      }}>
+                        <span style={{ fontWeight: 600, marginRight: 8 }}>{u.name}</span>
+                        {summary ? (
+                          <span style={{ color: "var(--text-mute)" }}>{summary}</span>
+                        ) : (
+                          <span style={{ color: "var(--text-soft)", fontStyle: "italic" }}>신청 안 함</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
           </div>
         </div>
       );
