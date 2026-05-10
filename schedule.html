@@ -566,6 +566,19 @@
     }
 
     /* OFF 신청 시스템 */
+    .cal-cell .corner-mark {
+      position: absolute; top: 2px; right: 3px;
+      font-size: 8px; font-weight: 700; line-height: 1;
+      pointer-events: none;
+    }
+    .cal-cell .corner-mark.hope {
+      color: var(--s-O-text); background: var(--s-O-bg);
+      padding: 1px 4px; border-radius: 4px;
+    }
+    .cal-cell .corner-mark.mismatch {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #FF4444; padding: 0;
+    }
     .off-request-bar {
       margin: 10px 14px 0;
       padding: 12px 14px;
@@ -1636,6 +1649,14 @@
         return out;
       }, [allDuties, monthKey, me.sabun]);
 
+      // 본인의 이번 달 OFF/근무 신청 데이터
+      const myRequestsObj = useMemo(() => {
+        const m = allRequests?.[monthKey]?.[me.sabun] || {};
+        const out = {};
+        Object.keys(m).forEach(k => { out[parseInt(k, 10)] = m[k]; });
+        return out;
+      }, [allRequests, monthKey, me.sabun]);
+
       const goPrevMonth = () => {
         if (month === 1) { setYear(year - 1); setMonth(12); }
         else setMonth(month - 1);
@@ -1730,6 +1751,7 @@
           <CalendarGrid
             year={year} month={month}
             myDuties={myDutiesObj}
+            myRequests={myRequestsObj}
             clinicOverrides={clinicOverrides}
             dbHolidays={dbHolidays}
             today={today} myTeam={me.team}
@@ -1803,6 +1825,7 @@
             <DayDetailModal
               year={year} month={month} day={openDay}
               me={me} allUsers={allUsers} allDuties={allDuties}
+              allRequests={allRequests}
               clinicOverrides={clinicOverrides} dbHolidays={dbHolidays}
               onClose={() => setOpenDay(null)}
               onNavigate={(dir) => {
@@ -1827,7 +1850,7 @@
 
     function CalendarCell({
       day, dateISO, status, isToday, holidayName, duty, myTeam, clinicOverrides, dbHolidays, dayOfWeek,
-      requestCount,
+      requestCount, myRequest,
       onShortTap, onLongPress
     }) {
       const timerRef = useRef(null);
@@ -1875,6 +1898,21 @@
       // 셀 색: 항상 시프트(displayShift) 기준
       const cellColor = displayShift ? shiftColor(displayShift) : null;
 
+      // 비교 마크: 본인 신청 vs 본인 확정
+      let cornerMark = null;
+      if (myRequest && duty) {
+        const reqType = myRequest.type;
+        // OFF 신청 + 실제 O → "희"
+        // 그 외 신청과 실제 불일치 → 빨간 점
+        if (reqType === "OFF" && displayShift === "O") {
+          cornerMark = "hope";
+        } else if (reqType !== "OFF" && reqType === rawShift) {
+          cornerMark = null; // D/E/N/V 일치 → 별도 표시 X
+        } else {
+          cornerMark = "mismatch";
+        }
+      }
+
       return (
         <button
           className={`cal-cell ${isToday ? "today" : ""} ${pressing ? "long-pressing" : ""}`}
@@ -1886,7 +1924,7 @@
           type="button"
         >
           <div className={`cal-date ${status}`}>{day}</div>
-          {requestCount > 0 && (
+          {requestCount > 0 && !cornerMark && (
             <span style={{
               position: "absolute", top: 3, right: 4,
               fontSize: 9, fontWeight: 700,
@@ -1896,6 +1934,8 @@
               lineHeight: 1,
             }}>{requestCount}</span>
           )}
+          {cornerMark === "hope" && <span className="corner-mark hope">희</span>}
+          {cornerMark === "mismatch" && <span className="corner-mark mismatch" />}
           <div className="duty-stack">
             {displayShift && (
               <div className="duty-pill"
@@ -1909,7 +1949,7 @@
       );
     }
 
-    function CalendarGrid({ year, month, myDuties, clinicOverrides, dbHolidays, today, myTeam, onShortTap, onLongPress, onSwipeLeft, onSwipeRight, allRequests, allUsers }) {
+    function CalendarGrid({ year, month, myDuties, myRequests, clinicOverrides, dbHolidays, today, myTeam, onShortTap, onLongPress, onSwipeLeft, onSwipeRight, allRequests, allUsers }) {
       const { daysInMonth, startWeekday } = getMonthInfo(year, month);
       const swipeStartRef = useRef(null);
 
@@ -1955,6 +1995,7 @@
             holidayName={holidayName} duty={duty} myTeam={myTeam}
             clinicOverrides={clinicOverrides} dbHolidays={dbHolidays}
             requestCount={reqCount}
+            myRequest={myRequests?.[day] || null}
             onShortTap={onShortTap} onLongPress={onLongPress} />
         );
       }
@@ -2063,7 +2104,7 @@
       return "N";
     }
 
-    function DayDetailModal({ year, month, day, me, allUsers, allDuties, clinicOverrides, dbHolidays, onClose, onNavigate }) {
+    function DayDetailModal({ year, month, day, me, allUsers, allDuties, allRequests, clinicOverrides, dbHolidays, onClose, onNavigate }) {
       const monthKey = getMonthKey(year, month);
       const iso = isoDate(year, month, day);
       const dow = getWeekday(year, month, day);
@@ -2079,6 +2120,18 @@
       const myEffectiveTeam = getEffectiveTeam(myDuty, me.team);
       const myEffectiveRole = getEffectiveRole(myDuty);
       const myIsHelper = isManualHelper(myDuty);
+
+      // 신청 vs 확정 불일치 체크
+      const myRequest = getRequestAt(allRequests, monthKey, me.sabun, day);
+      const mismatchNote = (() => {
+        if (!myRequest || !myDuty) return null;
+        const t = myRequest.type;
+        if (t === "OFF" && myShift === "O") return null;
+        if (t !== "OFF" && t === myRawShift) return null;
+        // 불일치
+        const reqLabel = t === "OFF" ? "OFF" : t;
+        return `${reqLabel} 신청했지만 실제는 ${myShift || "—"}예요.`;
+      })();
 
       // selectedShift 디폴트
       // - 본인이 D/E/N이면 그 시프트
@@ -2232,6 +2285,18 @@
               </div>
               <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
             </div>
+
+            {mismatchNote && (
+              <div style={{
+                padding: "8px 12px", marginBottom: 12,
+                background: "#FFE8E8", color: "#7A1F1F",
+                borderRadius: 8, fontSize: 12, fontWeight: 500,
+                display: "flex", alignItems: "center", gap: 6,
+              }}>
+                <span>⚠️</span>
+                <span>{mismatchNote}</span>
+              </div>
+            )}
 
             <div className="day-section">
               <p className="day-section-title">내 근무</p>
@@ -4022,13 +4087,11 @@
       // mode: null = OFF 모드, "D"/"E"/"N"/"V" = 해당 시프트 모드
       const [mode, setMode] = useState(null);
       const [busy, setBusy] = useState(false);
+      // 보고 있는 팀 (본인 팀이면 편집 가능, 다른 팀이면 read-only)
+      const [viewTeam, setViewTeam] = useState(me.team);
+      const isReadOnly = viewTeam !== me.team;
 
-      // 팀 필터 (본인 팀 기준)
-      // 명세: A팀 = 앞/뒤/act 통합, S-616/617/act 개별
-      // 우리 데이터엔 A팀은 그냥 "A". S는 각각 분리되어 있음. 그대로 사용.
-      const myTeam = me.team;
-
-      // 본인 신청 데이터 (이 달)
+      // 본인 신청 데이터 (이 달, 본인 팀일 때만 의미)
       const myMonthRequests = useMemo(() => {
         const m = allRequests?.[nmk]?.[me.sabun] || {};
         const out = {};
@@ -4052,7 +4115,7 @@
       };
 
       const onCellClick = async (day) => {
-        if (busy) return;
+        if (busy || isReadOnly) return;
         const dKey = String(day).padStart(2, "0");
         const path = `requests/${nmk}/${me.sabun}/${dKey}`;
         const existing = myMonthRequests[day];
@@ -4067,8 +4130,8 @@
           return;
         }
 
-        // 4명 제한 체크 (새로 추가하는 경우 또는 다른 타입에서 전환)
-        const list = getRequestsForDay(allRequests, nmk, day, allUsers, myTeam);
+        // 4명 제한 체크
+        const list = getRequestsForDay(allRequests, nmk, day, allUsers, me.team);
         const meAlreadyIn = list.some(r => r.sabun === me.sabun);
         if (!meAlreadyIn && list.length >= 4) {
           alert("이 날 신청이 이미 4명입니다.");
@@ -4092,12 +4155,14 @@
         const status = getClinicStatus(iso, dow, clinicOverrides, dbHolidays);
         const dateColor = status === "closed" ? "var(--c-closed)"
           : status === "morning" ? "var(--c-morning)" : "var(--text)";
-        const list = getRequestsForDay(allRequests, nmk, day, allUsers, myTeam);
+        const list = getRequestsForDay(allRequests, nmk, day, allUsers, viewTeam);
         const isFull = list.length >= 4;
 
         cells.push(
           <button key={day} className={`req-cell ${isFull ? "full" : ""}`}
-            onClick={() => onCellClick(day)} type="button">
+            onClick={() => onCellClick(day)} type="button"
+            disabled={isReadOnly}
+            style={isReadOnly ? { cursor: "default", opacity: 0.95 } : {}}>
             {isFull && <span className="full-mark">FULL</span>}
             <div className="date-num" style={{ color: dateColor }}>{day}</div>
             <div className="req-list">
@@ -4112,6 +4177,7 @@
       }
 
       const promptText = (() => {
+        if (isReadOnly) return `${viewTeam}팀 OFF 현황 (조회만 가능)`;
         if (mode === null) return "희망 OFF 날짜를 선택하세요";
         if (mode === "D") return "희망 D 근무 날짜 선택하세요";
         if (mode === "E") return "희망 E 근무 날짜 선택하세요";
@@ -4120,9 +4186,7 @@
         return "";
       })();
 
-      const showButtons = myTeam === "main"
-        ? ["V"]
-        : ["D", "E", "N"];
+      const showButtons = me.team === "main" ? ["V"] : ["D", "E", "N"];
 
       return (
         <div className="modal-backdrop" onClick={onClose} style={{ alignItems: "stretch" }}>
@@ -4130,7 +4194,7 @@
             style={{ maxHeight: "100vh", borderRadius: 0, padding: 0 }}>
             {/* 상단 바 */}
             <div className="req-mode-bar">
-              {showButtons.map(s => (
+              {!isReadOnly && showButtons.map(s => (
                 <button key={s}
                   className={`mode-btn shift-${s} ${mode === s ? "active" : ""}`}
                   onClick={() => setMode(mode === s ? null : s)} type="button">
@@ -4138,19 +4202,39 @@
                 </button>
               ))}
               <div className="spacer" />
-              <button className="text-btn done" onClick={onClose} type="button">완료</button>
-              <button className="text-btn cancel" onClick={onClose} type="button">취소</button>
+              <button className="text-btn done" onClick={onClose} type="button">
+                {isReadOnly ? "닫기" : "완료"}
+              </button>
+              {!isReadOnly && (
+                <button className="text-btn cancel" onClick={onClose} type="button">취소</button>
+              )}
             </div>
 
-            {/* 헤더 */}
+            {/* 헤더 + 팀 드롭다운 */}
             <div style={{ padding: "12px 18px 6px" }}>
-              <h2 className="modal-title" style={{ margin: "0 0 4px" }}>{nm.month}월 OFF 신청</h2>
-              <p style={{ fontSize: 12, color: "var(--text-mute)", margin: 0 }}>
-                {me.name} · {myTeam}팀 · 하루 최대 4명 (팀 단위)
-              </p>
+              <h2 className="modal-title" style={{ margin: "0 0 8px" }}>{nm.month}월 OFF 신청</h2>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "var(--text-mute)", flexWrap: "wrap" }}>
+                <span>{me.name}</span>
+                <span>·</span>
+                <select value={viewTeam} onChange={e => { setViewTeam(e.target.value); setMode(null); }}
+                  style={{
+                    padding: "4px 8px", borderRadius: 6,
+                    border: "1px solid var(--border)", background: "var(--surface)",
+                    fontSize: 13, fontWeight: 600,
+                    color: viewTeam === me.team ? "var(--text)" : "var(--accent)",
+                  }}>
+                  {TEAMS.map(t => (
+                    <option key={t} value={t}>{t}팀 보기{t === me.team ? " (내 팀)" : ""}</option>
+                  ))}
+                </select>
+                <span style={{ fontSize: 11 }}>하루 최대 4명</span>
+              </div>
             </div>
 
-            <div className="req-prompt">{promptText}</div>
+            <div className="req-prompt"
+              style={isReadOnly ? { background: "#FFF4E0", color: "#7A4A0F" } : {}}>
+              {promptText}
+            </div>
 
             <div className="cal-weekdays" style={{ padding: "8px 8px 0" }}>
               {WEEKDAYS_KR.map((w, i) => (
@@ -4161,15 +4245,17 @@
             </div>
             <div className="req-grid">{cells}</div>
 
-            {/* 메모 */}
-            <div className="req-memo">
-              <p style={{ fontSize: 12, color: "var(--text-mute)", margin: "0 0 6px", fontWeight: 600 }}>
-                📝 {nm.month}월 메모 (공유)
-              </p>
-              <textarea
-                value={memoText} onChange={e => onMemoChange(e.target.value)}
-                placeholder="이 달 OFF 신청 관련 메모… (자동 저장)" />
-            </div>
+            {/* 메모 — 본인 팀일 때만 (다른 팀 조회 시 숨김) */}
+            {!isReadOnly && (
+              <div className="req-memo">
+                <p style={{ fontSize: 12, color: "var(--text-mute)", margin: "0 0 6px", fontWeight: 600 }}>
+                  📝 {nm.month}월 메모 (공유)
+                </p>
+                <textarea
+                  value={memoText} onChange={e => onMemoChange(e.target.value)}
+                  placeholder="이 달 OFF 신청 관련 메모… (자동 저장)" />
+              </div>
+            )}
 
             <div style={{ height: 24 }} />
           </div>
