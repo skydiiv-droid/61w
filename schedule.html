@@ -87,14 +87,180 @@
       border-radius: 8px; font-size: 13px;
     }
 
+    .top-bar-title {
+      font-size: 17px; font-weight: 600; letter-spacing: -0.3px;
+      display: flex; align-items: center; gap: 10px;
+      cursor: pointer;
+      padding: 4px 8px; border-radius: 8px;
+      margin: -4px -8px;
+    }
+    .top-bar-title:active { background: var(--surface-alt); }
+    .top-bar-title .dropdown-arrow {
+      font-size: 10px; color: var(--text-mute);
+    }
+
+    .user-switcher-backdrop {
+      position: fixed; inset: 0; z-index: 60;
+      background: rgba(0,0,0,0.2);
+    }
+    .user-switcher-panel {
+      position: fixed; top: 56px; left: 14px; right: 14px;
+      max-width: 460px; margin: 0 auto;
+      background: var(--bg);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+      z-index: 61;
+      max-height: 70vh; overflow-y: auto;
+      padding: 8px 0;
+    }
+    .switcher-item {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%;
+      padding: 12px 16px; border: none; background: transparent;
+      font-size: 14px; color: var(--text); text-align: left;
+      cursor: pointer;
+      -webkit-user-select: none; user-select: none;
+      -webkit-touch-callout: none; touch-action: manipulation;
+    }
+    .switcher-item:active { background: var(--surface-alt); }
+    .switcher-item.me { font-weight: 600; }
+    .switcher-item.team-header {
+      font-size: 12px; color: var(--text-mute); font-weight: 600;
+      letter-spacing: 0.5px; padding: 10px 16px 6px;
+      border-top: 1px solid var(--border);
+    }
+    .switcher-item.team-header:first-of-type { border-top: none; }
+    .switcher-item.team-header .team-badge { font-size: 11px; padding: 2px 8px; }
+    .switcher-item.person {
+      padding: 10px 16px 10px 36px; font-size: 14px;
+    }
+    .switcher-item.long-pressing {
+      background: var(--surface-alt);
+      box-shadow: inset 3px 0 0 var(--accent);
+    }
+    .switcher-divider {
+      height: 1px; background: var(--border); margin: 6px 0;
+    }
+    .switcher-hint {
+      padding: 4px 16px 8px; font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    /* 조회/비교 모드 상단 인디케이터 */
+    .viewing-indicator {
+      padding: 8px 16px; margin: 0 14px 8px;
+      background: #FFF4E0; color: #6B3A0A;
+      border-radius: 8px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 500;
+    }
+    .viewing-indicator.compare {
+      background: var(--surface-alt); color: var(--text);
+    }
+    .viewing-indicator .return-btn {
+      margin-left: auto;
+      padding: 4px 10px; border: none; border-radius: 6px;
+      background: rgba(0,0,0,0.06); color: inherit;
+      font-size: 11px; font-weight: 600;
+    }
+
+    /* 비교 모드 셀 */
+    .cal-cell.compare {
+      aspect-ratio: 1 / 1.4;
+    }
+    .cal-cell.compare .duty-stack {
+      display: flex; flex-direction: column; gap: 1px;
+      padding-top: 1px;
+    }
+    .cal-cell.compare .duty-pill {
+      font-size: 11px; padding: 2px 0;
+    }
+    .compare-shared-off {
+      padding: 10px 14px; margin: 0 14px 12px;
+      background: var(--s-O-bg); color: var(--s-O-text);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    .compare-shared-off .count { font-weight: 700; }
+
+    /* 전체보기 가로 시트 */
+    .sheet-modal {
+      background: var(--bg);
+      width: 100%; max-width: 100%;
+      max-height: 100vh; height: 100vh;
+      border-radius: 0; padding: 0;
+      display: flex; flex-direction: column;
+    }
+    .sheet-header {
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+      flex-shrink: 0;
+    }
+    .sheet-scroll {
+      flex: 1; overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .sheet-grid {
+      display: inline-block; min-width: 100%;
+    }
+    .sheet-team-label {
+      position: sticky; left: 0;
+      padding: 8px 12px; background: var(--bg);
+      font-size: 11px; font-weight: 700; color: var(--text-mute);
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+      z-index: 3;
+    }
+    .sheet-row {
+      display: flex; align-items: stretch; height: 28px;
+    }
+    .sheet-row.header { height: 26px; }
+    .sheet-cell-name {
+      position: sticky; left: 0;
+      width: 70px; min-width: 70px;
+      padding: 4px 8px;
+      background: var(--bg);
+      font-size: 12px; font-weight: 500;
+      display: flex; align-items: center;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      z-index: 2;
+    }
+    .sheet-cell-name.header {
+      font-size: 11px; color: var(--text-mute);
+      background: var(--surface);
+    }
+    .sheet-cell-name.me {
+      background: var(--surface-alt);
+      font-weight: 700;
+    }
+    .sheet-cell-day {
+      width: 28px; min-width: 28px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 600;
+      border-right: 1px solid rgba(0,0,0,0.04);
+      border-bottom: 1px solid var(--border);
+    }
+    .sheet-cell-day.header {
+      background: var(--surface);
+      position: sticky; top: 0;
+      color: var(--text-mute); font-size: 10px;
+      z-index: 2;
+    }
+    .sheet-cell-day.weekend { background: rgba(255, 220, 220, 0.15); }
+    .sheet-cell-day.sat { color: var(--c-morning); }
+    .sheet-cell-day.sun { color: var(--c-closed); }
+    .sheet-corner {
+      position: sticky; top: 0; left: 0; z-index: 4;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
     .top-bar {
       display: flex; align-items: center; justify-content: space-between;
       padding: 14px 18px; border-bottom: 1px solid var(--border);
       background: var(--bg); position: sticky; top: 0; z-index: 10;
-    }
-    .top-bar-title {
-      font-size: 17px; font-weight: 600; letter-spacing: -0.3px;
-      display: flex; align-items: center; gap: 10px;
     }
     .top-bar-actions { display: flex; gap: 8px; }
     .icon-btn {
@@ -1539,6 +1705,14 @@
       const [openDay, setOpenDay] = useState(null);       // 일별 정보 모달 (짧게 탭)
       const [quickEditDay, setQuickEditDay] = useState(null); // 빠른 수정 (길게 탭)
 
+      // 다른 사람 듀티 조회/비교 모드
+      // viewingSabun !== null → 다른 사람 캘린더 조회
+      // compareSabun !== null → 본인 vs 상대 비교
+      // 둘 다 null → 본인 모드
+      const [viewingSabun, setViewingSabun] = useState(null);
+      const [compareSabun, setCompareSabun] = useState(null);
+      const [switcherOpen, setSwitcherOpen] = useState(false);
+
       const monthKey = getMonthKey(year, month);
       const prevMK = adjacentMonthKey(year, month, -1);
       const nextMK = adjacentMonthKey(year, month, 1);
@@ -1657,6 +1831,43 @@
         return out;
       }, [allRequests, monthKey, me.sabun]);
 
+      // 조회 중인 사람의 듀티 (viewing 모드)
+      const viewingDutiesObj = useMemo(() => {
+        if (!viewingSabun) return null;
+        const m = allDuties[monthKey]?.[viewingSabun];
+        if (!m) return {};
+        const out = {};
+        Object.keys(m).forEach(k => {
+          const v = normalizeDuty(m[k]);
+          if (v) out[parseInt(k, 10)] = v;
+        });
+        return out;
+      }, [allDuties, monthKey, viewingSabun]);
+
+      // 비교 대상자 듀티 (compare 모드)
+      const compareDutiesObj = useMemo(() => {
+        if (!compareSabun) return null;
+        const m = allDuties[monthKey]?.[compareSabun];
+        if (!m) return {};
+        const out = {};
+        Object.keys(m).forEach(k => {
+          const v = normalizeDuty(m[k]);
+          if (v) out[parseInt(k, 10)] = v;
+        });
+        return out;
+      }, [allDuties, monthKey, compareSabun]);
+
+      const isViewing = !!viewingSabun;
+      const isComparing = !!compareSabun;
+      const isNormalMode = !isViewing && !isComparing;
+      const viewingUser = viewingSabun ? allUsers[viewingSabun] : null;
+      const compareUser = compareSabun ? allUsers[compareSabun] : null;
+
+      const returnToMe = () => {
+        setViewingSabun(null);
+        setCompareSabun(null);
+      };
+
       const goPrevMonth = () => {
         if (month === 1) { setYear(year - 1); setMonth(12); }
         else setMonth(month - 1);
@@ -1673,9 +1884,32 @@
       return (
         <>
           <div className="top-bar">
-            <div className="top-bar-title">
-              <span>{me.name}</span>
-              <span className="team-badge" style={{ background: tColor.bg, color: tColor.text }}>{me.team}</span>
+            <div className="top-bar-title" onClick={() => setSwitcherOpen(true)}>
+              {isComparing ? (
+                <>
+                  <span>{me.name}</span>
+                  <span style={{ color: "var(--text-soft)", fontSize: 14 }}>vs</span>
+                  <span>{compareUser?.name || compareSabun}</span>
+                </>
+              ) : isViewing ? (
+                <>
+                  <span>{viewingUser?.name || viewingSabun}</span>
+                  {viewingUser && (() => {
+                    const c = teamColor(viewingUser.team);
+                    return (
+                      <span className="team-badge" style={{ background: c.bg, color: c.text }}>
+                        {viewingUser.team}
+                      </span>
+                    );
+                  })()}
+                </>
+              ) : (
+                <>
+                  <span>{me.name}</span>
+                  <span className="team-badge" style={{ background: tColor.bg, color: tColor.text }}>{me.team}</span>
+                </>
+              )}
+              <span className="dropdown-arrow">▼</span>
             </div>
             <div className="top-bar-actions">
               <button className="notice-collapsed-btn" onClick={() => setActiveModal("notices")} aria-label="공지">
@@ -1686,8 +1920,42 @@
             </div>
           </div>
 
+          {/* 사용자 스위처 드롭다운 */}
+          {switcherOpen && (
+            <UserSwitcherDropdown
+              me={me} allUsers={allUsers} seniority={seniority}
+              onClose={() => setSwitcherOpen(false)}
+              onPickMe={() => { returnToMe(); setSwitcherOpen(false); }}
+              onPickView={(sabun) => {
+                setViewingSabun(sabun); setCompareSabun(null);
+                setSwitcherOpen(false);
+              }}
+              onPickCompare={(sabun) => {
+                setCompareSabun(sabun); setViewingSabun(null);
+                setSwitcherOpen(false);
+              }}
+              onPickAllView={() => {
+                setActiveModal("allUsersGrid");
+                setSwitcherOpen(false);
+              }}
+            />
+          )}
+
+          {/* 조회 / 비교 모드 인디케이터 */}
+          {(isViewing || isComparing) && (
+            <div className={`viewing-indicator ${isComparing ? "compare" : ""}`}>
+              <span>{isComparing ? "📊" : "👁"}</span>
+              <span style={{ flex: 1 }}>
+                {isComparing
+                  ? <>{me.name} <strong>vs</strong> {compareUser?.name || compareSabun} 비교 중</>
+                  : <>{viewingUser?.name || viewingSabun} 듀티 조회 중 (수정 불가)</>}
+              </span>
+              <button className="return-btn" onClick={returnToMe}>내 캘린더로</button>
+            </div>
+          )}
+
           {/* OFF 신청 활성화 띠 (관리자) 또는 신청 진입 띠 (모든 사용자) */}
-          {(() => {
+          {isNormalMode && (() => {
             const nm = nextMonthInfo(year, month);
             const nmk = nextMonthKey(year, month);
             const active = !!requestSettings?.[nmk]?.active;
@@ -1757,21 +2025,35 @@
             <button onClick={goNextMonth} aria-label="다음 달">›</button>
           </div>
 
-          <CalendarGrid
-            year={year} month={month}
-            myDuties={myDutiesObj}
-            myRequests={myRequestsObj}
-            clinicOverrides={clinicOverrides}
-            dbHolidays={dbHolidays}
-            today={today} myTeam={me.team}
-            onShortTap={day => setOpenDay(day)}
-            onLongPress={day => setQuickEditDay(day)}
-            onSwipeLeft={goNextMonth}
-            onSwipeRight={goPrevMonth}
-          />
+          {isComparing ? (
+            <CompareCalendarGrid
+              year={year} month={month}
+              myDuties={myDutiesObj}
+              otherDuties={compareDutiesObj || {}}
+              clinicOverrides={clinicOverrides}
+              dbHolidays={dbHolidays}
+              today={today}
+              onSwipeLeft={goNextMonth}
+              onSwipeRight={goPrevMonth} />
+          ) : (
+            <CalendarGrid
+              year={year} month={month}
+              myDuties={isViewing ? (viewingDutiesObj || {}) : myDutiesObj}
+              myRequests={isViewing ? {} : myRequestsObj}
+              clinicOverrides={clinicOverrides}
+              dbHolidays={dbHolidays}
+              today={today}
+              myTeam={isViewing ? (viewingUser?.team || me.team) : me.team}
+              onShortTap={day => setOpenDay(day)}
+              onLongPress={day => setQuickEditDay(day)}
+              onSwipeLeft={goNextMonth}
+              onSwipeRight={goPrevMonth}
+              readOnly={isViewing}
+            />
+          )}
 
-          {/* 관리자 OFF 신청 현황 버튼 */}
-          {meIsAdmin && (() => {
+          {/* 관리자 OFF 신청 현황 버튼 - 본인 모드에서만 */}
+          {isNormalMode && meIsAdmin && (() => {
             const nmk = nextMonthKey(year, month);
             const hasAny = Object.keys(allRequests?.[nmk] || {}).length > 0;
             if (!hasAny) return null;
@@ -1796,9 +2078,11 @@
             );
           })()}
 
-          <button className="fab" onClick={() => setActiveModal("dutyInput")}>
-            ✎ {month}월 듀티 입력
-          </button>
+          {isNormalMode && (
+            <button className="fab" onClick={() => setActiveModal("dutyInput")}>
+              ✎ {month}월 듀티 입력
+            </button>
+          )}
 
           {activeModal === "profile" && (
             <ProfileModal me={me} onClose={close} onLogout={onLogout}
@@ -1842,6 +2126,14 @@
           )}
           {activeModal === "whitelist" && (
             <WhitelistAdmin allUsers={allUsers} admins={admins} onClose={close} />
+          )}
+          {activeModal === "allUsersGrid" && (
+            <AllUsersDutyGrid year={year} month={month}
+              allUsers={allUsers} allDuties={allDuties}
+              seniority={seniority}
+              clinicOverrides={clinicOverrides} dbHolidays={dbHolidays}
+              mySabun={me.sabun}
+              onClose={close} />
           )}
           {activeModal === "offToggle" && (
             <OffToggleModal year={year} month={month}
@@ -1899,7 +2191,7 @@
 
     function CalendarCell({
       day, dateISO, status, isToday, holidayName, duty, myTeam, clinicOverrides, dbHolidays, dayOfWeek,
-      requestCount, myRequest,
+      requestCount, myRequest, readOnly,
       onShortTap, onLongPress
     }) {
       const timerRef = useRef(null);
@@ -1907,13 +2199,14 @@
       const [pressing, setPressing] = useState(false);
 
       const startTimer = () => {
+        if (readOnly) return;
         triggeredRef.current = false;
         setPressing(true);
         timerRef.current = setTimeout(() => {
           triggeredRef.current = true;
           timerRef.current = null;
           setPressing(false);
-          onLongPress(day);
+          onLongPress && onLongPress(day);
         }, 500);
       };
       const cancelTimer = () => {
@@ -1925,11 +2218,12 @@
       };
       const handlePointerDown = (e) => { startTimer(); };
       const handlePointerUp = (e) => {
+        if (readOnly) return;
         if (timerRef.current) {
           clearTimeout(timerRef.current);
           timerRef.current = null;
           setPressing(false);
-          if (!triggeredRef.current) onShortTap(day);
+          if (!triggeredRef.current) onShortTap && onShortTap(day);
         }
       };
       const handlePointerLeave = () => { cancelTimer(); };
@@ -1949,14 +2243,14 @@
 
       // 비교 마크: 본인 신청 vs 본인 확정
       let cornerMark = null;
-      if (myRequest && duty) {
+      if (!readOnly && myRequest && duty) {
         const reqType = myRequest.type;
         // OFF 신청 + 실제 O → "희"
         // 그 외 신청과 실제 불일치 → 빨간 점
         if (reqType === "OFF" && displayShift === "O") {
           cornerMark = "hope";
         } else if (reqType !== "OFF" && reqType === rawShift) {
-          cornerMark = null; // D/E/N/V 일치 → 별도 표시 X
+          cornerMark = null;
         } else {
           cornerMark = "mismatch";
         }
@@ -1998,7 +2292,224 @@
       );
     }
 
-    function CalendarGrid({ year, month, myDuties, myRequests, clinicOverrides, dbHolidays, today, myTeam, onShortTap, onLongPress, onSwipeLeft, onSwipeRight, allRequests, allUsers }) {
+    // ============================================================
+    // <UserSwitcherDropdown> — 상단 이름 드롭다운 (조회/비교 진입)
+    // 짧게 탭 = 조회 모드 / 길게 탭 = 비교 모드
+    // ============================================================
+    function UserSwitcherDropdown({ me, allUsers, seniority, onClose, onPickMe, onPickView, onPickCompare, onPickAllView }) {
+      const groups = useMemo(
+        () => groupUsersByTeam(allUsers, seniority),
+        [allUsers, seniority]
+      );
+      // 팀별 펼침 상태
+      const [openTeams, setOpenTeams] = useState(() => {
+        const s = {};
+        TEAMS.forEach(t => { s[t] = false; });
+        // 본인 팀은 기본 펼침
+        s[me.team] = true;
+        return s;
+      });
+      const toggleTeam = (t) => setOpenTeams(prev => ({ ...prev, [t]: !prev[t] }));
+
+      return (
+        <>
+          <div className="user-switcher-backdrop" onClick={onClose} />
+          <div className="user-switcher-panel" onClick={e => e.stopPropagation()}>
+            <button className="switcher-item me" onClick={onPickMe}>
+              <span>👤 {me.name} (나)</span>
+            </button>
+            <button className="switcher-item" onClick={onPickAllView}>
+              <span>📊 전체보기 (가로 시트)</span>
+            </button>
+            <div className="switcher-hint">
+              팀원 탭 = 조회 · 길게 탭 = 비교
+            </div>
+            <div className="switcher-divider" />
+            {TEAMS.map(team => {
+              const list = groups[team] || [];
+              if (list.length === 0) return null;
+              const c = teamColor(team);
+              const open = openTeams[team];
+              return (
+                <div key={team}>
+                  <button className="switcher-item team-header" onClick={() => toggleTeam(team)}>
+                    <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span className="team-badge" style={{ background: c.bg, color: c.text }}>{team}</span>
+                      <span style={{ color: "var(--text-soft)", fontSize: 11 }}>{list.length}명</span>
+                    </span>
+                    <span style={{ color: "var(--text-soft)", fontSize: 12 }}>{open ? "▾" : "▸"}</span>
+                  </button>
+                  {open && list.map(u => (
+                    <SwitcherPersonRow key={u.sabun}
+                      user={u} isMe={u.sabun === me.sabun}
+                      onShortTap={() => {
+                        if (u.sabun === me.sabun) onPickMe();
+                        else onPickView(u.sabun);
+                      }}
+                      onLongPress={() => {
+                        if (u.sabun === me.sabun) onPickMe();
+                        else onPickCompare(u.sabun);
+                      }} />
+                  ))}
+                </div>
+              );
+            })}
+          </div>
+        </>
+      );
+    }
+
+    function SwitcherPersonRow({ user, isMe, onShortTap, onLongPress }) {
+      const timerRef = useRef(null);
+      const triggeredRef = useRef(false);
+      const [pressing, setPressing] = useState(false);
+
+      const start = () => {
+        triggeredRef.current = false;
+        setPressing(true);
+        timerRef.current = setTimeout(() => {
+          triggeredRef.current = true;
+          timerRef.current = null;
+          setPressing(false);
+          onLongPress();
+        }, 500);
+      };
+      const up = () => {
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+          timerRef.current = null;
+          setPressing(false);
+          if (!triggeredRef.current) onShortTap();
+        }
+      };
+      const leave = () => {
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+          timerRef.current = null;
+        }
+        setPressing(false);
+      };
+
+      return (
+        <button
+          className={`switcher-item person ${pressing ? "long-pressing" : ""}`}
+          onPointerDown={start}
+          onPointerUp={up}
+          onPointerLeave={leave}
+          onPointerCancel={leave}
+          onContextMenu={e => e.preventDefault()}>
+          <span>{user.name}{isMe && " (나)"}</span>
+          <span style={{ fontSize: 11, color: "var(--text-soft)", fontFamily: "ui-monospace, monospace" }}>
+            {user.sabun}
+          </span>
+        </button>
+      );
+    }
+
+    // ============================================================
+    // <CompareCalendarGrid> — 본인 vs 상대 비교
+    // ============================================================
+    function CompareCalendarGrid({ year, month, myDuties, otherDuties, clinicOverrides, dbHolidays, today, onSwipeLeft, onSwipeRight }) {
+      const { daysInMonth, startWeekday } = getMonthInfo(year, month);
+      const swipeStartRef = useRef(null);
+
+      const handleTouchStart = (e) => {
+        const t = e.touches[0];
+        swipeStartRef.current = { x: t.clientX, y: t.clientY, time: Date.now() };
+      };
+      const handleTouchEnd = (e) => {
+        const start = swipeStartRef.current;
+        if (!start) return;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - start.x;
+        const dy = t.clientY - start.y;
+        const dt = Date.now() - start.time;
+        swipeStartRef.current = null;
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5 && dt < 800) {
+          if (dx < 0) onSwipeLeft && onSwipeLeft();
+          else onSwipeRight && onSwipeRight();
+        }
+      };
+
+      // 공동 OFF 계산 (둘 다 displayShift === "O")
+      const sharedOff = useMemo(() => {
+        const out = [];
+        for (let d = 1; d <= daysInMonth; d++) {
+          const my = myDuties[d];
+          const other = otherDuties[d];
+          if (!my || !other) continue;
+          const iso = isoDate(year, month, d);
+          const dow = (startWeekday + d - 1) % 7;
+          const myDisp = getDisplayShift(my.shift, iso, dow, clinicOverrides, dbHolidays);
+          const otherDisp = getDisplayShift(other.shift, iso, dow, clinicOverrides, dbHolidays);
+          if (myDisp === "O" && otherDisp === "O") out.push(d);
+        }
+        return out;
+      }, [myDuties, otherDuties, year, month, daysInMonth, startWeekday, clinicOverrides, dbHolidays]);
+
+      const cells = [];
+      for (let i = 0; i < startWeekday; i++) {
+        cells.push(<div key={`e-${i}`} className="cal-cell empty" />);
+      }
+      for (let day = 1; day <= daysInMonth; day++) {
+        const iso = isoDate(year, month, day);
+        const dow = (startWeekday + day - 1) % 7;
+        const status = getClinicStatus(iso, dow, clinicOverrides, dbHolidays);
+        const isToday = (year === today.year && month === today.month && day === today.day);
+        const myDuty = myDuties[day];
+        const otherDuty = otherDuties[day];
+
+        const renderPill = (duty) => {
+          if (!duty) return <div style={{ height: 18 }} />;
+          const disp = getDisplayShift(duty.shift, iso, dow, clinicOverrides, dbHolidays);
+          if (!disp) return <div style={{ height: 18 }} />;
+          const c = shiftColor(disp);
+          const label = getCellLabel(duty);
+          const showLabel = label && !(duty.shift === "V" && disp === "O");
+          const isHelper = !!duty.helper;
+          return (
+            <div className="duty-pill" style={{ background: c.bg, color: c.text }}>
+              <span className={`shift-letter-wrap ${isHelper ? "helper" : ""}`}>{disp}</span>
+              {showLabel && <span className="role-suffix">{label}</span>}
+            </div>
+          );
+        };
+
+        cells.push(
+          <div key={day} className={`cal-cell compare ${isToday ? "today" : ""}`}>
+            <div className={`cal-date ${status}`}>{day}</div>
+            <div className="duty-stack">
+              {renderPill(myDuty)}
+              {renderPill(otherDuty)}
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <>
+          {sharedOff.length > 0 && (
+            <div className="compare-shared-off">
+              <span>공동 OFF </span>
+              <span className="count">{sharedOff.length}일</span>
+              <span style={{ color: "var(--text-mute)", fontWeight: 400 }}> · {sharedOff.join(", ")}일</span>
+            </div>
+          )}
+          <div className="cal-wrap" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+            <div className="cal-weekdays">
+              {WEEKDAYS_KR.map((w, i) => (
+                <div key={w} style={{
+                  color: i === 0 ? "var(--c-closed)" : i === 6 ? "var(--c-morning)" : "var(--text-soft)"
+                }}>{w}</div>
+              ))}
+            </div>
+            <div className="cal-grid">{cells}</div>
+          </div>
+        </>
+      );
+    }
+
+    function CalendarGrid({ year, month, myDuties, myRequests, clinicOverrides, dbHolidays, today, myTeam, onShortTap, onLongPress, onSwipeLeft, onSwipeRight, allRequests, allUsers, readOnly }) {
       const { daysInMonth, startWeekday } = getMonthInfo(year, month);
       const swipeStartRef = useRef(null);
 
@@ -2045,6 +2556,7 @@
             clinicOverrides={clinicOverrides} dbHolidays={dbHolidays}
             requestCount={reqCount}
             myRequest={myRequests?.[day] || null}
+            readOnly={readOnly}
             onShortTap={onShortTap} onLongPress={onLongPress} />
         );
       }
@@ -4382,6 +4894,94 @@
                 </div>
               );
             })}
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================================
+    // <AllUsersDutyGrid> — 가로 시트 전체보기 (조회 전용)
+    // ============================================================
+    function AllUsersDutyGrid({ year, month, allUsers, allDuties, seniority, clinicOverrides, dbHolidays, mySabun, onClose }) {
+      const monthKey = getMonthKey(year, month);
+      const { daysInMonth, startWeekday } = getMonthInfo(year, month);
+
+      const groups = useMemo(
+        () => groupUsersByTeam(allUsers, seniority),
+        [allUsers, seniority]
+      );
+
+      // 헤더 행 (날짜)
+      const headerRow = (
+        <div className="sheet-row header">
+          <div className="sheet-cell-name header sheet-corner">이름</div>
+          {Array.from({ length: daysInMonth }, (_, i) => {
+            const day = i + 1;
+            const dow = (startWeekday + i) % 7;
+            const cls = dow === 0 ? "sun" : dow === 6 ? "sat" : "";
+            return (
+              <div key={day} className={`sheet-cell-day header ${cls}`}>{day}</div>
+            );
+          })}
+        </div>
+      );
+
+      return (
+        <div className="modal-backdrop" onClick={onClose} style={{ alignItems: "stretch" }}>
+          <div className="modal sheet-modal" onClick={e => e.stopPropagation()}>
+            <div className="sheet-header">
+              <h2 className="modal-title" style={{ margin: 0, flex: 1 }}>
+                {year}년 {month}월 전체 듀티
+              </h2>
+              <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
+            </div>
+            <p style={{ fontSize: 11, color: "var(--text-soft)", padding: "6px 16px 8px", margin: 0 }}>
+              가로 스크롤 · 팀 → 입사일 순
+            </p>
+
+            <div className="sheet-scroll">
+              <div className="sheet-grid">
+                {TEAMS.map(team => {
+                  const list = groups[team] || [];
+                  if (list.length === 0) return null;
+                  return (
+                    <div key={team}>
+                      <div className="sheet-team-label">{team}</div>
+                      {team === TEAMS[0] || true ? headerRow : null}
+                      {list.map(u => (
+                        <div key={u.sabun} className="sheet-row">
+                          <div className={`sheet-cell-name ${u.sabun === mySabun ? "me" : ""}`}>
+                            {u.name}
+                          </div>
+                          {Array.from({ length: daysInMonth }, (_, i) => {
+                            const day = i + 1;
+                            const dow = (startWeekday + i) % 7;
+                            const iso = isoDate(year, month, day);
+                            const duty = getDutyAt(allDuties, monthKey, u.sabun, day);
+                            const cls = dow === 0 ? "sun" : dow === 6 ? "sat" : "";
+                            let style = {};
+                            let text = "";
+                            if (duty) {
+                              const disp = getDisplayShift(duty.shift, iso, dow, clinicOverrides, dbHolidays);
+                              if (disp) {
+                                const c = shiftColor(disp);
+                                style = { background: c.bg, color: c.text };
+                                text = disp;
+                              }
+                            }
+                            return (
+                              <div key={day} className={`sheet-cell-day ${cls}`} style={style}>
+                                {text}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       );
