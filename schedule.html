@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -166,14 +165,22 @@
 
     /* 비교 모드 셀 */
     .cal-cell.compare {
-      aspect-ratio: 1 / 1.4;
+      aspect-ratio: auto;
+      min-height: 72px;
+      height: auto;
+      min-width: 0;
+      overflow: hidden;
     }
     .cal-cell.compare .duty-stack {
       display: flex; flex-direction: column; gap: 1px;
       padding-top: 1px;
+      width: 100%; min-width: 0;
     }
     .cal-cell.compare .duty-pill {
       font-size: 11px; padding: 2px 0;
+      width: 100%; min-width: 0;
+      box-sizing: border-box;
+      overflow: hidden;
     }
     .compare-shared-off {
       padding: 10px 14px; margin: 0 14px 12px;
@@ -279,12 +286,12 @@
     .month-nav button:active { background: var(--surface-alt); }
 
     .cal-wrap { padding: 6px 8px 24px; }
-    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); padding: 8px 4px 4px; }
+    .cal-weekdays { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); padding: 8px 4px 4px; }
     .cal-weekdays div {
       text-align: center; font-size: 11px; font-weight: 500;
       color: var(--text-soft); letter-spacing: 0.4px;
     }
-    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
     .cal-cell {
       aspect-ratio: 1 / 1.15; min-height: 56px;
       border-radius: 8px; padding: 4px 4px 3px;
@@ -294,6 +301,7 @@
       text-align: inherit; cursor: pointer; appearance: none; -webkit-appearance: none;
       -webkit-touch-callout: none; -webkit-user-select: none; user-select: none;
       touch-action: manipulation;
+      min-width: 0; overflow: hidden;
     }
     .cal-cell.long-pressing {
       background: var(--surface);
@@ -745,6 +753,40 @@
       width: 6px; height: 6px; border-radius: 50%;
       background: #FF4444; padding: 0;
     }
+    .cal-cell .corner-mark.day-memo {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #2C7BD4; padding: 0;
+    }
+
+    /* 일별 모달 메모 영역 */
+    .day-memo-section {
+      padding: 8px 10px; margin: 0 0 12px;
+      background: var(--surface); border-radius: 10px;
+      border: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .day-memo-row {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .day-memo-row .icon {
+      flex-shrink: 0; font-size: 13px;
+    }
+    .day-memo-row input {
+      flex: 1; min-width: 0;
+      padding: 4px 8px; border: 1px solid var(--border); border-radius: 6px;
+      background: var(--bg); outline: none;
+      font: inherit; font-size: 13px;
+    }
+    .day-memo-row input:focus { border-color: var(--accent); }
+    .day-memo-row input:disabled {
+      background: var(--surface-alt); color: var(--text);
+      border-color: transparent;
+    }
+    .day-memo-row .badge {
+      flex-shrink: 0; font-size: 10px; padding: 1px 6px;
+      border-radius: 999px; background: rgba(44, 123, 212, 0.15); color: #1A4A85;
+      font-weight: 600;
+    }
     .off-request-bar {
       margin: 10px 14px 0;
       padding: 12px 14px;
@@ -1010,15 +1052,12 @@
       border-color: var(--text);
     }
   </style>
-
 </head>
 <body>
   <div id="root"></div>
 
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <script type="text/babel" data-type="module" data-presets="react">
@@ -1695,9 +1734,12 @@
       const [requestSettings, setRequestSettings] = useState({});
       const [allRequests, setAllRequests] = useState({});
       const [memos, setMemos] = useState({});
+      const [personalMemos, setPersonalMemos] = useState({});
+      const [dayMemos, setDayMemos] = useState({});
       const [noticeCollapsed, setNoticeCollapsed] = useState(
         () => localStorage.getItem("notice_collapsed") === "true"
       );
+      const [noticeReadVer, setNoticeReadVer] = useState(0);
 
       // 모달 상태 (배타적)
       const [activeModal, setActiveModal] = useState(null);
@@ -1788,6 +1830,18 @@
         return () => unsub();
       }, []);
 
+      useEffect(() => {
+        const r = ref(db, `personalMemos/${me.sabun}`);
+        const unsub = onValue(r, snap => setPersonalMemos(snap.val() || {}));
+        return () => unsub();
+      }, [me.sabun]);
+
+      useEffect(() => {
+        const r = ref(db, "dayMemos");
+        const unsub = onValue(r, snap => setDayMemos(snap.val() || {}));
+        return () => unsub();
+      }, []);
+
       const meIsAdmin = isAdminUser(me, admins);
 
       const toggleNoticeCollapsed = (val) => {
@@ -1802,7 +1856,7 @@
           if (localStorage.getItem(`notice_read_${id}`) !== "true") n++;
         });
         return n;
-      }, [notices]);
+      }, [notices, noticeReadVer]);
 
       // 최신 공지 1개
       const latestNotice = useMemo(() => {
@@ -2049,6 +2103,7 @@
               onSwipeLeft={goNextMonth}
               onSwipeRight={goPrevMonth}
               readOnly={isViewing}
+              dayMemos={dayMemos}
             />
           )}
 
@@ -2098,6 +2153,7 @@
               admins={admins}
               onCollapseChange={toggleNoticeCollapsed}
               noticeCollapsed={noticeCollapsed}
+              onMarkedRead={() => setNoticeReadVer(v => v + 1)}
               onClose={close} />
           )}
           {activeModal === "dutyInput" && (
@@ -2167,6 +2223,8 @@
               year={year} month={month} day={openDay}
               me={me} allUsers={allUsers} allDuties={allDuties}
               allRequests={allRequests}
+              personalMemos={personalMemos} dayMemos={dayMemos}
+              isAdmin={meIsAdmin}
               clinicOverrides={clinicOverrides} dbHolidays={dbHolidays}
               onClose={() => setOpenDay(null)}
               onNavigate={(dir) => {
@@ -2191,24 +2249,18 @@
 
     function CalendarCell({
       day, dateISO, status, isToday, holidayName, duty, myTeam, clinicOverrides, dbHolidays, dayOfWeek,
-      requestCount, myRequest, readOnly,
+      requestCount, myRequest, readOnly, hasSharedMemo,
       onShortTap, onLongPress
     }) {
+      // 안드로이드/iOS 모두 호환되는 long-press + click 하이브리드 패턴
+      // - onClick: 브라우저 native, 가장 안정적 → short-tap
+      // - onPointerDown: long-press 타이머 시작
+      // - long-press 발동되면 다음 click을 막음 (suppressClickRef)
       const timerRef = useRef(null);
-      const triggeredRef = useRef(false);
+      const lpFiredRef = useRef(false);
+      const startPosRef = useRef(null);
       const [pressing, setPressing] = useState(false);
 
-      const startTimer = () => {
-        if (readOnly) return;
-        triggeredRef.current = false;
-        setPressing(true);
-        timerRef.current = setTimeout(() => {
-          triggeredRef.current = true;
-          timerRef.current = null;
-          setPressing(false);
-          onLongPress && onLongPress(day);
-        }, 500);
-      };
       const cancelTimer = () => {
         if (timerRef.current) {
           clearTimeout(timerRef.current);
@@ -2216,17 +2268,38 @@
         }
         setPressing(false);
       };
-      const handlePointerDown = (e) => { startTimer(); };
-      const handlePointerUp = (e) => {
+      const handlePointerDown = (e) => {
         if (readOnly) return;
-        if (timerRef.current) {
-          clearTimeout(timerRef.current);
+        lpFiredRef.current = false;
+        startPosRef.current = { x: e.clientX, y: e.clientY };
+        setPressing(true);
+        timerRef.current = setTimeout(() => {
           timerRef.current = null;
           setPressing(false);
-          if (!triggeredRef.current) onShortTap && onShortTap(day);
+          lpFiredRef.current = true;
+          onLongPress && onLongPress(day);
+        }, 500);
+      };
+      const handlePointerMove = (e) => {
+        if (!startPosRef.current) return;
+        const dx = e.clientX - startPosRef.current.x;
+        const dy = e.clientY - startPosRef.current.y;
+        if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+          cancelTimer();
+          startPosRef.current = null;
         }
       };
-      const handlePointerLeave = () => { cancelTimer(); };
+      const handlePointerUp = () => { cancelTimer(); startPosRef.current = null; };
+      const handlePointerCancel = () => { cancelTimer(); startPosRef.current = null; };
+      const handleClick = (e) => {
+        if (readOnly) return;
+        if (lpFiredRef.current) {
+          lpFiredRef.current = false;
+          e.preventDefault();
+          return;
+        }
+        onShortTap && onShortTap(day);
+      };
       const handleContextMenu = (e) => { e.preventDefault(); };
 
       const rawShift = duty?.shift;
@@ -2260,14 +2333,16 @@
         <button
           className={`cal-cell ${isToday ? "today" : ""} ${pressing ? "long-pressing" : ""}`}
           onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
-          onPointerLeave={handlePointerLeave}
-          onPointerCancel={handlePointerLeave}
+          onPointerCancel={handlePointerCancel}
+          onClick={handleClick}
           onContextMenu={handleContextMenu}
           type="button"
+          style={{ touchAction: "manipulation" }}
         >
           <div className={`cal-date ${status}`}>{day}</div>
-          {requestCount > 0 && !cornerMark && (
+          {requestCount > 0 && !cornerMark && !hasSharedMemo && (
             <span style={{
               position: "absolute", top: 3, right: 4,
               fontSize: 9, fontWeight: 700,
@@ -2279,6 +2354,7 @@
           )}
           {cornerMark === "hope" && <span className="corner-mark hope">희</span>}
           {cornerMark === "mismatch" && <span className="corner-mark mismatch" />}
+          {hasSharedMemo && !cornerMark && <span className="corner-mark day-memo" />}
           <div className="duty-stack">
             {displayShift && (
               <div className="duty-pill"
@@ -2361,43 +2437,57 @@
 
     function SwitcherPersonRow({ user, isMe, onShortTap, onLongPress }) {
       const timerRef = useRef(null);
-      const triggeredRef = useRef(false);
+      const lpFiredRef = useRef(false);
+      const startPosRef = useRef(null);
       const [pressing, setPressing] = useState(false);
 
-      const start = () => {
-        triggeredRef.current = false;
-        setPressing(true);
-        timerRef.current = setTimeout(() => {
-          triggeredRef.current = true;
-          timerRef.current = null;
-          setPressing(false);
-          onLongPress();
-        }, 500);
-      };
-      const up = () => {
-        if (timerRef.current) {
-          clearTimeout(timerRef.current);
-          timerRef.current = null;
-          setPressing(false);
-          if (!triggeredRef.current) onShortTap();
-        }
-      };
-      const leave = () => {
+      const cancel = () => {
         if (timerRef.current) {
           clearTimeout(timerRef.current);
           timerRef.current = null;
         }
         setPressing(false);
       };
+      const start = (e) => {
+        lpFiredRef.current = false;
+        startPosRef.current = { x: e.clientX, y: e.clientY };
+        setPressing(true);
+        timerRef.current = setTimeout(() => {
+          timerRef.current = null;
+          setPressing(false);
+          lpFiredRef.current = true;
+          onLongPress();
+        }, 500);
+      };
+      const move = (e) => {
+        if (!startPosRef.current) return;
+        const dx = e.clientX - startPosRef.current.x;
+        const dy = e.clientY - startPosRef.current.y;
+        if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+          cancel();
+          startPosRef.current = null;
+        }
+      };
+      const up = () => { cancel(); startPosRef.current = null; };
+      const click = (e) => {
+        if (lpFiredRef.current) {
+          lpFiredRef.current = false;
+          e.preventDefault();
+          return;
+        }
+        onShortTap();
+      };
 
       return (
         <button
           className={`switcher-item person ${pressing ? "long-pressing" : ""}`}
           onPointerDown={start}
+          onPointerMove={move}
           onPointerUp={up}
-          onPointerLeave={leave}
-          onPointerCancel={leave}
-          onContextMenu={e => e.preventDefault()}>
+          onPointerCancel={up}
+          onClick={click}
+          onContextMenu={e => e.preventDefault()}
+          style={{ touchAction: "manipulation" }}>
           <span>{user.name}{isMe && " (나)"}</span>
           <span style={{ fontSize: 11, color: "var(--text-soft)", fontFamily: "ui-monospace, monospace" }}>
             {user.sabun}
@@ -2509,7 +2599,7 @@
       );
     }
 
-    function CalendarGrid({ year, month, myDuties, myRequests, clinicOverrides, dbHolidays, today, myTeam, onShortTap, onLongPress, onSwipeLeft, onSwipeRight, allRequests, allUsers, readOnly }) {
+    function CalendarGrid({ year, month, myDuties, myRequests, clinicOverrides, dbHolidays, today, myTeam, onShortTap, onLongPress, onSwipeLeft, onSwipeRight, allRequests, allUsers, readOnly, dayMemos }) {
       const { daysInMonth, startWeekday } = getMonthInfo(year, month);
       const swipeStartRef = useRef(null);
 
@@ -2557,6 +2647,7 @@
             requestCount={reqCount}
             myRequest={myRequests?.[day] || null}
             readOnly={readOnly}
+            hasSharedMemo={!!dayMemos?.[iso]?.text}
             onShortTap={onShortTap} onLongPress={onLongPress} />
         );
       }
@@ -2665,7 +2756,87 @@
       return "N";
     }
 
-    function DayDetailModal({ year, month, day, me, allUsers, allDuties, allRequests, clinicOverrides, dbHolidays, onClose, onNavigate }) {
+    // ============================================================
+    // <DayMemoSection> — 일별 메모 (개인 + 공유)
+    // ============================================================
+    function DayMemoSection({ iso, isAdmin, personalMemo, sharedMemo, mySabun, myName }) {
+      const [personalText, setPersonalText] = useState(personalMemo);
+      const [sharedText, setSharedText] = useState(sharedMemo?.text || "");
+      const personalTimer = useRef(null);
+      const sharedTimer = useRef(null);
+
+      useEffect(() => { setPersonalText(personalMemo); }, [personalMemo]);
+      useEffect(() => { setSharedText(sharedMemo?.text || ""); }, [sharedMemo]);
+
+      const onPersonalChange = (val) => {
+        setPersonalText(val);
+        if (personalTimer.current) clearTimeout(personalTimer.current);
+        personalTimer.current = setTimeout(async () => {
+          try {
+            const path = `personalMemos/${mySabun}/${iso}`;
+            if (val.trim() === "") {
+              await remove(ref(db, path));
+            } else {
+              await set(ref(db, path), { text: val });
+            }
+          } catch (e) { console.error(e); }
+        }, 700);
+      };
+
+      const onSharedChange = (val) => {
+        setSharedText(val);
+        if (sharedTimer.current) clearTimeout(sharedTimer.current);
+        sharedTimer.current = setTimeout(async () => {
+          try {
+            const path = `dayMemos/${iso}`;
+            if (val.trim() === "") {
+              await remove(ref(db, path));
+            } else {
+              await set(ref(db, path), {
+                text: val,
+                authorId: mySabun,
+                authorName: myName,
+                updatedAt: Date.now(),
+              });
+            }
+          } catch (e) { console.error(e); }
+        }, 700);
+      };
+
+      // 일반 사용자: 공유 메모는 read-only로 보이고, 내 메모만 편집
+      // 관리자: 둘 다 편집
+      const hasSharedMemo = !!sharedMemo?.text;
+      const showSharedRow = isAdmin || hasSharedMemo;
+
+      return (
+        <div className="day-memo-section">
+          {showSharedRow && (
+            <div className="day-memo-row">
+              <span className="icon">📢</span>
+              <span className="badge">전체</span>
+              <input
+                type="text"
+                value={sharedText}
+                onChange={isAdmin ? (e) => onSharedChange(e.target.value) : undefined}
+                disabled={!isAdmin}
+                placeholder={isAdmin ? "전체 공유 메모 (작성하면 모두에게 표시)" : ""}
+                maxLength={120} />
+            </div>
+          )}
+          <div className="day-memo-row">
+            <span className="icon">🗒</span>
+            <input
+              type="text"
+              value={personalText}
+              onChange={(e) => onPersonalChange(e.target.value)}
+              placeholder="내 메모 (본인만 볼 수 있음)"
+              maxLength={120} />
+          </div>
+        </div>
+      );
+    }
+
+    function DayDetailModal({ year, month, day, me, allUsers, allDuties, allRequests, personalMemos, dayMemos, isAdmin, clinicOverrides, dbHolidays, onClose, onNavigate }) {
       const monthKey = getMonthKey(year, month);
       const iso = isoDate(year, month, day);
       const dow = getWeekday(year, month, day);
@@ -2858,6 +3029,13 @@
                 <span>{mismatchNote}</span>
               </div>
             )}
+
+            <DayMemoSection
+              iso={iso}
+              isAdmin={isAdmin}
+              personalMemo={personalMemos?.[iso]?.text || ""}
+              sharedMemo={dayMemos?.[iso] || null}
+              mySabun={me.sabun} myName={me.name} />
 
             <div className="day-section">
               <p className="day-section-title">내 근무</p>
@@ -3828,7 +4006,7 @@
     // ============================================================
     // <NoticesModal> — 공지 전체 리스트 + 작성/카테고리 관리 라우팅
     // ============================================================
-    function NoticesModal({ me, notices, noticeCategories, admins, onClose }) {
+    function NoticesModal({ me, notices, noticeCategories, admins, onMarkedRead, onClose }) {
       const [view, setView] = useState("list");
       const [editingId, setEditingId] = useState(null);
 
@@ -3836,7 +4014,8 @@
         Object.keys(notices).forEach(id => {
           localStorage.setItem(`notice_read_${id}`, "true");
         });
-      }, []);
+        onMarkedRead && onMarkedRead();
+      }, [notices]);
 
       const noticeList = useMemo(() =>
         Object.entries(notices)
@@ -5136,6 +5315,5 @@
       });
     }
   </script>
-
 </body>
 </html>
