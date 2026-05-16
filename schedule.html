@@ -739,6 +739,211 @@
       font-family: ui-monospace, monospace;
     }
 
+    /* 듀티 통계 */
+    .stats-section {
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .stats-section:last-child { border-bottom: none; padding-bottom: 0; }
+    .stats-title {
+      font-size: 13px; font-weight: 600;
+      color: var(--text);
+      margin: 0 0 10px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .stat-card {
+      display: flex; flex-direction: column;
+      padding: 10px 12px;
+      background: var(--surface); border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .stat-num {
+      font-size: 22px; font-weight: 700;
+      color: var(--text); line-height: 1.1;
+    }
+    .stat-label {
+      font-size: 11px; color: var(--text-mute);
+      margin-top: 2px;
+    }
+    .bar-chart {
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .bar-row {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .bar-label {
+      width: 18px; font-size: 13px; font-weight: 700;
+      text-align: center;
+    }
+    .bar-track {
+      flex: 1; height: 22px;
+      background: var(--surface); border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 5px;
+      transition: width 0.3s;
+      min-width: 4px;
+    }
+    .bar-count {
+      min-width: 28px; text-align: right;
+      font-size: 12px; font-weight: 600;
+      color: var(--text);
+      font-family: ui-monospace, monospace;
+    }
+    .stats-list {
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .stats-list-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 12px;
+      background: var(--surface); border-radius: 8px;
+      font-size: 13px;
+      border: 1px solid var(--border);
+    }
+    .stats-list-row .left {
+      display: flex; align-items: center; gap: 8px;
+      min-width: 0;
+    }
+    .stat-pill {
+      background: var(--surface-alt);
+      padding: 2px 8px; border-radius: 999px;
+      font-size: 11px; font-weight: 700;
+      color: var(--text);
+      flex-shrink: 0;
+    }
+    .stats-empty {
+      color: var(--text-soft); font-size: 12px;
+      padding: 8px 0; text-align: center;
+    }
+    .stats-period-seg {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      background: var(--surface); border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 16px;
+    }
+    .stats-period-seg button {
+      padding: 8px 4px; border: none; border-radius: 6px;
+      background: transparent; font-size: 12px; font-weight: 600;
+      color: var(--text-mute); cursor: pointer;
+    }
+    .stats-period-seg button.active {
+      background: var(--bg); color: var(--text);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    /* 듀티 통계 */
+    .stats-period-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 6px; margin-bottom: 14px;
+    }
+    .stats-period-row button {
+      padding: 8px 0; border: 1px solid var(--border);
+      border-radius: 8px; background: var(--surface);
+      font-size: 12px; font-weight: 600; color: var(--text-mute);
+      cursor: pointer;
+    }
+    .stats-period-row button.active {
+      border-color: var(--text); color: var(--text);
+      background: var(--bg);
+    }
+    .stats-target {
+      padding: 10px 0; margin-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .stats-target select {
+      width: 100%; padding: 10px 12px;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface); font-size: 14px; font-weight: 500;
+      color: var(--text); outline: none;
+    }
+    .stats-card {
+      padding: 14px; margin-bottom: 10px;
+      background: var(--surface); border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .stats-card-title {
+      font-size: 11px; font-weight: 700; color: var(--text-mute);
+      letter-spacing: 0.5px; margin: 0 0 10px;
+    }
+    .stats-shift-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .stats-shift-cell {
+      padding: 10px 6px; border-radius: 8px;
+      text-align: center;
+    }
+    .stats-shift-cell .num {
+      font-size: 22px; font-weight: 700; line-height: 1;
+    }
+    .stats-shift-cell .lbl {
+      font-size: 10px; font-weight: 600;
+      margin-top: 4px; opacity: 0.85;
+    }
+    .stats-bar-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 0;
+    }
+    .stats-bar-row .bar-label {
+      font-size: 12px; min-width: 70px; color: var(--text);
+    }
+    .stats-bar-row .bar-track {
+      flex: 1; height: 8px; background: var(--surface-alt);
+      border-radius: 4px; overflow: hidden;
+    }
+    .stats-bar-row .bar-fill {
+      height: 100%; border-radius: 4px;
+    }
+    .stats-bar-row .bar-num {
+      font-size: 12px; font-weight: 700; min-width: 30px; text-align: right;
+    }
+    .stats-big-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 0;
+    }
+    .stats-big-row + .stats-big-row {
+      border-top: 1px solid var(--border);
+    }
+    .stats-big-row .label {
+      font-size: 13px; color: var(--text-mute);
+    }
+    .stats-big-row .value {
+      font-size: 18px; font-weight: 700; color: var(--text);
+    }
+    .stats-person-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .stats-person-row:last-child { border-bottom: none; }
+    .stats-person-row .rank {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--surface-alt); color: var(--text-mute);
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .stats-person-row .name { font-size: 14px; font-weight: 500; flex: 1; }
+    .stats-person-row .count {
+      font-size: 12px; color: var(--text-mute); font-weight: 600;
+    }
+    .stats-empty {
+      text-align: center; padding: 20px 12px;
+      color: var(--text-soft); font-size: 12px;
+    }
+    .stats-loading {
+      text-align: center; padding: 40px 20px;
+      color: var(--text-soft); font-size: 13px;
+    }
+
     /* OFF 신청 시스템 */
     .cal-cell .corner-mark {
       position: absolute; top: 2px; right: 3px;
@@ -2180,6 +2385,12 @@
           {activeModal === "seniority" && (
             <SeniorityEditor allUsers={allUsers} seniority={seniority} onClose={close} />
           )}
+          {activeModal === "stats" && (
+            <DutyStats me={me} allUsers={allUsers} allDuties={allDuties}
+              seniority={seniority} admins={admins}
+              clinicOverrides={clinicOverrides} dbHolidays={dbHolidays}
+              onClose={close} />
+          )}
           {activeModal === "whitelist" && (
             <WhitelistAdmin allUsers={allUsers} admins={admins} onClose={close} />
           )}
@@ -2746,6 +2957,115 @@
     }
     function getRequestCountForDay(allRequests, monthKey, day, allUsers, teamFilter) {
       return getRequestsForDay(allRequests, monthKey, day, allUsers, teamFilter).length;
+    }
+
+    // 듀티 통계 계산
+    // monthKeys: ["YYYY-MM", ...] (시간순)
+    // targetSabun: 통계 대상자
+    function computeDutyStats(monthKeys, targetSabun, allDuties, allUsers, clinicOverrides, dbHolidays) {
+      const shiftCounts = { D: 0, E: 0, N: 0, O: 0, V: 0, M: 0, T: 0 };
+      let weekendD = 0, weekendE = 0, weekendN = 0;
+      let holidayWork = 0;
+      const dailyShifts = []; // 시간순으로 쌓아 연속 일수 계산
+      const coworkCount = {}; // sabun → 같이 일한 일수
+      const coOff = {};       // sabun → 공동 OFF 일수
+      const targetUser = allUsers[targetSabun];
+      if (!targetUser) return null;
+
+      // monthKey 시간순 보장
+      const sortedKeys = monthKeys.slice().sort();
+
+      sortedKeys.forEach(mk => {
+        const [yy, mm] = mk.split("-").map(Number);
+        const info = getMonthInfo(yy, mm);
+        for (let day = 1; day <= info.daysInMonth; day++) {
+          const iso = isoDate(yy, mm, day);
+          const dow = getWeekday(yy, mm, day);
+          const duty = getDutyAt(allDuties, mk, targetSabun, day);
+          if (!duty) {
+            // 데이터 없으면 streak 끊기 위해 빈 항목 push (null shift)
+            dailyShifts.push({ shift: null });
+            continue;
+          }
+          const ds = getDisplayShift(duty.shift, iso, dow, clinicOverrides, dbHolidays);
+          if (ds && shiftCounts[ds] != null) shiftCounts[ds]++;
+
+          const isHoliday = !!getHolidayName(iso, dbHolidays);
+          const isSat = dow === 6;
+          const isSun = dow === 0;
+          const isWorkShift = ["D", "E", "N", "V", "M", "T"].includes(ds);
+          if (isWorkShift && (isHoliday || isSun)) holidayWork++;
+          if (isWorkShift && isSat) {
+            if (ds === "D") weekendD++;
+            else if (ds === "E") weekendE++;
+            else if (ds === "N") weekendN++;
+          }
+
+          dailyShifts.push({ shift: ds });
+
+          // 같이 일한 사람: 본인 D/E/N일 때만, 같은 effective team 사람
+          if (["D", "E", "N"].includes(ds)) {
+            const myTeam = getEffectiveTeam(duty, targetUser.team);
+            const monthData = allDuties?.[mk] || {};
+            Object.keys(monthData).forEach(s => {
+              if (s === targetSabun) return;
+              const u = allUsers[s];
+              if (!u) return;
+              const d = getDutyAt(allDuties, mk, s, day);
+              if (!d) return;
+              const sds = getDisplayShift(d.shift, iso, dow, clinicOverrides, dbHolidays);
+              if (sds !== ds) return;
+              if (getEffectiveTeam(d, u.team) !== myTeam) return;
+              coworkCount[s] = (coworkCount[s] || 0) + 1;
+            });
+          }
+
+          // 공동 OFF
+          if (ds === "O") {
+            const monthData = allDuties?.[mk] || {};
+            Object.keys(monthData).forEach(s => {
+              if (s === targetSabun) return;
+              if (!allUsers[s]) return;
+              const d = getDutyAt(allDuties, mk, s, day);
+              if (!d) return;
+              const sds = getDisplayShift(d.shift, iso, dow, clinicOverrides, dbHolidays);
+              if (sds === "O") coOff[s] = (coOff[s] || 0) + 1;
+            });
+          }
+        }
+      });
+
+      // 연속 일수
+      let maxWorkStreak = 0, curWorkStreak = 0;
+      let maxOffStreak = 0, curOffStreak = 0;
+      dailyShifts.forEach(({ shift }) => {
+        if (shift === "O") {
+          curOffStreak++;
+          curWorkStreak = 0;
+          if (curOffStreak > maxOffStreak) maxOffStreak = curOffStreak;
+        } else if (["D", "E", "N", "V", "M", "T"].includes(shift)) {
+          curWorkStreak++;
+          curOffStreak = 0;
+          if (curWorkStreak > maxWorkStreak) maxWorkStreak = curWorkStreak;
+        } else {
+          // 미입력 → streak 끊기
+          curWorkStreak = 0;
+          curOffStreak = 0;
+        }
+      });
+
+      const totalDays = dailyShifts.filter(d => d.shift != null).length;
+
+      return {
+        shiftCounts,
+        weekend: { D: weekendD, E: weekendE, N: weekendN },
+        holidayWork,
+        maxWorkStreak,
+        maxOffStreak,
+        coworkTop: Object.entries(coworkCount).sort((a, b) => b[1] - a[1]).slice(0, 3),
+        coOffTop: Object.entries(coOff).sort((a, b) => b[1] - a[1]).slice(0, 3),
+        totalDays,
+      };
     }
 
     // 시간 기반 디폴트 시프트 (main 팀이 사용)
@@ -3782,6 +4102,9 @@
               </button>
               <button className="menu-item" onClick={() => onMenuSelect("password")}>
                 <span>비밀번호 변경</span><span style={{ color: "var(--text-soft)" }}>›</span>
+              </button>
+              <button className="menu-item" onClick={() => onMenuSelect("stats")}>
+                <span>📊 듀티 통계</span><span style={{ color: "var(--text-soft)" }}>›</span>
               </button>
               <button className="menu-item" onClick={() => onMenuSelect("contacts")}>
                 <span>연락처</span><span style={{ color: "var(--text-soft)" }}>›</span>
@@ -5073,6 +5396,276 @@
                 </div>
               );
             })}
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================================
+    // <DutyStats> — 듀티 통계 모달
+    // ============================================================
+    function getMonthKeysForRange(today, range) {
+      const y = today.year, m = today.month;
+      const back = (n) => {
+        const d = new Date(y, m - 1 - n, 1);
+        return getMonthKey(d.getFullYear(), d.getMonth() + 1);
+      };
+      if (range === "this") return [getMonthKey(y, m)];
+      if (range === "prev") return [back(1)];
+      return [back(2), back(1), back(0)]; // 시간순
+    }
+
+    function DutyStats({ me, allUsers, allDuties, seniority, clinicOverrides, dbHolidays, admins, onClose }) {
+      const today = todayInfo();
+      const [range, setRange] = useState("this");
+      const [targetSabun, setTargetSabun] = useState(me.sabun);
+      const [dutiesData, setDutiesData] = useState(allDuties);
+      const [loading, setLoading] = useState(false);
+
+      const isAdmin = isAdminUser(me, admins);
+      const monthKeys = useMemo(() => getMonthKeysForRange(today, range), [range, today.year, today.month]);
+
+      // 구독 안 된 달 보충 fetch
+      useEffect(() => {
+        let cancelled = false;
+        (async () => {
+          const missing = monthKeys.filter(mk => !allDuties[mk]);
+          if (missing.length === 0) {
+            setDutiesData(allDuties);
+            return;
+          }
+          setLoading(true);
+          try {
+            const snaps = await Promise.all(missing.map(mk => get(ref(db, `duties/${mk}`))));
+            if (cancelled) return;
+            const merged = { ...allDuties };
+            missing.forEach((mk, i) => { merged[mk] = snaps[i].val() || {}; });
+            setDutiesData(merged);
+          } catch (e) {
+            console.error(e);
+            setDutiesData(allDuties);
+          }
+          setLoading(false);
+        })();
+        return () => { cancelled = true; };
+      }, [monthKeys.join(","), allDuties]);
+
+      const stats = useMemo(
+        () => computeDutyStats(monthKeys, targetSabun, dutiesData, allUsers, clinicOverrides, dbHolidays),
+        [monthKeys, dutiesData, allUsers, targetSabun, clinicOverrides, dbHolidays]
+      );
+
+      const userGroups = useMemo(
+        () => groupUsersByTeam(allUsers, seniority),
+        [allUsers, seniority]
+      );
+
+      const targetUser = allUsers[targetSabun];
+      const targetTeam = targetUser?.team;
+
+      const periodLabel = range === "this" ? `${today.year}년 ${today.month}월`
+        : range === "prev" ? "지난 달"
+        : "최근 3개월";
+
+      if (!stats) {
+        return (
+          <div className="modal-backdrop" onClick={onClose}>
+            <div className="modal" onClick={e => e.stopPropagation()}>
+              <div className="modal-header">
+                <h2 className="modal-title">📊 듀티 통계</h2>
+                <button className="modal-close" onClick={onClose}>×</button>
+              </div>
+              <div className="stats-empty">대상 사용자를 찾을 수 없어요.</div>
+            </div>
+          </div>
+        );
+      }
+
+      const maxCount = Math.max(
+        stats.shiftCounts.D, stats.shiftCounts.E, stats.shiftCounts.N,
+        stats.shiftCounts.O, stats.shiftCounts.V, stats.shiftCounts.M, 1
+      );
+      const weekendTotal = stats.weekend.D + stats.weekend.E + stats.weekend.N;
+
+      return (
+        <div className="modal-backdrop" onClick={onClose}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">📊 듀티 통계</h2>
+              <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
+            </div>
+
+            {/* 대상 선택 (admin만) */}
+            {isAdmin ? (
+              <div className="stats-target">
+                <select value={targetSabun} onChange={e => setTargetSabun(e.target.value)}>
+                  <option value={me.sabun}>{me.name} (나)</option>
+                  {TEAMS.map(team => {
+                    const list = userGroups[team] || [];
+                    const others = list.filter(u => u.sabun !== me.sabun);
+                    if (others.length === 0) return null;
+                    return (
+                      <optgroup key={team} label={`${team}팀`}>
+                        {others.map(u => (
+                          <option key={u.sabun} value={u.sabun}>{u.name}</option>
+                        ))}
+                      </optgroup>
+                    );
+                  })}
+                </select>
+                {targetSabun !== me.sabun && targetUser && (
+                  <p style={{ fontSize: 11, color: "var(--text-soft)", margin: "6px 0 0" }}>
+                    {targetUser.name} · {targetTeam} · {targetUser.hireDate || "입사일 미입력"}
+                  </p>
+                )}
+              </div>
+            ) : (
+              <div style={{ marginBottom: 12, fontSize: 13, color: "var(--text-mute)" }}>
+                {me.name} 본인 통계
+              </div>
+            )}
+
+            {/* 기간 선택 */}
+            <div className="stats-period-row">
+              <button className={range === "this" ? "active" : ""} onClick={() => setRange("this")}>
+                이번 달
+              </button>
+              <button className={range === "prev" ? "active" : ""} onClick={() => setRange("prev")}>
+                지난 달
+              </button>
+              <button className={range === "3m" ? "active" : ""} onClick={() => setRange("3m")}>
+                최근 3개월
+              </button>
+            </div>
+
+            <p style={{ fontSize: 11, color: "var(--text-soft)", textAlign: "center", margin: "0 0 14px" }}>
+              {periodLabel} · 입력된 듀티 {stats.totalDays}일
+            </p>
+
+            {loading && <div className="stats-loading">데이터 불러오는 중…</div>}
+
+            {!loading && stats.totalDays === 0 && (
+              <div className="stats-empty">이 기간에 입력된 듀티가 없어요.</div>
+            )}
+
+            {!loading && stats.totalDays > 0 && (
+              <>
+                {/* 시프트 카운트 */}
+                <div className="stats-card">
+                  <p className="stats-card-title">시프트 분포</p>
+                  <div className="stats-shift-grid">
+                    {["D", "E", "N", "O", "V", "M"].map(s => {
+                      const n = stats.shiftCounts[s] || 0;
+                      if (n === 0 && (s === "V" || s === "M")) return null;
+                      const c = shiftColor(s);
+                      return (
+                        <div key={s} className="stats-shift-cell" style={{ background: c.bg, color: c.text }}>
+                          <div className="num">{n}</div>
+                          <div className="lbl">{s} · {SHIFT_LABELS[s] || s}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 막대 그래프 */}
+                <div className="stats-card">
+                  <p className="stats-card-title">시각화</p>
+                  {["D", "E", "N", "O", "V", "M"].map(s => {
+                    const n = stats.shiftCounts[s] || 0;
+                    if (n === 0 && (s === "V" || s === "M")) return null;
+                    const c = shiftColor(s);
+                    const pct = maxCount > 0 ? (n / maxCount * 100) : 0;
+                    return (
+                      <div key={s} className="stats-bar-row">
+                        <span className="bar-label" style={{ color: c.text, fontWeight: 600 }}>{s}</span>
+                        <div className="bar-track">
+                          <div className="bar-fill" style={{ width: `${pct}%`, background: c.bg }} />
+                        </div>
+                        <span className="bar-num">{n}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* 패턴 */}
+                <div className="stats-card">
+                  <p className="stats-card-title">근무 패턴</p>
+                  <div className="stats-big-row">
+                    <span className="label">토요일 근무</span>
+                    <span className="value">{weekendTotal}일</span>
+                  </div>
+                  {weekendTotal > 0 && (
+                    <div style={{ fontSize: 11, color: "var(--text-soft)", padding: "0 0 6px" }}>
+                      D {stats.weekend.D} · E {stats.weekend.E} · N {stats.weekend.N}
+                    </div>
+                  )}
+                  <div className="stats-big-row">
+                    <span className="label">공휴일/일요일 근무</span>
+                    <span className="value">{stats.holidayWork}일</span>
+                  </div>
+                  <div className="stats-big-row">
+                    <span className="label">최대 연속 근무</span>
+                    <span className="value">{stats.maxWorkStreak}일</span>
+                  </div>
+                  <div className="stats-big-row">
+                    <span className="label">최대 연속 OFF</span>
+                    <span className="value">{stats.maxOffStreak}일</span>
+                  </div>
+                </div>
+
+                {/* 같이 일한 top 3 */}
+                <div className="stats-card">
+                  <p className="stats-card-title">가장 자주 같이 일한 사람</p>
+                  <p style={{ fontSize: 10, color: "var(--text-soft)", margin: "-6px 0 8px" }}>
+                    같은 팀에서 D/E/N 함께한 횟수
+                  </p>
+                  {stats.coworkTop.length === 0 ? (
+                    <div className="stats-empty">데이터 없음</div>
+                  ) : (
+                    stats.coworkTop.map(([sabun, count], i) => {
+                      const u = allUsers[sabun];
+                      if (!u) return null;
+                      const c = teamColor(u.team);
+                      return (
+                        <div key={sabun} className="stats-person-row">
+                          <span className="rank">{i + 1}</span>
+                          <span className="team-badge" style={{ background: c.bg, color: c.text, fontSize: 10, padding: "2px 6px" }}>
+                            {u.team}
+                          </span>
+                          <span className="name">{u.name}</span>
+                          <span className="count">{count}일</span>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+
+                {/* 공동 OFF top 3 */}
+                <div className="stats-card">
+                  <p className="stats-card-title">가장 자주 같이 OFF인 사람</p>
+                  {stats.coOffTop.length === 0 ? (
+                    <div className="stats-empty">데이터 없음</div>
+                  ) : (
+                    stats.coOffTop.map(([sabun, count], i) => {
+                      const u = allUsers[sabun];
+                      if (!u) return null;
+                      const c = teamColor(u.team);
+                      return (
+                        <div key={sabun} className="stats-person-row">
+                          <span className="rank">{i + 1}</span>
+                          <span className="team-badge" style={{ background: c.bg, color: c.text, fontSize: 10, padding: "2px 6px" }}>
+                            {u.team}
+                          </span>
+                          <span className="name">{u.name}</span>
+                          <span className="count">{count}일</span>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
       );
