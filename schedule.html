@@ -2363,8 +2363,10 @@
           )}
           {activeModal === "dutyInput" && (
             <DutyInputModal year={year} month={month} sabun={me.sabun}
-              myTeam={me.team} currentDuties={myDutiesObj}
+              myTeam={me.team} myName={me.name}
+              currentDuties={myDutiesObj}
               allUsers={allUsers} allDuties={allDuties} seniority={seniority}
+              isAdmin={meIsAdmin}
               onClose={close} />
           )}
           {activeModal === "contacts" && (
@@ -3751,7 +3753,7 @@
     // ============================================================
     // <DutyInputModal>
     // ============================================================
-    function DutyInputModal({ year, month, sabun, myTeam, currentDuties, allUsers, allDuties, seniority, onClose }) {
+    function DutyInputModal({ year, month, sabun, myTeam, myName, currentDuties, allUsers, allDuties, seniority, isAdmin, onClose }) {
       const { daysInMonth } = getMonthInfo(year, month);
       const [mode, setMode] = useState("me"); // "me" | "bulk"
 
@@ -3760,38 +3762,136 @@
       const [text, setText] = useState(initial);
       const [err, setErr] = useState("");
       const [busy, setBusy] = useState(false);
+      const [extraNote, setExtraNote] = useState(null); // 추가 처리 결과 (조용히 표시)
 
+      // 이름 → 사용자 lookup
+      const nameMap = useMemo(() => {
+        const m = {};
+        Object.entries(allUsers).forEach(([sb, u]) => {
+          if (!m[u.name]) m[u.name] = [];
+          m[u.name].push({ sabun: sb, ...u });
+        });
+        return m;
+      }, [allUsers]);
+
+      // 본인 첫 줄 미리보기 (validation용)
       const parsed = useMemo(() => {
-        try { return parseDutyStringV3(text, myTeam); } catch { return null; }
-      }, [text, myTeam]);
+        const firstLine = text.split("\n").map(l => l.trim()).find(l => l.length > 0) || "";
+        // 첫 단어가 이름이면 (본인 이름 또는 nameMap에 있으면) 본인 라인 아님
+        const parts = firstLine.split(/\s+/);
+        let bodyText = firstLine;
+        if (parts.length >= 2 && (parts[0] === myName || nameMap[parts[0]])) {
+          // 첫 줄도 타인 라인이면 본인 듀티는 빈 거
+          bodyText = "";
+        }
+        try { return parseDutyStringV3(bodyText, myTeam); } catch { return null; }
+      }, [text, myTeam, myName, nameMap]);
 
       const save = async () => {
         setErr("");
-        let codes;
-        try { codes = parseDutyStringV3(text, myTeam); }
+        setExtraNote(null);
+
+        const lines = text.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+        const monthKey = getMonthKey(year, month);
+        const updates = {};
+        const extraOk = [];   // 타인 추가 성공
+        const extraSkip = []; // 타인 추가 시도했으나 데이터 있어서 무시
+
+        // 본인 듀티 — 첫 줄
+        // 첫 줄이 "이름 듀티" 형식이면 (이름이 nameMap에 있거나 본인 이름이면) 본인 줄로 안 침
+        let myCodesText = "";
+        let firstLineIsForOther = false;
+        if (lines.length > 0) {
+          const first = lines[0];
+          const parts = first.split(/\s+/);
+          if (parts.length >= 2 && nameMap[parts[0]] && parts[0] !== myName) {
+            // 타인 줄. 본인 듀티는 빈 것으로 처리
+            firstLineIsForOther = true;
+          } else if (parts.length >= 2 && parts[0] === myName) {
+            // "본인이름 듀티" 형식 — 본인 듀티
+            myCodesText = parts.slice(1).join("");
+          } else {
+            // 그냥 듀티
+            myCodesText = first;
+          }
+        }
+
+        let myCodes;
+        try { myCodes = parseDutyStringV3(myCodesText, myTeam); }
         catch (e) { setErr(e.message); return; }
-        if (codes.length > daysInMonth) {
-          setErr(`이 달은 ${daysInMonth}일까지인데 ${codes.length}개가 입력됐어요.`);
+        if (myCodes.length > daysInMonth) {
+          setErr(`이 달은 ${daysInMonth}일까지인데 ${myCodes.length}개가 입력됐어요.`);
           return;
         }
+
+        // 본인 듀티 업데이트
+        for (let d = 1; d <= daysInMonth; d++) {
+          const dKey = String(d).padStart(2, "0");
+          const path = `duties/${monthKey}/${sabun}/${dKey}`;
+          if (d <= myCodes.length) {
+            const code = myCodes[d - 1];
+            const payload = { shift: code.shift, team: myTeam };
+            if (code.role) payload.role = code.role;
+            updates[path] = payload;
+          } else {
+            updates[path] = null;
+          }
+        }
+
+        // 둘째 줄 이후 (또는 첫 줄이 타인이었으면 첫 줄 포함) — 타인 듀티 처리
+        const otherLines = firstLineIsForOther ? lines : lines.slice(1);
+        for (const line of otherLines) {
+          const parts = line.split(/\s+/);
+          let name, dutyText;
+          if (parts[0]?.startsWith("[")) {
+            name = parts[1];
+            dutyText = parts.slice(2).join("");
+          } else {
+            name = parts[0];
+            dutyText = parts.slice(1).join("");
+          }
+          if (!name) continue;
+          const matches = nameMap[name];
+          if (!matches || matches.length !== 1) {
+            extraSkip.push(name);
+            continue;
+          }
+          const u = matches[0];
+          if (u.sabun === sabun) continue;
+          // 대상자의 그 달 데이터가 비어있을 때만 추가
+          const existing = allDuties[monthKey]?.[u.sabun];
+          const hasData = existing && Object.keys(existing).some(k => normalizeDuty(existing[k])?.shift);
+          if (hasData) {
+            extraSkip.push(u.name);
+            continue;
+          }
+          let codes;
+          try { codes = parseDutyStringV3(dutyText, u.team); }
+          catch (e) { extraSkip.push(u.name); continue; }
+          if (codes.length === 0 || codes.length > daysInMonth) {
+            extraSkip.push(u.name);
+            continue;
+          }
+          for (let d = 1; d <= codes.length; d++) {
+            const dKey = String(d).padStart(2, "0");
+            const code = codes[d - 1];
+            const payload = { shift: code.shift, team: u.team };
+            if (code.role) payload.role = code.role;
+            updates[`duties/${monthKey}/${u.sabun}/${dKey}`] = payload;
+          }
+          extraOk.push(u.name);
+        }
+
         setBusy(true);
         try {
-          const monthKey = getMonthKey(year, month);
-          const updates = {};
-          for (let d = 1; d <= daysInMonth; d++) {
-            const dKey = String(d).padStart(2, "0");
-            const path = `duties/${monthKey}/${sabun}/${dKey}`;
-            if (d <= codes.length) {
-              const code = codes[d - 1];
-              const payload = { shift: code.shift, team: myTeam };
-              if (code.role) payload.role = code.role;
-              updates[path] = payload;
-            } else {
-              updates[path] = null;
-            }
-          }
           await update(ref(db), updates);
-          onClose();
+          if (extraOk.length > 0 || extraSkip.length > 0) {
+            // 결과만 조용히 잠깐 표시 후 닫음
+            setExtraNote({ ok: extraOk, skip: extraSkip });
+            setBusy(false);
+          } else {
+            onClose();
+          }
         } catch (e) {
           console.error(e);
           setErr("저장 중 오류가 발생했어요.");
@@ -3812,6 +3912,11 @@
       ) : null;
 
       if (mode === "bulk") {
+        if (!isAdmin) {
+          // 비관리자 보호 — bulk 모드 진입 차단
+          setMode("me");
+          return null;
+        }
         return (
           <BulkDutyInput
             year={year} month={month}
@@ -3829,10 +3934,12 @@
               <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
             </div>
 
-            <div className="mode-switch">
-              <span className="mode-label">본인 듀티 입력 중</span>
-              <button onClick={() => setMode("bulk")}>전체 일괄 입력 →</button>
-            </div>
+            {isAdmin && (
+              <div className="mode-switch">
+                <span className="mode-label">본인 듀티 입력 중</span>
+                <button onClick={() => setMode("bulk")}>전체 일괄 입력 →</button>
+              </div>
+            )}
 
             <div className="modal-fields">
               <div className="duty-help">
@@ -3852,9 +3959,26 @@
                 {parsed ? `${parsed.length}일` : "—"} / {daysInMonth}일
               </div>
               {err && <div className="auth-error">{err}</div>}
+              {extraNote && (
+                <div className="bulk-result" style={{ marginTop: 8 }}>
+                  {extraNote.ok.length > 0 && (
+                    <div className="row ok">
+                      ✓ {extraNote.ok.length}명 추가 입력됨: {extraNote.ok.join(", ")}
+                    </div>
+                  )}
+                  {extraNote.skip.length > 0 && (
+                    <div className="row" style={{ color: "var(--text-soft)" }}>
+                      · {extraNote.skip.length}명 건너뜀
+                    </div>
+                  )}
+                  <button className="btn-ghost" onClick={onClose} style={{ marginTop: 8 }}>
+                    닫기
+                  </button>
+                </div>
+              )}
             </div>
             <div className="modal-actions">
-              <button className="btn-primary" onClick={save} disabled={busy || !text.trim()}>
+              <button className="btn-primary" onClick={save} disabled={busy || !text.trim() || !!extraNote}>
                 {busy ? "저장 중…" : "저장"}
               </button>
               <p style={{ fontSize: 11, color: "var(--text-soft)", textAlign: "center", margin: 0 }}>
@@ -3918,6 +4042,8 @@
         const ok = [];
         const fail = [];
         const updates = {};
+        const removed = [];   // 텍스트에서 줄이 통째로 사라진 사용자
+        const processedSabuns = new Set();
 
         for (const line of lines) {
           const parts = line.split(/\s+/);
@@ -3954,7 +4080,8 @@
             fail.push({ line, name, reason: `${daysInMonth}일을 초과 (${codes.length}일)` });
             continue;
           }
-          // updates에 적용
+          processedSabuns.add(user.sabun);
+          // updates에 적용 — codes.length가 0이면 전부 null로 (해당 사용자 그 달 비움)
           for (let d = 1; d <= daysInMonth; d++) {
             const dKey = String(d).padStart(2, "0");
             const path = `duties/${monthKey}/${user.sabun}/${dKey}`;
@@ -3970,11 +4097,24 @@
           ok.push({ name, count: codes.length });
         }
 
+        // prefill에 있었지만 텍스트에서 사라진 사용자 = 그 달 듀티 전체 제거
+        // (단, helper 데이터는 prefill에 안 들어가서 일괄 입력 범위 밖이니 그대로 두려면 path 분리 필요.
+        //  하지만 사용자가 "수정 그대로 적용"을 원하므로 helper도 함께 제거하는 게 일관적.
+        //  안전하게 모든 셀을 helper 포함 통째로 비우려면 사용자의 monthKey 전체를 null로 set)
+        Object.entries(allUsers).forEach(([sabun, u]) => {
+          if (processedSabuns.has(sabun)) return;
+          const had = allDuties[monthKey]?.[sabun];
+          if (!had || Object.keys(had).length === 0) return;
+          // 이 사용자는 데이터가 있었는데 텍스트에서 사라짐 → 그 달 통째로 제거
+          updates[`duties/${monthKey}/${sabun}`] = null;
+          removed.push(u.name);
+        });
+
         try {
           if (Object.keys(updates).length > 0) {
             await update(ref(db), updates);
           }
-          setResults({ ok, fail });
+          setResults({ ok, fail, removed });
         } catch (e) {
           console.error(e);
           alert("저장 중 오류 — 다시 시도해 주세요.");
@@ -4010,6 +4150,11 @@
                   {results.ok.length > 0 && (
                     <div className="row ok">
                       ✓ <strong>{results.ok.length}명 저장됨</strong>: {results.ok.map(r => `${r.name}(${r.count}일)`).join(", ")}
+                    </div>
+                  )}
+                  {results.removed && results.removed.length > 0 && (
+                    <div className="row" style={{ color: "var(--c-closed)" }}>
+                      🗑 <strong>{results.removed.length}명 삭제됨</strong>: {results.removed.join(", ")}
                     </div>
                   )}
                   {results.fail.length > 0 && (
