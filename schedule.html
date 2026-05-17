@@ -177,15 +177,23 @@
       width: 100%; min-width: 0;
     }
     .cal-cell.compare .duty-pill {
-      font-size: 9px; padding: 0;
+      font-size: 9px;
+      padding: 1px 0;
       width: 100%; min-width: 0;
       box-sizing: border-box;
       overflow: hidden;
-      line-height: 1.4;
+      line-height: 1.3;
       letter-spacing: 0;
+      display: block;
+      text-align: center;
+      border-radius: 6px;
     }
     .cal-cell.compare .duty-pill .role-suffix {
       font-size: 7px; top: 0; right: 2px;
+    }
+    .cal-cell.compare .duty-pill.empty {
+      background: transparent;
+      visibility: hidden;
     }
     .compare-shared-off {
       padding: 10px 14px; margin: 0 14px 12px;
@@ -2845,9 +2853,9 @@
 
       // 비교 모드에서는 helper여도 시프트 색으로 표시 (혼동 방지)
       const renderPill = (duty, iso, dow) => {
-        if (!duty) return <div style={{ height: 11 }} />;
+        if (!duty) return <div className="duty-pill empty">·</div>;
         const disp = getDisplayShift(duty.shift, iso, dow, clinicOverrides, dbHolidays);
-        if (!disp) return <div style={{ height: 11 }} />;
+        if (!disp) return <div className="duty-pill empty">·</div>;
         const c = shiftColor(disp);
         const isHelperLocal = !!duty.helper;
         return (
