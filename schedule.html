@@ -166,7 +166,7 @@
     /* 비교 모드 셀 */
     .cal-cell.compare {
       aspect-ratio: auto;
-      min-height: 88px;
+      min-height: 130px;
       height: auto;
       min-width: 0;
       overflow: hidden;
@@ -177,19 +177,20 @@
       width: 100%; min-width: 0;
     }
     .cal-cell.compare .duty-pill {
-      font-size: 9px;
-      padding: 1px 0;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 0;
       width: 100%; min-width: 0;
       box-sizing: border-box;
       overflow: hidden;
       line-height: 1.3;
-      letter-spacing: 0;
+      letter-spacing: 0.3px;
       display: block;
       text-align: center;
       border-radius: 6px;
     }
     .cal-cell.compare .duty-pill .role-suffix {
-      font-size: 7px; top: 0; right: 2px;
+      font-size: 8px; top: 0; right: 2px;
     }
     .cal-cell.compare .duty-pill.empty {
       background: transparent;
@@ -2852,14 +2853,14 @@
       }, [myDuties, othersList, year, month, daysInMonth, startWeekday, clinicOverrides, dbHolidays]);
 
       // 비교 모드에서는 helper여도 시프트 색으로 표시 (혼동 방지)
-      const renderPill = (duty, iso, dow) => {
-        if (!duty) return <div className="duty-pill empty">·</div>;
+      const renderPill = (duty, iso, dow, key) => {
+        if (!duty) return <div key={key} className="duty-pill empty">·</div>;
         const disp = getDisplayShift(duty.shift, iso, dow, clinicOverrides, dbHolidays);
-        if (!disp) return <div className="duty-pill empty">·</div>;
+        if (!disp) return <div key={key} className="duty-pill empty">·</div>;
         const c = shiftColor(disp);
         const isHelperLocal = !!duty.helper;
         return (
-          <div className="duty-pill" style={{ background: c.bg, color: c.text }}>
+          <div key={key} className="duty-pill" style={{ background: c.bg, color: c.text }}>
             <span className={`shift-letter-wrap ${isHelperLocal ? "helper" : ""}`}>{disp}</span>
           </div>
         );
@@ -2879,10 +2880,10 @@
           <div key={day} className={`cal-cell compare ${isToday ? "today" : ""}`}>
             <div className={`cal-date ${status}`}>{day}</div>
             <div className="duty-stack">
-              {renderPill(myDuties[day], iso, dow)}
-              {othersList.map((o, i) => (
-                <div key={o.sabun}>{renderPill(o.duties[day], iso, dow)}</div>
-              ))}
+              {renderPill(myDuties[day], iso, dow, 0)}
+              {othersList.map((o, i) =>
+                renderPill(o.duties[day], iso, dow, i + 1)
+              )}
             </div>
           </div>
         );
