@@ -592,6 +592,7 @@
       background: var(--surface-alt); border-radius: 10px;
     }
     .seg.seg-7 { grid-template-columns: repeat(7, 1fr); }
+    .seg.seg-5 { grid-template-columns: repeat(5, 1fr); }
     .seg.seg-4 { grid-template-columns: repeat(4, 1fr); }
     .seg.seg-3 { grid-template-columns: repeat(3, 1fr); }
     .seg.seg-2 { grid-template-columns: repeat(2, 1fr); }
@@ -1003,6 +1004,51 @@
       color: var(--text-soft); font-size: 13px;
     }
 
+    /* A팀 default role 바 */
+    .a-role-bar {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 14px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .a-role-bar .label {
+      font-size: 11px; color: var(--text-mute); font-weight: 600;
+      margin-right: 4px;
+    }
+    .a-role-bar .seg {
+      display: flex; align-items: stretch;
+      border-radius: 8px; overflow: hidden;
+      background: var(--surface-alt);
+    }
+    .a-role-bar .seg button {
+      padding: 5px 11px;
+      font-size: 12px; font-weight: 600;
+      border: none; background: transparent;
+      color: var(--text-mute);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .a-role-bar .seg button.active {
+      background: var(--accent); color: #fff;
+    }
+    .a-role-bar .seg button:disabled {
+      color: var(--text-soft); cursor: not-allowed;
+      opacity: 0.5;
+    }
+    .a-role-bar .act-btn {
+      padding: 5px 11px;
+      font-size: 12px; font-weight: 600;
+      background: var(--surface-alt); color: var(--text-mute);
+      border: none; border-radius: 8px;
+      cursor: pointer;
+    }
+    .a-role-bar .act-btn.active {
+      background: var(--accent); color: #fff;
+    }
+    .a-role-bar .act-btn:disabled {
+      opacity: 0.5; cursor: not-allowed;
+    }
+
     /* OFF 신청 시스템 */
     /* 셀 우상단 마크 컨테이너 */
     .cal-cell .cell-marks {
@@ -1395,9 +1441,9 @@
       T: "Top",                                    // 호환용 (기존 데이터 표시)
       M: "Mid", V: "반차"
     };
-    const ROLE_LABELS = { front: "앞", back: "뒤", act: "act" };
+    const ROLE_LABELS = { front: "앞", back: "뒤", act: "act", total: "토탈" };
     const ROLE_SHORT = { front: "앞", back: "뒤", act: "act" };  // 한글로 통일
-    const ROLE_CELL = { front: "앞", back: "뒤", act: "액" };  // 셀 우측 라벨 (간결)
+    const ROLE_CELL = { front: "앞", back: "뒤", act: "액", total: "all" };  // 셀 우측 라벨 (간결)
     const CLINIC_LABELS = { full: "오전·오후", morning: "오전만", closed: "휴진" };
 
     // 셀 우측 상단 라벨 결정
@@ -1589,16 +1635,17 @@
         // 다음 토큰: role 또는 helper 괄호
         let role = null;
         let helper = null;
-        // role 먼저 시도 (1/2/a/앞/뒤)
+        // role 먼저 시도 (0/1/2/a/앞/뒤/액/토)
         if (ROLE_SHIFTS.includes(ch) && i + 1 < cleaned.length) {
           const next = cleaned[i + 1];
           const nextU = next.toUpperCase();
-          if (next === "1" || next === "앞") { role = "front"; i++; }
+          if (next === "0" || next === "토") { role = "total"; i++; }
+          else if (next === "1" || next === "앞") { role = "front"; i++; }
           else if (next === "2" || next === "뒤") { role = "back"; i++; }
-          else if (nextU === "A") { role = "act"; i++; }
+          else if (nextU === "A" || next === "액") { role = "act"; i++; }
         }
         if (role && !isA) {
-          throw new Error(`A팀이 아닌데 앞/뒤/act 표기가 있어요. (${i + 1}번째 부근)`);
+          throw new Error(`A팀이 아닌데 앞/뒤/act/토 표기가 있어요. (${i + 1}번째 부근)`);
         }
         // 다음에 괄호 있으면 helper
         if (i + 1 < cleaned.length && cleaned[i + 1] === "(") {
@@ -1633,7 +1680,8 @@
         const v = dutyMap[d];
         if (!v) { out += " "; continue; }
         out += v.shift;
-        if (v.role === "front") out += "1";
+        if (v.role === "total") out += "0";
+        else if (v.role === "front") out += "1";
         else if (v.role === "back") out += "2";
         else if (v.role === "act") out += "a";
         if (v.helper) {
@@ -1763,6 +1811,37 @@
       const clinic = getClinicStatus(dateISO, dayOfWeek, clinicOverrides, dbHolidays);
       if (clinic === "morning") return "O";
       return shift;
+    }
+
+    // A팀 헤더 default role 가져오기 (실효 role 계산용)
+    // defaultRoles[sabun][monthKey] = { frontBack: "front"|"back", act: bool }
+    // 없으면 디폴트 = front, act false
+    function getMonthDefaultRole(defaultRoles, sabun, monthKey) {
+      const r = defaultRoles?.[sabun]?.[monthKey];
+      if (!r) return { frontBack: "front", act: false, isExplicit: false };
+      return {
+        frontBack: r.frontBack === "back" ? "back" : "front",
+        act: !!r.act,
+        isExplicit: true,
+      };
+    }
+
+    // 실효 default role 값 한 개 (act가 ON이면 "act", 아니면 frontBack)
+    function effectiveDefaultRoleValue(defaultRoles, sabun, monthKey) {
+      const d = getMonthDefaultRole(defaultRoles, sabun, monthKey);
+      return d.act ? "act" : d.frontBack;
+    }
+
+    // 셀의 실효 역할 (셀 명시값 우선, 없으면 default 적용. A팀 + D/E/N만 적용)
+    // helper 셀이면 helper.role 또는 null
+    function getCellEffectiveRole(duty, userTeam, sabun, monthKey, defaultRoles, displayShift) {
+      if (!duty) return null;
+      if (duty.helper) return duty.helper.role || null;
+      if (duty.role) return duty.role;
+      // 명시값 없음 → A팀 + D/E/N이면 헤더 default 적용
+      if (userTeam !== "A") return null;
+      if (!["D", "E", "N"].includes(displayShift)) return null;
+      return effectiveDefaultRoleValue(defaultRoles, sabun, monthKey);
     }
 
     function getHandoverConfig(myShift) {
@@ -2106,6 +2185,7 @@
       const [memos, setMemos] = useState({});
       const [personalMemos, setPersonalMemos] = useState({});
       const [dayMemos, setDayMemos] = useState({});
+      const [defaultRoles, setDefaultRoles] = useState({}); // A팀 헤더 default — {sabun: {monthKey: {frontBack: "front"|"back", act: bool}}}
       const [noticeCollapsed, setNoticeCollapsed] = useState(
         () => localStorage.getItem("notice_collapsed") === "true"
       );
@@ -2177,6 +2257,12 @@
       useEffect(() => {
         const r = ref(db, "seniority");
         const unsub = onValue(r, snap => setSeniority(snap.val() || {}));
+        return () => unsub();
+      }, []);
+
+      useEffect(() => {
+        const r = ref(db, "defaultRoles");
+        const unsub = onValue(r, snap => setDefaultRoles(snap.val() || {}));
         return () => unsub();
       }, []);
 
@@ -2361,6 +2447,25 @@
             </div>
           </div>
 
+          {/* A팀 default role 버튼 (본인 또는 viewing 대상이 A팀일 때) */}
+          {(() => {
+            const targetSabun = isViewing ? viewingSabun : me.sabun;
+            const targetUser = isViewing ? viewingUser : me;
+            if (!targetUser || targetUser.team !== "A") return null;
+            if (isComparing) return null;
+            const editable = !isViewing || meIsAdmin;
+            return (
+              <ATeamRoleBar
+                targetSabun={targetSabun}
+                targetName={targetUser.name}
+                monthKey={monthKey}
+                defaultRoles={defaultRoles}
+                allDuties={allDuties}
+                editable={editable}
+                isOther={isViewing} />
+            );
+          })()}
+
           {/* 사용자 스위처 드롭다운 */}
           {switcherOpen && (
             <UserSwitcherDropdown
@@ -2497,16 +2602,23 @@
               myTeam={isViewing ? (viewingUser?.team || me.team) : me.team}
               allUsers={allUsers} allDuties={allDuties}
               ackedDates={ackedDates}
+              defaultRoles={defaultRoles}
+              viewingSabun={viewingSabun}
+              mySabun={me.sabun}
               onShortTap={day => {
                 setOpenDay(day);
                 if (!isViewing) {
                   markDayAcked(isoDate(year, month, day));
                 }
               }}
-              onLongPress={day => setQuickEditDay(day)}
+              onLongPress={day => {
+                // admin이면 조회 모드에서도 꾹 눌러서 수정 가능
+                if (isViewing && !meIsAdmin) return;
+                setQuickEditDay(day);
+              }}
               onSwipeLeft={goNextMonth}
               onSwipeRight={goPrevMonth}
-              readOnly={isViewing}
+              readOnly={isViewing && !meIsAdmin}
               dayMemos={dayMemos}
             />
           )}
@@ -2636,6 +2748,7 @@
               me={me} allUsers={allUsers} allDuties={allDuties}
               allRequests={allRequests} seniority={seniority}
               personalMemos={personalMemos} dayMemos={dayMemos}
+              defaultRoles={defaultRoles}
               isAdmin={meIsAdmin}
               clinicOverrides={clinicOverrides} dbHolidays={dbHolidays}
               onClose={() => setOpenDay(null)}
@@ -2648,13 +2761,20 @@
                 setOpenDay(next.day);
               }} />
           )}
-          {quickEditDay !== null && (
-            <DutyQuickEdit
-              year={year} month={month} day={quickEditDay}
-              me={me}
-              currentDuty={getDutyAt(allDuties, monthKey, me.sabun, quickEditDay)}
-              onClose={() => setQuickEditDay(null)} />
-          )}
+          {quickEditDay !== null && (() => {
+            const targetSabun = isViewing ? viewingSabun : me.sabun;
+            const targetUser = isViewing ? viewingUser : me;
+            return (
+              <DutyQuickEdit
+                year={year} month={month} day={quickEditDay}
+                targetSabun={targetSabun}
+                targetTeam={targetUser?.team || me.team}
+                targetName={targetUser?.name}
+                isOtherEdit={isViewing}
+                currentDuty={getDutyAt(allDuties, monthKey, targetSabun, quickEditDay)}
+                onClose={() => setQuickEditDay(null)} />
+            );
+          })()}
         </>
       );
     }
@@ -2663,6 +2783,7 @@
       day, dateISO, status, isToday, holidayName, duty, myTeam, clinicOverrides, dbHolidays, dayOfWeek,
       myRequest, readOnly, hasSharedMemo,
       lineupShortage, lineupQuestion, dayAcked,
+      effectiveRole, // A팀 D/E/N의 실효 역할 (명시 + default 합쳐서 계산됨)
       onShortTap, onLongPress
     }) {
       const timerRef = useRef(null);
@@ -2718,7 +2839,7 @@
       const isHelper = !!duty?.helper;
       const cellColor = displayShift ? shiftColor(displayShift) : null;
 
-      // 셀 우상단 라벨: helper 팀만 (A팀 역할 라벨은 제거)
+      // 셀 우상단 라벨: helper 팀 + 역할 (A팀이면)
       let helperLabel = null;
       if (duty?.helper) {
         const t = duty.helper.team;
@@ -2730,7 +2851,14 @@
         else if (t === "S-act") helperLabel = "S액";
       }
       // V → O 변환된 셀은 라벨 의미 없음
-      const showHelperLabel = helperLabel && !(rawShift === "V" && displayShift === "O");
+      const labelHidden = (rawShift === "V" && displayShift === "O");
+      const showHelperLabel = helperLabel && !labelHidden;
+      // 역할 라벨 (앞/뒤/액/all) — effectiveRole prop 기준
+      const roleLabel = effectiveRole && !labelHidden ? ROLE_CELL[effectiveRole] : null;
+      // 두 라벨 합치기: helper가 있으면 helper만 (helper.role은 다른 팀 컨텍스트라 일단 helper 팀만 표시)
+      // helper 없으면 role 라벨
+      const cornerLabel = helperLabel ? helperLabel : roleLabel;
+      const showCornerLabel = !!cornerLabel && !labelHidden;
 
       // 본인 신청 vs 실제 마크
       let markReq = false;
@@ -2778,11 +2906,107 @@
               <div className="duty-pill"
                 style={{ background: cellColor.bg, color: cellColor.text }}>
                 <span className={`shift-letter-wrap ${markReq ? "req-underline" : ""}`}>{displayShift}</span>
-                {showHelperLabel && <span className="role-suffix">{helperLabel}</span>}
+                {showCornerLabel && <span className="role-suffix">{cornerLabel}</span>}
               </div>
             )}
           </div>
         </button>
+      );
+    }
+
+    // ============================================================
+    // <ATeamRoleBar> — A팀 사용자의 그달 default role 토글 바
+    // ============================================================
+    function ATeamRoleBar({ targetSabun, targetName, monthKey, defaultRoles, allDuties, editable, isOther }) {
+      const cur = getMonthDefaultRole(defaultRoles, targetSabun, monthKey);
+      const [busy, setBusy] = useState(false);
+
+      // 현재 값으로 버튼 표시
+      const activeFrontBack = !cur.act && cur.frontBack === "front" ? "front"
+        : !cur.act && cur.frontBack === "back" ? "back" : null;
+      const actActive = cur.act;
+
+      // 변경 적용 함수: defaultRoles 저장 + 명시값 셀 일괄 처리 (앞↔뒤 토글 시 반전)
+      const apply = async (newFrontBack, newAct) => {
+        if (!editable || busy) return;
+        setBusy(true);
+        try {
+          const updates = {};
+          const newRole = { frontBack: newFrontBack, act: newAct };
+          updates[`defaultRoles/${targetSabun}/${monthKey}`] = newRole;
+
+          // 명시값 셀들 처리:
+          // 앞↔뒤 토글 시 명시 front/back 셀 반전
+          // act 토글은 명시값 셀에 영향 없음
+          const swapping = !cur.act && !newAct && cur.frontBack !== newFrontBack;
+          if (swapping) {
+            const monthData = allDuties[monthKey]?.[targetSabun] || {};
+            Object.entries(monthData).forEach(([dKey, val]) => {
+              if (!val) return;
+              const v = normalizeDuty(val);
+              if (!v?.shift) return;
+              // helper 셀은 건드리지 않음
+              if (v.helper) return;
+              // role이 front/back인 셀만 반전
+              if (v.role === "front") {
+                updates[`duties/${monthKey}/${targetSabun}/${dKey}/role`] = "back";
+              } else if (v.role === "back") {
+                updates[`duties/${monthKey}/${targetSabun}/${dKey}/role`] = "front";
+              }
+              // act, total은 그대로
+            });
+          }
+          await update(ref(db), updates);
+        } catch (e) {
+          console.error(e);
+          alert("저장 실패");
+        }
+        setBusy(false);
+      };
+
+      const onFrontBack = (val) => {
+        if (!editable) return;
+        if (cur.act) {
+          // act 켜져있던 상태에서 앞/뒤 누름 → act 끄고 앞/뒤 활성
+          apply(val, false);
+        } else if (cur.frontBack === val) {
+          // 이미 같은 거 누름 — 아무것도 안 함 (토글 끄기 없음)
+          return;
+        } else {
+          apply(val, false);
+        }
+      };
+      const onAct = () => {
+        if (!editable) return;
+        apply(cur.frontBack, !cur.act);
+      };
+
+      return (
+        <div className="a-role-bar">
+          <span className="label">
+            {isOther ? `${targetName} 담당` : "내 담당"}
+          </span>
+          <div className="seg">
+            <button
+              className={activeFrontBack === "front" ? "active" : ""}
+              disabled={!editable || busy || actActive}
+              onClick={() => onFrontBack("front")}
+              type="button">앞</button>
+            <button
+              className={activeFrontBack === "back" ? "active" : ""}
+              disabled={!editable || busy || actActive}
+              onClick={() => onFrontBack("back")}
+              type="button">뒤</button>
+          </div>
+          <button
+            className={`act-btn ${actActive ? "active" : ""}`}
+            disabled={!editable || busy}
+            onClick={onAct}
+            type="button">act</button>
+          {!editable && (
+            <span style={{ fontSize: 10, color: "var(--text-soft)", marginLeft: 4 }}>(보기 전용)</span>
+          )}
+        </div>
       );
     }
 
@@ -3101,7 +3325,7 @@
       return { shortage, question };
     }
 
-    function CalendarGrid({ year, month, myDuties, myRequests, clinicOverrides, dbHolidays, today, myTeam, onShortTap, onLongPress, onSwipeLeft, onSwipeRight, allUsers, allDuties, readOnly, dayMemos, ackedDates }) {
+    function CalendarGrid({ year, month, myDuties, myRequests, clinicOverrides, dbHolidays, today, myTeam, onShortTap, onLongPress, onSwipeLeft, onSwipeRight, allUsers, allDuties, readOnly, dayMemos, ackedDates, defaultRoles, viewingSabun, mySabun }) {
       const { daysInMonth, startWeekday } = getMonthInfo(year, month);
       const swipeStartRef = useRef(null);
 
@@ -3135,6 +3359,8 @@
         return out;
       }, [allDuties, allUsers, year, month, daysInMonth, clinicOverrides, dbHolidays, readOnly]);
 
+      const targetSabun = readOnly ? viewingSabun : mySabun;
+
       const cells = [];
       for (let i = 0; i < startWeekday; i++) {
         cells.push(<div key={`e-${i}`} className="cal-cell empty" />);
@@ -3148,6 +3374,13 @@
         const holidayName = getHolidayName(iso, dbHolidays);
         const att = lineupMap[day] || {};
 
+        // 셀 effectiveRole 계산 (A팀 + D/E/N + helper 아님 + role 미지정 시 default 적용)
+        const rawShift = duty?.shift;
+        const dispShift = rawShift ? getDisplayShift(rawShift, iso, dow, clinicOverrides, dbHolidays) : null;
+        const effRole = duty
+          ? getCellEffectiveRole(duty, myTeam, targetSabun, monthKey, defaultRoles, dispShift)
+          : null;
+
         cells.push(
           <CalendarCell key={day}
             day={day} dateISO={iso} dayOfWeek={dow}
@@ -3160,6 +3393,7 @@
             lineupShortage={att.shortage}
             lineupQuestion={att.question}
             dayAcked={!!ackedDates?.[iso]}
+            effectiveRole={effRole}
             onShortTap={onShortTap} onLongPress={onLongPress} />
         );
       }
@@ -3457,7 +3691,7 @@
       );
     }
 
-    function DayDetailModal({ year, month, day, me, allUsers, allDuties, allRequests, seniority, personalMemos, dayMemos, isAdmin, clinicOverrides, dbHolidays, onClose, onNavigate }) {
+    function DayDetailModal({ year, month, day, me, allUsers, allDuties, allRequests, seniority, personalMemos, dayMemos, defaultRoles, isAdmin, clinicOverrides, dbHolidays, onClose, onNavigate }) {
       const monthKey = getMonthKey(year, month);
       const iso = isoDate(year, month, day);
       const dow = getWeekday(year, month, day);
@@ -3736,7 +3970,8 @@
                   monthKey={monthKey} day={day} allDuties={allDuties}
                   iso={iso} dayOfWeek={dow}
                   clinicOverrides={clinicOverrides} dbHolidays={dbHolidays}
-                  currentShift={selectedShift} seniority={seniority} />
+                  currentShift={selectedShift} seniority={seniority}
+                  defaultRoles={defaultRoles} />
               </div>
             )}
           </div>
@@ -3799,7 +4034,7 @@
       return candidates[0];
     }
 
-    function LineupBlock({ lineup, mySabun, allUsers, monthKey, day, allDuties, iso, dayOfWeek, clinicOverrides, dbHolidays, currentShift, seniority }) {
+    function LineupBlock({ lineup, mySabun, allUsers, monthKey, day, allDuties, iso, dayOfWeek, clinicOverrides, dbHolidays, currentShift, seniority, defaultRoles }) {
       const topSabun = useMemo(() =>
         findTopSabun(lineup, currentShift, allUsers, monthKey, day, allDuties, iso, dayOfWeek, clinicOverrides, dbHolidays, seniority),
         [lineup, currentShift, allUsers, monthKey, day, allDuties, iso, dayOfWeek, clinicOverrides, dbHolidays, seniority]
@@ -3826,12 +4061,17 @@
                       ? getDisplayShift(personRawShift, iso, dayOfWeek, clinicOverrides, dbHolidays)
                       : null;
                     const showShiftLabel = team === "main" && personDispShift;
+                    // A팀 사람: 명시 role 우선, 없으면 그 사람 defaultRoles 적용
+                    const personUser = allUsers[s];
+                    const effRole = getCellEffectiveRole(
+                      duty, personUser?.team, s, monthKey, defaultRoles, personDispShift
+                    );
                     return (
                       <PersonChip key={s}
-                        sabun={s} user={allUsers[s]}
+                        sabun={s} user={personUser}
                         isMe={s === mySabun}
                         teamForColor={team}
-                        role={getEffectiveRole(duty)}
+                        role={effRole}
                         isHelper={showHelperBadge}
                         chipShift={showShiftLabel ? personDispShift : null}
                         isTop={s === topSabun} />
@@ -3875,7 +4115,7 @@
     // ============================================================
     // <DutyQuickEdit>
     // ============================================================
-    function DutyQuickEdit({ year, month, day, me, currentDuty, onClose }) {
+    function DutyQuickEdit({ year, month, day, targetSabun, targetTeam, targetName, isOtherEdit, currentDuty, onClose }) {
       const initialShift = currentDuty?.shift || "O";
       const initialRole = getEffectiveRole(currentDuty);
       const initialHelperOpt = (() => {
@@ -3898,11 +4138,11 @@
       const helperOpt = helperKey ? HELPER_OPTIONS.find(o => o.key === helperKey) : null;
       const helperTeam = helperOpt?.team;
 
-      // 현재 컨텍스트가 main인지: 본인 main + helper 안 켰거나, helper로 main 갔거나
-      const isMainContext = (!helperOn && me.team === "main") || (helperOn && helperTeam === "main");
+      // 현재 컨텍스트가 main인지: target팀이 main + helper 안 켰거나, helper로 main 갔거나
+      const isMainContext = (!helperOn && targetTeam === "main") || (helperOn && helperTeam === "main");
       const allowedShifts = isMainContext ? ALL_SHIFTS : BASIC_SHIFTS;
       const isRoleShift = ROLE_SHIFTS.includes(shift);
-      const isAteam = me.team === "A";
+      const isAteam = targetTeam === "A";
 
       // shift가 허용 범위 밖으로 나가면 자동 D로 리셋
       useEffect(() => {
@@ -3937,19 +4177,19 @@
         setErr("");
         const monthKey = getMonthKey(year, month);
         const dKey = String(day).padStart(2, "0");
-        const path = `duties/${monthKey}/${me.sabun}/${dKey}`;
+        const path = `duties/${monthKey}/${targetSabun}/${dKey}`;
 
         let payload;
         if (shift === "O") {
-          payload = { shift: "O", team: me.team };
+          payload = { shift: "O", team: targetTeam };
         } else {
-          payload = { shift, team: me.team };
+          payload = { shift, team: targetTeam };
 
           if (helperOn && helperKey) {
             const opt = HELPER_OPTIONS.find(o => o.key === helperKey);
             if (!opt) { setErr("helper 팀을 선택해 주세요."); return; }
-            // helper.team이 본인 팀과 같으면 helper 무의미 → role만 남김
-            if (opt.team === me.team) {
+            // helper.team이 target 팀과 같으면 helper 무의미 → role만 남김
+            if (opt.team === targetTeam) {
               if (opt.role && isRoleShift) payload.role = opt.role;
             } else {
               payload.helper = { team: opt.team };
@@ -3978,7 +4218,7 @@
         try {
           const monthKey = getMonthKey(year, month);
           const dKey = String(day).padStart(2, "0");
-          await remove(ref(db, `duties/${monthKey}/${me.sabun}/${dKey}`));
+          await remove(ref(db, `duties/${monthKey}/${targetSabun}/${dKey}`));
           onClose();
         } catch (e) {
           console.error(e);
@@ -3996,7 +4236,14 @@
         <div className="modal-backdrop" onClick={onClose}>
           <div className="modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2 className="modal-title">{month}월 {day}일 수정</h2>
+              <h2 className="modal-title">
+                {month}월 {day}일 수정
+                {isOtherEdit && targetName && (
+                  <span style={{ fontSize: 13, color: "var(--text-mute)", marginLeft: 8 }}>
+                    · {targetName}
+                  </span>
+                )}
+              </h2>
               <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
             </div>
 
@@ -4015,13 +4262,14 @@
                 <div className="field">
                   <div className="field-label-row">
                     <span className="field-label">A팀 역할</span>
-                    <span className="field-hint">없음 = 일반 근무</span>
+                    <span className="field-hint">없음 = 그달 기본 담당 따름</span>
                   </div>
-                  <div className="seg seg-4">
+                  <div className="seg seg-5">
                     <button className={!role ? "active" : ""} onClick={() => setRole(null)} type="button">없음</button>
                     <button className={role === "front" ? "active" : ""} onClick={() => setRole("front")} type="button">앞</button>
                     <button className={role === "back" ? "active" : ""} onClick={() => setRole("back")} type="button">뒤</button>
                     <button className={role === "act" ? "active" : ""} onClick={() => setRole("act")} type="button">act</button>
+                    <button className={role === "total" ? "active" : ""} onClick={() => setRole("total")} type="button">토탈</button>
                   </div>
                 </div>
               )}
