@@ -581,6 +581,13 @@
       font-size: 10px; opacity: 0.65; font-weight: 600; letter-spacing: 0.3px;
     }
 
+    .lineup-act-warning {
+      background: #FFEBEB; color: #C0392B;
+      font-size: 12px; font-weight: 700;
+      padding: 8px 12px; border-radius: 8px;
+      margin-bottom: 4px;
+      border: 1px solid #F5C6C6;
+    }
     .lineup-team { display: flex; gap: 10px; padding: 10px 0; border-top: 1px solid var(--border); }
     .lineup-team:first-child { border-top: none; padding-top: 4px; }
     .lineup-team-label { flex-shrink: 0; width: 56px; display: flex; align-items: flex-start; }
@@ -1079,12 +1086,6 @@
     .cal-cell .mark.shortage {
       width: 6px; height: 6px; border-radius: 50%;
       background: var(--c-closed);
-    }
-    /* 라인업 물음표 */
-    .cal-cell .mark.question {
-      color: var(--text); font-size: 10px;
-      font-weight: 800;
-      line-height: 1;
     }
     /* req 알림 시 듀티 글자 밑줄 (helper 밑줄에서 이전) */
     .duty-pill .shift-letter-wrap.req-underline {
@@ -2782,7 +2783,7 @@
     function CalendarCell({
       day, dateISO, status, isToday, holidayName, duty, myTeam, clinicOverrides, dbHolidays, dayOfWeek,
       myRequest, readOnly, hasSharedMemo,
-      lineupShortage, lineupQuestion, dayAcked,
+      lineupShortage, dayAcked,
       effectiveRole, // A팀 D/E/N의 실효 역할 (명시 + default 합쳐서 계산됨)
       onShortTap, onLongPress
     }) {
@@ -2873,9 +2874,8 @@
           markMismatch = true;
         }
       }
-      // ack된 날짜는 mismatch / question 숨김
+      // ack된 날짜는 mismatch 숨김
       const showMismatch = markMismatch && !dayAcked;
-      const showQuestion = lineupQuestion && !dayAcked;
       const showShortage = lineupShortage;
       const showSharedMemo = !!hasSharedMemo;
 
@@ -2892,12 +2892,11 @@
           style={{ touchAction: "manipulation" }}
         >
           <div className={`cal-date ${status}`}>{day}</div>
-          {(markReq || showSharedMemo || showShortage || showQuestion || showMismatch) && (
+          {(markReq || showSharedMemo || showShortage || showMismatch) && (
             <div className="cell-marks">
               {markReq && <span className="mark req">req</span>}
               {showSharedMemo && <span className="mark shared-memo">📌</span>}
               {showShortage && <span className="mark shortage" />}
-              {showQuestion && <span className="mark question">?</span>}
               {showMismatch && <span className="mark mismatch" />}
             </div>
           )}
@@ -3289,13 +3288,13 @@
       const monthData = allDuties[mk] || {};
       // 모든 사용자가 그 날 입력했는지
       const allSabuns = Object.keys(allUsers);
-      if (allSabuns.length === 0) return { shortage: false, question: false };
+      if (allSabuns.length === 0) return { shortage: false };
       const dKey = String(day).padStart(2, "0");
       const allFilled = allSabuns.every(sb => {
         const v = normalizeDuty(monthData[sb]?.[dKey]);
         return !!v?.shift;
       });
-      if (!allFilled) return { shortage: false, question: false };
+      if (!allFilled) return { shortage: false };
 
       // 그 날 인원 데이터만 추출
       const dayData = {};
@@ -3308,21 +3307,19 @@
       const counts = computeLineupCounts(dayData, allUsers, iso, dow, clinicOverrides, dbHolidays);
 
       let shortage = false;
-      let question = false;
       const SHIFTS = ["D", "E", "N"];
       for (const s of SHIFTS) {
-        // A팀: 최소 2명, 상한 없음
+        // A팀: 최소 2명
         const aCount = counts["A"]?.[s] || 0;
         if (aCount < 2) shortage = true;
-        // B/C/D/S-616/S-617: 0명 부족, 2+ 물음표
+        // B/C/D/S-616/S-617: 0명이면 부족
         for (const t of ["B", "C", "D", "S-616", "S-617"]) {
           const n = counts[t]?.[s] || 0;
           if (n === 0) shortage = true;
-          else if (n >= 2) question = true;
         }
         // main, S-act: 체크 안 함
       }
-      return { shortage, question };
+      return { shortage };
     }
 
     function CalendarGrid({ year, month, myDuties, myRequests, clinicOverrides, dbHolidays, today, myTeam, onShortTap, onLongPress, onSwipeLeft, onSwipeRight, allUsers, allDuties, readOnly, dayMemos, ackedDates, defaultRoles, viewingSabun, mySabun }) {
@@ -3391,7 +3388,6 @@
             readOnly={readOnly}
             hasSharedMemo={!!dayMemos?.[iso]?.text}
             lineupShortage={att.shortage}
-            lineupQuestion={att.question}
             dayAcked={!!ackedDates?.[iso]}
             effectiveRole={effRole}
             onShortTap={onShortTap} onLongPress={onLongPress} />
@@ -4040,8 +4036,24 @@
         [lineup, currentShift, allUsers, monthKey, day, allDuties, iso, dayOfWeek, clinicOverrides, dbHolidays, seniority]
       );
 
+      // 액팅 부재 경고 (D/E/N 라인업일 때만)
+      const actWarnings = useMemo(() => {
+        if (!["D", "E", "N"].includes(currentShift)) return [];
+        const w = [];
+        const aCount = (lineup["A"] || []).length;
+        const sActCount = (lineup["S-act"] || []).length;
+        if (aCount <= 2) w.push("A팀");
+        if (sActCount === 0) w.push("S-act");
+        return w;
+      }, [lineup, currentShift]);
+
       return (
         <div>
+          {actWarnings.length > 0 && (
+            <div className="lineup-act-warning">
+              ⚠ {actWarnings.join(", ")} 액팅 없음
+            </div>
+          )}
           {TEAMS.map(team => {
             const sabuns = lineup[team] || [];
             if (sabuns.length === 0) return null;
