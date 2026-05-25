@@ -533,6 +533,11 @@
     .shift-tabs-row.row-tmv { grid-template-columns: repeat(2, 1fr); margin-top: 0; padding-top: 12px; }
     .shift-tabs-row.row-tmv-1 { grid-template-columns: 1fr; margin-top: 0; padding-top: 12px; max-width: 50%; margin-left: auto; margin-right: auto; }
     .shift-tabs-row.row-den { grid-template-columns: repeat(3, 1fr); }
+    .shift-tab-shortage {
+      position: absolute; top: 5px; right: 8px;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--c-closed);
+    }
     .shift-tab {
       padding: 12px 0; border: 1.5px solid var(--border);
       background: var(--surface); border-radius: 10px;
@@ -582,11 +587,11 @@
     }
 
     .lineup-act-warning {
-      background: #FFEBEB; color: #C0392B;
-      font-size: 12px; font-weight: 700;
-      padding: 8px 12px; border-radius: 8px;
-      margin-bottom: 4px;
-      border: 1px solid #F5C6C6;
+      color: var(--c-closed);
+      font-size: 11px; font-weight: 600;
+      padding: 4px 2px;
+      margin-bottom: 2px;
+      opacity: 0.85;
     }
     .lineup-team { display: flex; gap: 10px; padding: 10px 0; border-top: 1px solid var(--border); }
     .lineup-team:first-child { border-top: none; padding-top: 4px; }
@@ -1774,6 +1779,16 @@
       if (duty.helper && duty.helper.team) return duty.helper.team;
       return duty.team || fallbackTeam;
     }
+    // 듀티 입력 시 그 월에 들어갈 팀 결정 (pendingTeam 예약 반영)
+    // user.pendingTeam = { team, fromMonth }. 입력 대상 monthKey >= fromMonth면 pendingTeam 사용.
+    function teamForMonth(user, monthKey) {
+      if (!user) return null;
+      const p = user.pendingTeam;
+      if (p && p.team && p.fromMonth && monthKey >= p.fromMonth) {
+        return p.team;
+      }
+      return user.team;
+    }
     function getEffectiveRole(duty) {
       if (!duty) return null;
       if (duty.helper) return duty.helper.role || null;
@@ -1915,16 +1930,28 @@
       const [me, setMe] = useState(null);
       const [bootDone, setBootDone] = useState(false);
 
+      const SESSION_TTL = 72 * 60 * 60 * 1000; // 72시간
+
       useEffect(() => {
         (async () => {
           const saved = localStorage.getItem("61w-session");
           if (!saved) { setBootDone(true); return; }
           try {
-            const { sabun } = JSON.parse(saved);
+            const parsed = JSON.parse(saved);
+            const { sabun, savedAt } = parsed;
+            // 72시간 경과 확인 (savedAt 없으면 구버전 세션 → 그냥 통과시키고 갱신)
+            if (savedAt && (Date.now() - savedAt > SESSION_TTL)) {
+              localStorage.removeItem("61w-session");
+              sessionStorage.removeItem("61w-master-session");
+              setBootDone(true);
+              return;
+            }
             const snap = await get(ref(db, `users/${sabun}`));
             if (snap.exists()) {
               const isMasterSession = sessionStorage.getItem("61w-master-session") === "true";
               setMe({ sabun, ...snap.val(), isMasterSession });
+              // 접속 시 만료 시점 갱신 (sliding window)
+              localStorage.setItem("61w-session", JSON.stringify({ sabun, savedAt: Date.now() }));
             } else {
               localStorage.removeItem("61w-session");
             }
@@ -1937,7 +1964,7 @@
       }, []);
 
       const handleLogin = (sabun, userData) => {
-        localStorage.setItem("61w-session", JSON.stringify({ sabun }));
+        localStorage.setItem("61w-session", JSON.stringify({ sabun, savedAt: Date.now() }));
         if (userData.isMasterSession) {
           sessionStorage.setItem("61w-master-session", "true");
         } else {
@@ -2228,7 +2255,23 @@
 
       useEffect(() => {
         const r = ref(db, "users");
-        const unsub = onValue(r, snap => setAllUsers(snap.val() || {}));
+        const unsub = onValue(r, snap => {
+          const users = snap.val() || {};
+          setAllUsers(users);
+          // pendingTeam.fromMonth가 현재 달 이하로 도래한 사용자는 team 승격
+          const curMonthKey = getMonthKey(todayInfo().year, todayInfo().month);
+          const updates = {};
+          Object.entries(users).forEach(([sb, u]) => {
+            const p = u?.pendingTeam;
+            if (p && p.team && p.fromMonth && p.fromMonth <= curMonthKey) {
+              updates[`users/${sb}/team`] = p.team;
+              updates[`users/${sb}/pendingTeam`] = null;
+            }
+          });
+          if (Object.keys(updates).length > 0) {
+            update(ref(db), updates).catch(e => console.error("팀 승격 실패", e));
+          }
+        });
         return () => unsub();
       }, []);
 
@@ -2675,7 +2718,7 @@
           )}
           {activeModal === "dutyInput" && (
             <DutyInputModal year={year} month={month} sabun={me.sabun}
-              myTeam={me.team} myName={me.name}
+              myTeam={teamForMonth(me, monthKey)} myName={me.name}
               currentDuties={myDutiesObj}
               allUsers={allUsers} allDuties={allDuties} seniority={seniority}
               isAdmin={meIsAdmin}
@@ -2765,11 +2808,12 @@
           {quickEditDay !== null && (() => {
             const targetSabun = isViewing ? viewingSabun : me.sabun;
             const targetUser = isViewing ? viewingUser : me;
+            const effTeam = targetUser ? teamForMonth(targetUser, monthKey) : me.team;
             return (
               <DutyQuickEdit
                 year={year} month={month} day={quickEditDay}
                 targetSabun={targetSabun}
-                targetTeam={targetUser?.team || me.team}
+                targetTeam={effTeam}
                 targetName={targetUser?.name}
                 isOtherEdit={isViewing}
                 currentDuty={getDutyAt(allDuties, monthKey, targetSabun, quickEditDay)}
@@ -3283,20 +3327,21 @@
       return counts;
     }
 
-    function computeLineupAttention(day, year, month, allDuties, allUsers, clinicOverrides, dbHolidays) {
+    // 시프트별 부족 여부 계산 (각 D/E/N 별로 어느 팀이 부족한지)
+    // 반환: { D: bool, E: bool, N: bool, anyShortage: bool, allFilled: bool }
+    function computeShortageByShift(day, year, month, allDuties, allUsers, clinicOverrides, dbHolidays) {
       const mk = getMonthKey(year, month);
       const monthData = allDuties[mk] || {};
-      // 모든 사용자가 그 날 입력했는지
       const allSabuns = Object.keys(allUsers);
-      if (allSabuns.length === 0) return { shortage: false };
+      const empty = { D: false, E: false, N: false, anyShortage: false, allFilled: false };
+      if (allSabuns.length === 0) return empty;
       const dKey = String(day).padStart(2, "0");
       const allFilled = allSabuns.every(sb => {
         const v = normalizeDuty(monthData[sb]?.[dKey]);
         return !!v?.shift;
       });
-      if (!allFilled) return { shortage: false };
+      if (!allFilled) return empty;
 
-      // 그 날 인원 데이터만 추출
       const dayData = {};
       for (const sb of allSabuns) {
         const v = monthData[sb]?.[dKey];
@@ -3306,20 +3351,22 @@
       const dow = (getMonthInfo(year, month).startWeekday + day - 1) % 7;
       const counts = computeLineupCounts(dayData, allUsers, iso, dow, clinicOverrides, dbHolidays);
 
-      let shortage = false;
-      const SHIFTS = ["D", "E", "N"];
-      for (const s of SHIFTS) {
-        // A팀: 최소 2명
-        const aCount = counts["A"]?.[s] || 0;
-        if (aCount < 2) shortage = true;
-        // B/C/D/S-616/S-617: 0명이면 부족
+      const result = { D: false, E: false, N: false, anyShortage: false, allFilled: true };
+      for (const s of ["D", "E", "N"]) {
+        let short = false;
+        if ((counts["A"]?.[s] || 0) < 2) short = true;
         for (const t of ["B", "C", "D", "S-616", "S-617"]) {
-          const n = counts[t]?.[s] || 0;
-          if (n === 0) shortage = true;
+          if ((counts[t]?.[s] || 0) === 0) short = true;
         }
-        // main, S-act: 체크 안 함
+        result[s] = short;
+        if (short) result.anyShortage = true;
       }
-      return { shortage };
+      return result;
+    }
+
+    function computeLineupAttention(day, year, month, allDuties, allUsers, clinicOverrides, dbHolidays) {
+      const r = computeShortageByShift(day, year, month, allDuties, allUsers, clinicOverrides, dbHolidays);
+      return { shortage: r.anyShortage };
     }
 
     function CalendarGrid({ year, month, myDuties, myRequests, clinicOverrides, dbHolidays, today, myTeam, onShortTap, onLongPress, onSwipeLeft, onSwipeRight, allUsers, allDuties, readOnly, dayMemos, ackedDates, defaultRoles, viewingSabun, mySabun }) {
@@ -3826,6 +3873,12 @@
         return selectedShift === s ? `${base} active` : base;
       };
 
+      // 시프트별 라인업 부족 (D/E/N 탭에 빨간 점 표시용)
+      const shortageByShift = useMemo(
+        () => computeShortageByShift(day, year, month, allDuties, allUsers, clinicOverrides, dbHolidays),
+        [day, year, month, allDuties, allUsers, clinicOverrides, dbHolidays]
+      );
+
       const handleShiftTabClick = (s) => {
         if (selectedShift === s) setSelectedShift(null);
         else setSelectedShift(s);
@@ -3937,8 +3990,10 @@
                   <button key={s}
                     className={shiftTabClass(s)}
                     onClick={() => handleShiftTabClick(s)}
-                    type="button">
+                    type="button"
+                    style={{ position: "relative" }}>
                     {s}
+                    {shortageByShift[s] && <span className="shift-tab-shortage" />}
                   </button>
                 ))}
               </div>
@@ -4043,7 +4098,7 @@
         const aCount = (lineup["A"] || []).length;
         const sActCount = (lineup["S-act"] || []).length;
         if (aCount <= 2) w.push("A팀");
-        if (sActCount === 0) w.push("S-act");
+        if (sActCount === 0) w.push("Sub");
         return w;
       }, [lineup, currentShift]);
 
@@ -4465,7 +4520,8 @@
             continue;
           }
           let codes;
-          try { codes = parseDutyStringV3(dutyText, u.team); }
+          const uTeamForMonth = teamForMonth(u, monthKey);
+          try { codes = parseDutyStringV3(dutyText, uTeamForMonth); }
           catch (e) { extraSkip.push(u.name); continue; }
           if (codes.length === 0 || codes.length > daysInMonth) {
             extraSkip.push(u.name);
@@ -4474,7 +4530,7 @@
           for (let d = 1; d <= codes.length; d++) {
             const dKey = String(d).padStart(2, "0");
             const code = codes[d - 1];
-            const payload = { shift: code.shift, team: u.team };
+            const payload = { shift: code.shift, team: uTeamForMonth };
             if (code.role) payload.role = code.role;
             if (code.helper) payload.helper = code.helper;
             updates[`duties/${monthKey}/${u.sabun}/${dKey}`] = payload;
@@ -4667,9 +4723,10 @@
             continue;
           }
           const user = matches[0];
+          const userTeamForMonth = teamForMonth(user, monthKey);
           let codes;
           try {
-            codes = parseDutyStringV3(dutyText, user.team);
+            codes = parseDutyStringV3(dutyText, userTeamForMonth);
           } catch (e) {
             fail.push({ line, name, reason: e.message });
             continue;
@@ -4685,7 +4742,7 @@
             const path = `duties/${monthKey}/${user.sabun}/${dKey}`;
             if (d <= codes.length) {
               const code = codes[d - 1];
-              const payload = { shift: code.shift, team: user.team };
+              const payload = { shift: code.shift, team: userTeamForMonth };
               if (code.role) payload.role = code.role;
               if (code.helper) payload.helper = code.helper;
               updates[path] = payload;
@@ -4891,8 +4948,18 @@
       const [team, setTeam] = useState(me.team);
       const [hireDate, setHireDate] = useState(isoToHireDate(me.hireDate));
       const [phone, setPhone] = useState(formatPhone(me.phone || ""));
+      const [teamTiming, setTeamTiming] = useState("now"); // now | next
       const [err, setErr] = useState("");
       const [busy, setBusy] = useState(false);
+
+      const teamChanged = team !== me.team;
+
+      // 다음 달 monthKey
+      const nextMonthKey = useMemo(() => {
+        const t = todayInfo();
+        const d = new Date(t.year, t.month, 1); // 다음 달 1일
+        return getMonthKey(d.getFullYear(), d.getMonth() + 1);
+      }, []);
 
       const save = async () => {
         setErr("");
@@ -4902,9 +4969,20 @@
         setBusy(true);
         try {
           const newData = {
-            name: name.trim(), team, hireDate: hireISO,
+            name: name.trim(), hireDate: hireISO,
             phone: phone.replace(/\D/g, ""),
           };
+          if (!teamChanged) {
+            newData.team = team;
+          } else if (teamTiming === "now") {
+            // 즉시 변경: team 바로 적용, pendingTeam 제거
+            newData.team = team;
+            newData.pendingTeam = null;
+          } else {
+            // 다음 달부터: 현재 team 유지, pendingTeam 예약
+            newData.team = me.team;
+            newData.pendingTeam = { team, fromMonth: nextMonthKey };
+          }
           await update(ref(db, `users/${me.sabun}`), newData);
           onSaved(newData);
         } catch (e) {
@@ -4913,6 +4991,9 @@
           setBusy(false);
         }
       };
+
+      // 기존 예약된 변경 표시
+      const pending = me.pendingTeam;
 
       return (
         <div className="modal-backdrop" onClick={onCancel}>
@@ -4928,6 +5009,34 @@
                 <select value={team} onChange={e => setTeam(e.target.value)}>
                   {TEAMS.map(t => <option key={t} value={t}>{t}</option>)}
                 </select></div>
+
+              {pending && pending.team && (
+                <div style={{
+                  fontSize: 12, color: "var(--accent)", fontWeight: 600,
+                  padding: "6px 10px", background: "var(--surface-alt)",
+                  borderRadius: 8, marginTop: -4
+                }}>
+                  예약됨: {pending.fromMonth}부터 {pending.team}팀으로 변경
+                </div>
+              )}
+
+              {teamChanged && (
+                <div className="field">
+                  <label>팀 변경 적용 시점</label>
+                  <div className="seg seg-2">
+                    <button className={teamTiming === "now" ? "active" : ""}
+                      onClick={() => setTeamTiming("now")} type="button">즉시</button>
+                    <button className={teamTiming === "next" ? "active" : ""}
+                      onClick={() => setTeamTiming("next")} type="button">다음 달부터</button>
+                  </div>
+                  <p style={{ fontSize: 11, color: "var(--text-soft)", margin: "6px 0 0" }}>
+                    {teamTiming === "now"
+                      ? "이번 달 포함 즉시 새 팀으로 적용돼요."
+                      : `${nextMonthKey}부터 입력하는 근무가 ${team}팀으로 들어가요. 이번 달은 ${me.team}팀 유지.`}
+                  </p>
+                </div>
+              )}
+
               <div className="field"><label>입사일 (YYYYMMDD)</label>
                 <input type="tel" inputMode="numeric" value={hireDate}
                   onChange={e => setHireDate(formatHireDateInput(e.target.value))} /></div>
