@@ -2754,7 +2754,7 @@
               clinicOverrides={clinicOverrides}
               dbHolidays={dbHolidays}
               today={today}
-              myTeam={isViewing ? (viewingUser?.team || me.team) : me.team}
+              myTeam={isViewing ? teamForMonth(viewingUser || me, monthKey) : teamForMonth(me, monthKey)}
               allUsers={allUsers} allDuties={allDuties}
               ackedDates={ackedDates}
               defaultRoles={defaultRoles}
