@@ -37,6 +37,7 @@
       --t-S616-bg: #B5D6E0;  --t-S616-text: #0F2D38;  --t-S616-edge: #3F889E;
       --t-S617-bg: #B5DFD0;  --t-S617-text: #0F3830;  --t-S617-edge: #3F9E8A;
       --t-Sact-bg: #DDEFF0;  --t-Sact-text: #385C5C;  --t-Sact-edge: #9CC8C9;
+      --t-trans-bg: #D8D2C4;  --t-trans-text: #3A3326;  --t-trans-edge: #8A7E66;
 
       /* 시프트 색 (요청 팔레트) */
       --s-D-bg: #8ECDF0;  --s-D-text: #0E3A5F;   /* 하늘색 */
@@ -904,6 +905,49 @@
     }
     .rd-period span { font-size: 12px; color: var(--text-soft); }
 
+    /* 연명부 - 이송 섹션 */
+    .roster-section-label {
+      font-size: 11px; font-weight: 700; color: var(--text-mute);
+      background: var(--surface-alt);
+      padding: 5px 12px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .roster-item.transfer .roster-head,
+    .roster-item.transfer-add .roster-head {
+      gap: 8px;
+    }
+    .transfer-name-input {
+      flex: 1; min-width: 0;
+      padding: 6px 8px; font-size: 13px;
+      border: 1px solid var(--border); border-radius: 6px;
+      background: var(--bg);
+    }
+    .transfer-del {
+      padding: 5px 10px; font-size: 11px; font-weight: 600;
+      background: var(--surface-alt); color: var(--c-closed);
+      border: none; border-radius: 6px; cursor: pointer;
+    }
+    .transfer-add-btn {
+      padding: 5px 12px; font-size: 12px; font-weight: 600;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: 6px; cursor: pointer;
+    }
+
+    /* 전체보기 helper 지정 모달 */
+    .sheet-helper-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    }
+    .sheet-helper-grid button {
+      padding: 12px 8px; font-size: 13px; font-weight: 600;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface); color: var(--text);
+      cursor: pointer;
+    }
+    .sheet-helper-grid button.active {
+      background: var(--accent); color: #fff; border-color: var(--accent);
+    }
+
     /* 듀티 통계 */
     .stats-section {
       margin-bottom: 18px;
@@ -1516,7 +1560,7 @@
     // 상수
     // ============================================================
     const ADMIN_SABUN = "224051";
-    const TEAMS = ["main", "A", "B", "C", "D", "S-616", "S-617", "S-act"];
+    const TEAMS = ["main", "A", "B", "C", "D", "S-616", "S-617", "S-act", "이송"];
 
     // 관리자 권한 체크
     // - 코드 박힌 ADMIN_SABUN은 영구 admin
@@ -1594,7 +1638,8 @@
       if (team === "D")     return { bg: "var(--t-D-bg)",    text: "var(--t-D-text)",    edge: "var(--t-D-edge)" };
       if (team === "S-616") return { bg: "var(--t-S616-bg)", text: "var(--t-S616-text)", edge: "var(--t-S616-edge)" };
       if (team === "S-617") return { bg: "var(--t-S617-bg)", text: "var(--t-S617-text)", edge: "var(--t-S617-edge)" };
-      return { bg: "var(--t-Sact-bg)", text: "var(--t-Sact-text)", edge: "var(--t-Sact-edge)" };
+      if (team === "S-act") return { bg: "var(--t-Sact-bg)", text: "var(--t-Sact-text)", edge: "var(--t-Sact-edge)" };
+      return { bg: "var(--t-trans-bg)", text: "var(--t-trans-text)", edge: "var(--t-trans-edge)" };
     }
 
     // 시프트별 색상
@@ -1717,7 +1762,7 @@
       // 공백은 무시하되 괄호는 보존하고, 한 글자씩 + 괄호 묶음 처리
       const cleaned = raw.replace(/\s+/g, "");
       const result = [];
-      const isMain = baseTeam === "main";
+      const isMain = baseTeam === "main" || baseTeam === "이송"; // 이송팀도 M/V 사용
       const isA = baseTeam === "A";
 
       let i = 0;
@@ -1726,10 +1771,9 @@
         if (!ALL_SHIFTS.includes(ch)) {
           throw new Error(`'${cleaned[i]}'(${i + 1}번째)은 알 수 없는 코드. 가능: ${ALL_SHIFTS.join(", ")}`);
         }
-        // main 전용 시프트인데 main이 아니면 에러
-        // (단, helper로 main 시프트는 괄호 표기로만 가능. 여기는 raw shift이므로 main만)
+        // main/이송 전용 시프트인데 해당 팀이 아니면 에러
         if (MAIN_SHIFTS.includes(ch) && !isMain) {
-          throw new Error(`'${ch}'(${i + 1}번째)는 main 팀 전용. 다른 팀에서 main 근무는 helper 표기 사용.`);
+          throw new Error(`'${ch}'(${i + 1}번째)는 main/이송 팀 전용. 다른 팀에서 main 근무는 helper 표기 사용.`);
         }
         // 다음 토큰: role 또는 helper 괄호
         let role = null;
@@ -2139,11 +2183,15 @@
               setBusy(false); return;
             }
             user = snap.val();
+            if (user.noLogin) {
+              setErr("로그인할 수 없는 계정이에요.");
+              setBusy(false); return;
+            }
           } else {
             // 이름으로 검색
             const allSnap = await get(ref(db, "users"));
             const all = allSnap.val() || {};
-            const matches = Object.entries(all).filter(([_, u]) => u.name === loginValue.trim());
+            const matches = Object.entries(all).filter(([_, u]) => u.name === loginValue.trim() && !u.noLogin);
             if (matches.length === 0) {
               setErr("등록된 이름이 아니에요.");
               setBusy(false); return;
@@ -2873,7 +2921,7 @@
               allUsers={allUsers} allDuties={allDuties}
               seniority={seniority}
               clinicOverrides={clinicOverrides} dbHolidays={dbHolidays}
-              mySabun={me.sabun}
+              mySabun={me.sabun} isAdmin={meIsAdmin}
               onClose={close} />
           )}
           {activeModal === "offToggle" && (
@@ -3958,13 +4006,14 @@
         } else if (selectedShift === "E") {
           extraMain = getPeopleByShift(allDuties, monthKey, day, "M");
         }
-        // main 팀에 속한 사람만 추가 (effective team)
+        // main / 이송 팀에 속한 사람만 추가 (effective team) — 둘 다 M/V로 D/E 라인업 합류
         const mainSabuns = extraMain.filter(s => {
           const u = allUsers[s];
           if (!u) return false;
           if (!isActiveInMonth(u, monthKey)) return false;
           const d = getDutyAt(allDuties, monthKey, s, day);
-          return getEffectiveTeamForMonth(d, u, monthKey) === "main";
+          const t = getEffectiveTeamForMonth(d, u, monthKey);
+          return t === "main" || t === "이송";
         });
         // 합쳐서 그룹핑 (중복 제거)
         const allSabuns = Array.from(new Set([...filteredDirect, ...mainSabuns]));
@@ -4249,7 +4298,7 @@
                     const personDispShift = personRawShift
                       ? getDisplayShift(personRawShift, iso, dayOfWeek, clinicOverrides, dbHolidays)
                       : null;
-                    const showShiftLabel = team === "main" && personDispShift;
+                    const showShiftLabel = (team === "main" || team === "이송") && personDispShift;
                     // A팀 사람: 명시 role 우선, 없으면 그 사람 defaultRoles 적용
                     const personUser = allUsers[s];
                     const effRole = getCellEffectiveRole(
@@ -5982,9 +6031,12 @@
         return getMonthKey(t.year, t.month);
       }, []);
 
-      // 정렬: 재직자 연차순 → 휴직/퇴사자 맨 아래(회색)
+      // 정렬: 재직 간호사 연차순 → (이송은 별도) → 휴직/퇴사자 맨 아래(회색)
+      // 이송팀(noLogin 또는 team==="이송")은 sortedUsers에서 제외하고 transferList로 따로
       const sortedUsers = useMemo(() => {
-        const list = Object.entries(allUsers).map(([sabun, u]) => ({ sabun, ...u }));
+        const list = Object.entries(allUsers)
+          .map(([sabun, u]) => ({ sabun, ...u }))
+          .filter(u => u.team !== "이송" && !u.noLogin); // 간호사만
         const isInactive = (u) => {
           const s = u.status;
           if (!s || !s.type) return false;
@@ -5998,6 +6050,14 @@
         });
         return list;
       }, [allUsers, seniority, curMonthKey]);
+
+      // 이송팀 명단 (이름순)
+      const transferList = useMemo(() => {
+        return Object.entries(allUsers)
+          .map(([sabun, u]) => ({ sabun, ...u }))
+          .filter(u => u.team === "이송" || u.noLogin)
+          .sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+      }, [allUsers]);
 
       const setExp = (sabun, val) => {
         if (val === "" || /^\d{1,3}$/.test(val)) {
@@ -6056,6 +6116,32 @@
         } catch (e) { console.error(e); alert("상태 변경 실패"); }
       };
 
+      // 이송 명단 추가 (이름만, 로그인 불가)
+      const [newTransfer, setNewTransfer] = useState("");
+      const addTransfer = async () => {
+        const name = newTransfer.trim();
+        if (!name) return;
+        try {
+          // 이송용 사번: t- 접두 + 타임스탬프 (중복 방지, 숫자 사번과 구분)
+          const tSabun = `t-${Date.now().toString(36)}`;
+          await set(ref(db, `users/${tSabun}`), {
+            name, team: "이송", noLogin: true,
+          });
+          setNewTransfer("");
+        } catch (e) { console.error(e); alert("이송 추가 실패"); }
+      };
+      const renameTransfer = async (sabun, name) => {
+        const n = (name || "").trim();
+        if (!n) return;
+        try { await update(ref(db, `users/${sabun}`), { name: n }); }
+        catch (e) { console.error(e); alert("이름 수정 실패"); }
+      };
+      const removeTransfer = async (sabun, name) => {
+        if (!confirm(`이송 '${name}'을(를) 삭제할까요? 기존 근무 기록도 함께 사라집니다.`)) return;
+        try { await remove(ref(db, `users/${sabun}`)); }
+        catch (e) { console.error(e); alert("삭제 실패"); }
+      };
+
       return (
         <div className="modal-backdrop" onClick={onClose}>
           <div className="modal" onClick={e => e.stopPropagation()}>
@@ -6069,54 +6155,82 @@
             </div>
 
             <div className="roster-list">
-              {sortedUsers.map(u => {
-                const total = previewTotal(u);
-                const yos = yearsOfService(u.hireDate);
-                const expVal = expLocal[u.sabun];
-                const isExpanded = expandedSabun === u.sabun;
-                const st = u.status;
-                const inactive = st && st.type && !isActiveInMonth(u, curMonthKey);
-                const pending = u.pendingTeam;
+              {(() => {
+                const active = sortedUsers.filter(u => !(u.status?.type && !isActiveInMonth(u, curMonthKey)));
+                const inactiveUsers = sortedUsers.filter(u => u.status?.type && !isActiveInMonth(u, curMonthKey));
 
-                let statusLabel = null;
-                if (st?.type === "leave") statusLabel = `휴직 ${st.from}~${st.to}`;
-                else if (st?.type === "resigned") statusLabel = `퇴사 ${st.from}~`;
+                const renderNurse = (u) => {
+                  const total = previewTotal(u);
+                  const expVal = expLocal[u.sabun];
+                  const isExpanded = expandedSabun === u.sabun;
+                  const st = u.status;
+                  const inactive = st && st.type && !isActiveInMonth(u, curMonthKey);
+                  const pending = u.pendingTeam;
+                  let statusLabel = null;
+                  if (st?.type === "leave") statusLabel = `휴직 ${st.from}~${st.to}`;
+                  else if (st?.type === "resigned") statusLabel = `퇴사 ${st.from}~`;
+                  return (
+                    <div key={u.sabun} className={`roster-item ${inactive ? "inactive" : ""}`}>
+                      <div className="roster-head" onClick={() => setExpandedSabun(isExpanded ? null : u.sabun)}>
+                        <span className="r-name">{u.name}</span>
+                        <span className="r-team">{teamForMonth(u, curMonthKey)}</span>
+                        <span className="r-year">{total}년차</span>
+                        {statusLabel && <span className="r-status">{statusLabel}</span>}
+                        {pending?.team && <span className="r-pending">→{pending.team}({pending.fromMonth})</span>}
+                        <span className="r-arrow">{isExpanded ? "▾" : "▸"}</span>
+                      </div>
+                      {isExpanded && (
+                        <div className="roster-detail">
+                          <div className="rd-row">
+                            <span className="rd-label">경력</span>
+                            <input className="rd-exp" type="tel" inputMode="numeric"
+                              value={expVal || ""} onChange={e => setExp(u.sabun, e.target.value)}
+                              placeholder="0" />
+                            <span className="rd-unit">년</span>
+                            <span className="rd-hire">입사 {isoToHireDate(u.hireDate) || "—"}</span>
+                          </div>
+                          <TeamChangeRow user={u} curTeam={teamForMonth(u, curMonthKey)}
+                            nextMonthKey={realNextMonthKey}
+                            onApply={(t, timing) => applyTeamChange(u.sabun, t, timing)} />
+                          <StatusRow user={u} onApply={(s) => applyStatus(u.sabun, s)} />
+                        </div>
+                      )}
+                    </div>
+                  );
+                };
 
                 return (
-                  <div key={u.sabun} className={`roster-item ${inactive ? "inactive" : ""}`}>
-                    <div className="roster-head" onClick={() => setExpandedSabun(isExpanded ? null : u.sabun)}>
-                      <span className="r-name">{u.name}</span>
-                      <span className="r-team">{teamForMonth(u, curMonthKey)}</span>
-                      <span className="r-year">{total}년차</span>
-                      {statusLabel && <span className="r-status">{statusLabel}</span>}
-                      {pending?.team && <span className="r-pending">→{pending.team}({pending.fromMonth})</span>}
-                      <span className="r-arrow">{isExpanded ? "▾" : "▸"}</span>
+                  <>
+                    {active.map(renderNurse)}
+
+                    {/* 이송 섹션 */}
+                    <div className="roster-section-label">이송</div>
+                    {transferList.map(t => (
+                      <div key={t.sabun} className="roster-item transfer">
+                        <div className="roster-head" style={{ cursor: "default" }}>
+                          <input className="transfer-name-input"
+                            defaultValue={t.name}
+                            onBlur={e => { if (e.target.value.trim() !== t.name) renameTransfer(t.sabun, e.target.value); }} />
+                          <button className="transfer-del" onClick={() => removeTransfer(t.sabun, t.name)} type="button">삭제</button>
+                        </div>
+                      </div>
+                    ))}
+                    <div className="roster-item transfer-add">
+                      <div className="roster-head" style={{ cursor: "default" }}>
+                        <input className="transfer-name-input" placeholder="이송 이름 추가"
+                          value={newTransfer}
+                          onChange={e => setNewTransfer(e.target.value)}
+                          onKeyDown={e => { if (e.key === "Enter") addTransfer(); }} />
+                        <button className="transfer-add-btn" onClick={addTransfer} type="button">추가</button>
+                      </div>
                     </div>
 
-                    {isExpanded && (
-                      <div className="roster-detail">
-                        {/* 경력 + 입사일 */}
-                        <div className="rd-row">
-                          <span className="rd-label">경력</span>
-                          <input className="rd-exp" type="tel" inputMode="numeric"
-                            value={expVal || ""} onChange={e => setExp(u.sabun, e.target.value)}
-                            placeholder="0" />
-                          <span className="rd-unit">년</span>
-                          <span className="rd-hire">입사 {isoToHireDate(u.hireDate) || "—"}</span>
-                        </div>
-
-                        {/* 팀 변경 */}
-                        <TeamChangeRow user={u} curTeam={teamForMonth(u, curMonthKey)}
-                          nextMonthKey={realNextMonthKey}
-                          onApply={(t, timing) => applyTeamChange(u.sabun, t, timing)} />
-
-                        {/* 재직 상태 */}
-                        <StatusRow user={u} onApply={(s) => applyStatus(u.sabun, s)} />
-                      </div>
-                    )}
-                  </div>
+                    {/* 휴직/퇴사 */}
+                    {inactiveUsers.length > 0 && <div className="roster-section-label">휴직 / 퇴사</div>}
+                    {inactiveUsers.map(renderNurse)}
+                  </>
                 );
-              })}
+              })()}
             </div>
 
             <div className="modal-actions" style={{ marginTop: 18 }}>
@@ -6807,9 +6921,11 @@
     // ============================================================
     // <AllUsersDutyGrid> — 가로 시트 전체보기 (조회 전용)
     // ============================================================
-    function AllUsersDutyGrid({ year, month, allUsers, allDuties, seniority, clinicOverrides, dbHolidays, mySabun, onClose }) {
+    function AllUsersDutyGrid({ year, month, allUsers, allDuties, seniority, clinicOverrides, dbHolidays, mySabun, isAdmin, onClose }) {
       const monthKey = getMonthKey(year, month);
       const { daysInMonth, startWeekday } = getMonthInfo(year, month);
+      // 관리자 helper 지정 대상 셀 { sabun, day, name }
+      const [helperTarget, setHelperTarget] = useState(null);
 
       // 그 달 기준 팀 그룹핑 (pendingTeam 반영) + 휴직/퇴사자 제외
       const groups = useMemo(() => {
@@ -6876,6 +6992,7 @@
                             const cls = dow === 0 ? "sun" : dow === 6 ? "sat" : "";
                             let style = {};
                             let text = "";
+                            let helperBadge = null;
                             if (duty) {
                               const disp = getDisplayShift(duty.shift, iso, dow, clinicOverrides, dbHolidays);
                               if (disp) {
@@ -6883,11 +7000,17 @@
                                 style = { background: c.bg, color: c.text };
                                 text = disp;
                               }
+                              if (duty.helper?.team) {
+                                const ht = duty.helper.team;
+                                helperBadge = ht === "S-616" ? "616" : ht === "S-617" ? "617" : ht === "S-act" ? "S액" : ht === "main" ? "M" : ht;
+                              }
                             }
                             return (
-                              <div key={day} className={`sheet-cell-day ${cls}`} style={style}>
-                                {text}
-                              </div>
+                              <SheetCell key={day}
+                                text={text} style={style} cls={cls}
+                                helperBadge={helperBadge}
+                                canEdit={isAdmin && !!duty}
+                                onLong={() => setHelperTarget({ sabun: u.sabun, day, name: u.name, duty })} />
                             );
                           })}
                         </div>
@@ -6898,12 +7021,80 @@
               </div>
             </div>
           </div>
+          {helperTarget && (
+            <SheetHelperModal
+              target={helperTarget}
+              monthKey={monthKey}
+              onClose={() => setHelperTarget(null)} />
+          )}
         </div>
       );
     }
 
-    // ============================================================
-    // <WhitelistAdmin> — 화이트리스트 + 관리자 권한 등록
+    // 전체보기 셀 (관리자 long-press 가능)
+    function SheetCell({ text, style, cls, helperBadge, canEdit, onLong }) {
+      const timerRef = useRef(null);
+      const firedRef = useRef(false);
+      const start = () => {
+        if (!canEdit) return;
+        firedRef.current = false;
+        timerRef.current = setTimeout(() => { firedRef.current = true; onLong(); }, 450);
+      };
+      const clear = () => { if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; } };
+      return (
+        <div className={`sheet-cell-day ${cls}`} style={{ ...style, position: "relative" }}
+          onPointerDown={start} onPointerUp={clear} onPointerLeave={clear} onPointerCancel={clear}
+          onContextMenu={e => e.preventDefault()}>
+          {text}
+          {helperBadge && <span style={{
+            position: "absolute", top: 0, right: 1, fontSize: 6, fontWeight: 700, opacity: 0.85
+          }}>{helperBadge}</span>}
+        </div>
+      );
+    }
+
+    // 전체보기 helper 팀 지정 모달
+    function SheetHelperModal({ target, monthKey, onClose }) {
+      const cur = target.duty?.helper?.team || "";
+      const [busy, setBusy] = useState(false);
+      const dKey = String(target.day).padStart(2, "0");
+      const path = `duties/${monthKey}/${target.sabun}/${dKey}`;
+
+      const setHelper = async (team) => {
+        setBusy(true);
+        try {
+          if (team === "") {
+            // helper 제거
+            await update(ref(db, path), { helper: null });
+          } else {
+            await update(ref(db, path), { helper: { team } });
+          }
+          onClose();
+        } catch (e) { console.error(e); alert("저장 실패"); setBusy(false); }
+      };
+
+      return (
+        <div className="modal-backdrop" onClick={onClose}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">{target.name} · {target.day}일 근무 팀</h2>
+              <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
+            </div>
+            <p style={{ fontSize: 12, color: "var(--text-mute)", margin: "0 0 12px" }}>
+              다른 팀에서 근무(helper)하는 경우 팀을 지정하세요. '없음'이면 본인 팀 근무.
+            </p>
+            <div className="sheet-helper-grid">
+              <button className={cur === "" ? "active" : ""} disabled={busy}
+                onClick={() => setHelper("")} type="button">없음</button>
+              {TEAMS.map(t => (
+                <button key={t} className={cur === t ? "active" : ""} disabled={busy}
+                  onClick={() => setHelper(t)} type="button">{t}</button>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
     // ============================================================
     function WhitelistAdmin({ allUsers, admins, onClose }) {
       const [list, setList] = useState([]);
