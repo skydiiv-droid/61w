@@ -1872,6 +1872,12 @@
       if (duty.helper && duty.helper.team) return duty.helper.team;
       return duty.team || fallbackTeam;
     }
+    // 라인업/그룹핑용 — helper면 helper팀, 아니면 그 사람의 그 달 실효 팀(teamForMonth)
+    // 셀에 박힌 duty.team은 무시 (팀 변경 시 과거 듀티도 새 팀 기준으로 분류)
+    function getEffectiveTeamForMonth(duty, user, monthKey) {
+      if (duty?.helper?.team) return duty.helper.team;
+      return teamForMonth(user, monthKey);
+    }
     // 듀티 입력 시 그 월에 들어갈 팀 결정 (pendingTeam 예약 반영)
     // user.pendingTeam = { team, fromMonth }. 입력 대상 monthKey >= fromMonth면 pendingTeam 사용.
     function teamForMonth(user, monthKey) {
@@ -1926,7 +1932,7 @@
         const user = allUsers[sabun];
         if (!user) continue;
         const duty = getDutyAt(allDuties, monthKey, sabun, day);
-        const team = getEffectiveTeam(duty, user.team);
+        const team = getEffectiveTeamForMonth(duty, user, monthKey);
         if (groups[team]) groups[team].push(sabun);
       }
       return groups;
@@ -3430,7 +3436,7 @@
         if (monthKey && !isActiveInMonth(u, monthKey)) continue; // 휴직/퇴사 제외
         const v = normalizeDuty(monthDuties[sabun]);
         if (!v?.shift) continue;
-        const team = (v.helper?.team) || v.team || u.team;
+        const team = (v.helper?.team) || teamForMonth(u, monthKey);
         const disp = getDisplayShift(v.shift, iso, dow, clinic, holidays);
         if (disp !== "D" && disp !== "E" && disp !== "N") continue;
         if (!counts[team]) counts[team] = {};
@@ -3860,7 +3866,7 @@
       const myShift = myRawShift
         ? getDisplayShift(myRawShift, iso, dow, clinicOverrides, dbHolidays)
         : null;
-      const myEffectiveTeam = getEffectiveTeam(myDuty, me.team);
+      const myEffectiveTeam = myDuty?.helper?.team || teamForMonth(me, monthKey);
       const myEffectiveRole = getEffectiveRole(myDuty);
       const myIsHelper = isManualHelper(myDuty);
 
@@ -3904,7 +3910,7 @@
           const u = allUsers[s];
           if (!u) return false;
           const d = getDutyAt(allDuties, prevMK, s, prevDay);
-          return getEffectiveTeam(d, u.team) === myEffectiveTeam;
+          return getEffectiveTeamForMonth(d, u, prevMK) === myEffectiveTeam;
         });
 
         const nd = shiftDate(year, month, day, handover.next.offset);
@@ -3915,7 +3921,7 @@
           const u = allUsers[s];
           if (!u) return false;
           const d = getDutyAt(allDuties, nextMK, s, nextDay);
-          return getEffectiveTeam(d, u.team) === myEffectiveTeam;
+          return getEffectiveTeamForMonth(d, u, nextMK) === myEffectiveTeam;
         });
       }
 
@@ -3958,7 +3964,7 @@
           if (!u) return false;
           if (!isActiveInMonth(u, monthKey)) return false;
           const d = getDutyAt(allDuties, monthKey, s, day);
-          return getEffectiveTeam(d, u.team) === "main";
+          return getEffectiveTeamForMonth(d, u, monthKey) === "main";
         });
         // 합쳐서 그룹핑 (중복 제거)
         const allSabuns = Array.from(new Set([...filteredDirect, ...mainSabuns]));
@@ -4247,7 +4253,7 @@
                     // A팀 사람: 명시 role 우선, 없으면 그 사람 defaultRoles 적용
                     const personUser = allUsers[s];
                     const effRole = getCellEffectiveRole(
-                      duty, personUser?.team, s, monthKey, defaultRoles, personDispShift
+                      duty, teamForMonth(personUser, monthKey), s, monthKey, defaultRoles, personDispShift
                     );
                     return (
                       <PersonChip key={s}
