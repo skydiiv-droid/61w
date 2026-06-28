@@ -1197,6 +1197,18 @@
     .a-role-bar .act-btn:disabled {
       opacity: 0.5; cursor: not-allowed;
     }
+    .a-role-bar .a-role-unassigned {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 12px; font-weight: 600; color: var(--text-mute);
+      cursor: pointer;
+    }
+    .a-role-bar .a-role-unassigned input { width: 15px; height: 15px; }
+    .a-role-bar .seg.a-role-seg {
+      display: inline-flex;
+    }
+    .a-role-bar .seg.a-role-seg button {
+      padding: 5px 14px;
+    }
 
     /* OFF 신청 시스템 */
     /* 셀 우상단 마크 컨테이너 */
@@ -1991,22 +2003,18 @@
     }
 
     // A팀 헤더 default role 가져오기 (실효 role 계산용)
-    // defaultRoles[sabun][monthKey] = { frontBack: "front"|"back", act: bool }
-    // 없으면 디폴트 = front, act false
+    // defaultRoles[sabun][monthKey] = { role: "front"|"back"|"act" } 또는 미설정(미지정)
+    // 없으면 미지정(null)
     function getMonthDefaultRole(defaultRoles, sabun, monthKey) {
       const r = defaultRoles?.[sabun]?.[monthKey];
-      if (!r) return { frontBack: "front", act: false, isExplicit: false };
-      return {
-        frontBack: r.frontBack === "back" ? "back" : "front",
-        act: !!r.act,
-        isExplicit: true,
-      };
+      if (!r || !r.role) return { role: null, isExplicit: false };
+      if (!["front", "back", "act"].includes(r.role)) return { role: null, isExplicit: false };
+      return { role: r.role, isExplicit: true };
     }
 
-    // 실효 default role 값 한 개 (act가 ON이면 "act", 아니면 frontBack)
+    // 실효 default role 값 한 개 (미지정이면 null)
     function effectiveDefaultRoleValue(defaultRoles, sabun, monthKey) {
-      const d = getMonthDefaultRole(defaultRoles, sabun, monthKey);
-      return d.act ? "act" : d.frontBack;
+      return getMonthDefaultRole(defaultRoles, sabun, monthKey).role;
     }
 
     // 셀의 실효 역할 (셀 명시값 우선, 없으면 default 적용. A팀 + D/E/N만 적용)
@@ -2471,7 +2479,23 @@
 
       useEffect(() => {
         const r = ref(db, "defaultRoles");
-        const unsub = onValue(r, snap => setDefaultRoles(snap.val() || {}));
+        const unsub = onValue(r, snap => {
+          const val = snap.val() || {};
+          setDefaultRoles(val);
+          // 구버전 형식({frontBack, act}) → 미지정으로 일괄 초기화 (1회성 마이그레이션)
+          const updates = {};
+          Object.entries(val).forEach(([sb, months]) => {
+            if (!months || typeof months !== "object") return;
+            Object.entries(months).forEach(([mk, r2]) => {
+              if (r2 && typeof r2 === "object" && ("frontBack" in r2 || "act" in r2)) {
+                updates[`defaultRoles/${sb}/${mk}`] = null; // 미지정으로 리셋
+              }
+            });
+          });
+          if (Object.keys(updates).length > 0) {
+            update(ref(db), updates).catch(e => console.error("defaultRoles 마이그레이션 실패", e));
+          }
+        });
         return () => unsub();
       }, []);
 
@@ -3129,40 +3153,20 @@
       const cur = getMonthDefaultRole(defaultRoles, targetSabun, monthKey);
       const [busy, setBusy] = useState(false);
 
-      // 현재 값으로 버튼 표시
-      const activeFrontBack = !cur.act && cur.frontBack === "front" ? "front"
-        : !cur.act && cur.frontBack === "back" ? "back" : null;
-      const actActive = cur.act;
+      const curRole = cur.role; // "front" | "back" | "act" | null(미지정)
+      const unassigned = !curRole;
 
-      // 변경 적용 함수: defaultRoles 저장 + 명시값 셀 일괄 처리 (앞↔뒤 토글 시 반전)
-      const apply = async (newFrontBack, newAct) => {
+      // 역할 설정 (앞/뒤/act 또는 null=미지정)
+      // 미지정 셀에만 default가 표시로 적용되고, 셀에 명시된 role은 건드리지 않음 (덮어쓰기 X)
+      const apply = async (newRole) => {
         if (!editable || busy) return;
         setBusy(true);
         try {
           const updates = {};
-          const newRole = { frontBack: newFrontBack, act: newAct };
-          updates[`defaultRoles/${targetSabun}/${monthKey}`] = newRole;
-
-          // 명시값 셀들 처리:
-          // 앞↔뒤 토글 시 명시 front/back 셀 반전
-          // act 토글은 명시값 셀에 영향 없음
-          const swapping = !cur.act && !newAct && cur.frontBack !== newFrontBack;
-          if (swapping) {
-            const monthData = allDuties[monthKey]?.[targetSabun] || {};
-            Object.entries(monthData).forEach(([dKey, val]) => {
-              if (!val) return;
-              const v = normalizeDuty(val);
-              if (!v?.shift) return;
-              // helper 셀은 건드리지 않음
-              if (v.helper) return;
-              // role이 front/back인 셀만 반전
-              if (v.role === "front") {
-                updates[`duties/${monthKey}/${targetSabun}/${dKey}/role`] = "back";
-              } else if (v.role === "back") {
-                updates[`duties/${monthKey}/${targetSabun}/${dKey}/role`] = "front";
-              }
-              // act, total은 그대로
-            });
+          if (!newRole) {
+            updates[`defaultRoles/${targetSabun}/${monthKey}`] = null; // 미지정
+          } else {
+            updates[`defaultRoles/${targetSabun}/${monthKey}`] = { role: newRole };
           }
           await update(ref(db), updates);
         } catch (e) {
@@ -3172,21 +3176,14 @@
         setBusy(false);
       };
 
-      const onFrontBack = (val) => {
+      const onUnassigned = (checked) => {
         if (!editable) return;
-        if (cur.act) {
-          // act 켜져있던 상태에서 앞/뒤 누름 → act 끄고 앞/뒤 활성
-          apply(val, false);
-        } else if (cur.frontBack === val) {
-          // 이미 같은 거 누름 — 아무것도 안 함 (토글 끄기 없음)
-          return;
-        } else {
-          apply(val, false);
-        }
+        if (checked) apply(null);       // 미지정으로
+        else apply("front");            // 해제하면 일단 앞으로 시작 (선택 가능 상태)
       };
-      const onAct = () => {
+      const onPick = (role) => {
         if (!editable) return;
-        apply(cur.frontBack, !cur.act);
+        apply(role);
       };
 
       return (
@@ -3194,23 +3191,25 @@
           <span className="label">
             {isOther ? `${targetName} 담당` : "내 담당"}
           </span>
-          <div className="seg">
-            <button
-              className={activeFrontBack === "front" ? "active" : ""}
-              disabled={!editable || busy || actActive}
-              onClick={() => onFrontBack("front")}
-              type="button">앞</button>
-            <button
-              className={activeFrontBack === "back" ? "active" : ""}
-              disabled={!editable || busy || actActive}
-              onClick={() => onFrontBack("back")}
-              type="button">뒤</button>
-          </div>
-          <button
-            className={`act-btn ${actActive ? "active" : ""}`}
-            disabled={!editable || busy}
-            onClick={onAct}
-            type="button">act</button>
+          <label className="a-role-unassigned">
+            <input type="checkbox" checked={unassigned}
+              disabled={!editable || busy}
+              onChange={e => onUnassigned(e.target.checked)} />
+            <span>미지정</span>
+          </label>
+          {!unassigned && (
+            <div className="seg a-role-seg">
+              <button className={curRole === "front" ? "active" : ""}
+                disabled={!editable || busy}
+                onClick={() => onPick("front")} type="button">앞</button>
+              <button className={curRole === "back" ? "active" : ""}
+                disabled={!editable || busy}
+                onClick={() => onPick("back")} type="button">뒤</button>
+              <button className={curRole === "act" ? "active" : ""}
+                disabled={!editable || busy}
+                onClick={() => onPick("act")} type="button">act</button>
+            </div>
+          )}
           {!editable && (
             <span style={{ fontSize: 10, color: "var(--text-soft)", marginLeft: 4 }}>(보기 전용)</span>
           )}
