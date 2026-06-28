@@ -811,6 +811,99 @@
       min-width: 70px; text-align: right;
     }
 
+    /* 연명부 (roster) */
+    .roster-list {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .roster-item {
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .roster-item:last-child { border-bottom: none; }
+    .roster-item.inactive { background: var(--surface-alt); }
+    .roster-item.inactive .r-name { color: var(--text-soft); }
+    .roster-head {
+      display: flex; align-items: center; gap: 8px;
+      padding: 11px 12px; cursor: pointer;
+    }
+    .roster-head .r-name {
+      font-size: 14px; font-weight: 600; white-space: nowrap;
+    }
+    .roster-head .r-team {
+      font-size: 11px; font-weight: 700; color: var(--accent);
+      background: var(--surface-alt); padding: 1px 7px; border-radius: 999px;
+    }
+    .roster-head .r-year {
+      font-size: 11px; color: var(--text-mute);
+      background: var(--surface-alt); padding: 1px 7px; border-radius: 999px;
+    }
+    .roster-head .r-status {
+      font-size: 10px; color: var(--c-closed); font-weight: 600;
+    }
+    .roster-head .r-pending {
+      font-size: 10px; color: var(--accent); font-weight: 600;
+    }
+    .roster-head .r-arrow {
+      margin-left: auto; color: var(--text-soft); font-size: 12px;
+    }
+    .roster-detail {
+      padding: 4px 12px 12px;
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--border);
+    }
+    .rd-row {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .rd-label {
+      font-size: 12px; color: var(--text-mute); font-weight: 600;
+      min-width: 30px;
+    }
+    .rd-exp {
+      width: 50px; padding: 5px 6px; text-align: center;
+      border: 1px solid var(--border); border-radius: 6px;
+      font-size: 13px; background: var(--bg);
+    }
+    .rd-unit { font-size: 11px; color: var(--text-soft); }
+    .rd-hire {
+      font-size: 11px; color: var(--text-soft);
+      margin-left: auto; font-family: ui-monospace, monospace;
+    }
+    .rd-select {
+      padding: 5px 8px; border: 1px solid var(--border);
+      border-radius: 6px; font-size: 13px; background: var(--bg);
+    }
+    .rd-seg { width: auto; display: inline-grid; }
+    .rd-seg button { padding: 4px 10px; font-size: 12px; }
+    .rd-apply {
+      padding: 5px 12px; font-size: 12px; font-weight: 600;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: 6px; cursor: pointer;
+    }
+    .rd-status {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      padding-top: 8px; border-top: 1px dashed var(--border);
+    }
+    .rd-check {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+    .rd-check input { width: 16px; height: 16px; }
+    .rd-status-detail {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .rd-period {
+      display: flex; align-items: center; gap: 5px;
+    }
+    .rd-period input {
+      width: 78px; padding: 5px 6px; text-align: center;
+      border: 1px solid var(--border); border-radius: 6px;
+      font-size: 12px; background: var(--bg);
+      font-family: ui-monospace, monospace;
+    }
+    .rd-period span { font-size: 12px; color: var(--text-soft); }
+
     /* 듀티 통계 */
     .stats-section {
       margin-bottom: 18px;
@@ -1788,6 +1881,24 @@
         return p.team;
       }
       return user.team;
+    }
+    // 해당 월에 근무표(라인업/전체보기/통계)에 표시되는지 판단
+    // status 없음 = 재직. 휴직 = from~to 기간 동안 제외. 퇴사 = from 달부터 제외.
+    // 개인 캘린더 표시에는 적용하지 않음 (남의 라인업에서만 제외).
+    function isActiveInMonth(user, monthKey) {
+      if (!user) return false;
+      const s = user.status;
+      if (!s || !s.type) return true;
+      if (s.type === "resigned") {
+        if (!s.from) return true;
+        return monthKey < s.from;
+      }
+      if (s.type === "leave") {
+        if (!s.from || !s.to) return true;
+        // from~to (포함) 사이면 제외
+        return !(monthKey >= s.from && monthKey <= s.to);
+      }
+      return true;
     }
     function getEffectiveRole(duty) {
       if (!duty) return null;
@@ -3311,11 +3422,12 @@
 
     // 팀별 D/E/N 라인업 인원 카운트
     // main M은 D/E/N 어느 라인업에도 포함 안 함 (라인업 부족 체크 목적)
-    function computeLineupCounts(monthDuties, allUsers, iso, dow, clinic, holidays) {
+    function computeLineupCounts(monthDuties, allUsers, iso, dow, clinic, holidays, monthKey) {
       const counts = {}; // counts[team][shift] = number
       for (const sabun of Object.keys(monthDuties)) {
         const u = allUsers[sabun];
         if (!u) continue;
+        if (monthKey && !isActiveInMonth(u, monthKey)) continue; // 휴직/퇴사 제외
         const v = normalizeDuty(monthDuties[sabun]);
         if (!v?.shift) continue;
         const team = (v.helper?.team) || v.team || u.team;
@@ -3336,7 +3448,8 @@
       const empty = { D: false, E: false, N: false, anyShortage: false, allFilled: false };
       if (allSabuns.length === 0) return empty;
       const dKey = String(day).padStart(2, "0");
-      const allFilled = allSabuns.every(sb => {
+      const activeSabuns = allSabuns.filter(sb => isActiveInMonth(allUsers[sb], mk));
+      const allFilled = activeSabuns.every(sb => {
         const v = normalizeDuty(monthData[sb]?.[dKey]);
         return !!v?.shift;
       });
@@ -3349,7 +3462,7 @@
       }
       const iso = isoDate(year, month, day);
       const dow = (getMonthInfo(year, month).startWeekday + day - 1) % 7;
-      const counts = computeLineupCounts(dayData, allUsers, iso, dow, clinicOverrides, dbHolidays);
+      const counts = computeLineupCounts(dayData, allUsers, iso, dow, clinicOverrides, dbHolidays, mk);
 
       const result = { D: false, E: false, N: false, anyShortage: false, allFilled: true };
       for (const s of ["D", "E", "N"]) {
@@ -3815,6 +3928,8 @@
         // V는 morning 진료일이면 O로 변환되어 사실상 사라짐 (인계/라인업도 X)
         // 여기서 V→O 변환된 사람을 직접 라인업에서 제외하기 위해 filter
         const filteredDirect = directSabuns.filter(s => {
+          const u = allUsers[s];
+          if (!isActiveInMonth(u, monthKey)) return false; // 휴직/퇴사 제외
           const d = getDutyAt(allDuties, monthKey, s, day);
           if (!d) return false;
           const disp = getDisplayShift(d.shift, iso, dow, clinicOverrides, dbHolidays);
@@ -3841,6 +3956,7 @@
         const mainSabuns = extraMain.filter(s => {
           const u = allUsers[s];
           if (!u) return false;
+          if (!isActiveInMonth(u, monthKey)) return false;
           const d = getDutyAt(allDuties, monthKey, s, day);
           return getEffectiveTeam(d, u.team) === "main";
         });
@@ -4923,7 +5039,7 @@
               )}
               {isAdmin && (
                 <button className="menu-item" onClick={() => onMenuSelect("seniority")}>
-                  <span>연차 순서 관리</span><span style={{ color: "var(--text-soft)" }}>›</span>
+                  <span>연명부</span><span style={{ color: "var(--text-soft)" }}>›</span>
                 </button>
               )}
               {isAdmin && (
@@ -5832,11 +5948,15 @@
     }
 
     // ============================================================
-    // <SeniorityEditor> — admin 전용 경력 관리
+    // <SeniorityEditor> — 연명부 (연차/경력 + 팀변동 + 재직상태 통합 관리, admin)
     // ============================================================
     function SeniorityEditor({ allUsers, seniority, onClose }) {
-      // 로컬 상태: { sabun: stringValue (경력 년수) }
-      const [local, setLocal] = useState(() => {
+      const [busy, setBusy] = useState(false);
+      const [savedMsg, setSavedMsg] = useState("");
+      const [expandedSabun, setExpandedSabun] = useState(null);
+
+      // 경력 로컬 입력
+      const [expLocal, setExpLocal] = useState(() => {
         const out = {};
         Object.keys(allUsers).forEach(s => {
           const v = seniority?.[s];
@@ -5844,36 +5964,58 @@
         });
         return out;
       });
-      const [busy, setBusy] = useState(false);
-      const [savedMsg, setSavedMsg] = useState("");
 
-      // 입사일 기준 정렬 (한 줄로) — 모달 진입 시 한 번 정렬, 입력 중에는 안 바뀜
-      // 의도: 디폴트는 입사일 빠른 사람이 위. 경력 입력 후 저장하면 다음 진입 시 새 정렬.
+      // 다음 달 monthKey (12월 넘김 처리)
+      const realNextMonthKey = useMemo(() => {
+        const t = todayInfo();
+        const d = new Date(t.year, t.month, 1); // month는 1-base라 이게 다음달 1일
+        return getMonthKey(d.getFullYear(), d.getMonth() + 1);
+      }, []);
+      const curMonthKey = useMemo(() => {
+        const t = todayInfo();
+        return getMonthKey(t.year, t.month);
+      }, []);
+
+      // 정렬: 재직자 연차순 → 휴직/퇴사자 맨 아래(회색)
       const sortedUsers = useMemo(() => {
         const list = Object.entries(allUsers).map(([sabun, u]) => ({ sabun, ...u }));
-        // 저장된 경력 기준으로 정렬 (현재 입력 중인 값 말고)
-        list.sort((a, b) => compareUsersBySeniority(a, b, seniority));
+        const isInactive = (u) => {
+          const s = u.status;
+          if (!s || !s.type) return false;
+          // 현재 달 기준 비활성이면 아래로
+          return !isActiveInMonth(u, curMonthKey);
+        };
+        list.sort((a, b) => {
+          const ia = isInactive(a), ib = isInactive(b);
+          if (ia !== ib) return ia ? 1 : -1;
+          return compareUsersBySeniority(a, b, seniority);
+        });
         return list;
-      }, [allUsers, seniority]);
+      }, [allUsers, seniority, curMonthKey]);
 
-      const setVal = (sabun, val) => {
+      const setExp = (sabun, val) => {
         if (val === "" || /^\d{1,3}$/.test(val)) {
-          setLocal(prev => ({ ...prev, [sabun]: val }));
+          setExpLocal(prev => ({ ...prev, [sabun]: val }));
         }
       };
 
-      const save = async () => {
+      const previewTotal = (user) => {
+        const yos = yearsOfService(user.hireDate);
+        const expStr = expLocal[user.sabun];
+        const exp = expStr ? parseInt(expStr, 10) : 0;
+        return yos + (isNaN(exp) ? 0 : exp);
+      };
+
+      // 경력 일괄 저장
+      const saveExp = async () => {
         setBusy(true);
         setSavedMsg("");
         try {
           const updates = {};
-          Object.keys(local).forEach(s => {
-            const v = local[s];
-            if (v === "" || v === "0") {
-              updates[`seniority/${s}`] = null;
-            } else {
-              updates[`seniority/${s}`] = parseInt(v, 10);
-            }
+          Object.keys(expLocal).forEach(s => {
+            const v = expLocal[s];
+            if (v === "" || v === "0") updates[`seniority/${s}`] = null;
+            else updates[`seniority/${s}`] = parseInt(v, 10);
           });
           await update(ref(db), updates);
           setSavedMsg("저장됨");
@@ -5885,60 +6027,178 @@
         setBusy(false);
       };
 
-      // 입력 중인 값 기준 미리보기 연차 (실시간으로 표시만 변경, 정렬은 그대로)
-      const previewTotal = (user) => {
-        const yos = yearsOfService(user.hireDate);
-        const expStr = local[user.sabun];
-        const exp = expStr ? parseInt(expStr, 10) : 0;
-        return yos + (isNaN(exp) ? 0 : exp);
+      // 팀 변경 적용 (admin이 특정 사용자에게)
+      const applyTeamChange = async (sabun, newTeam, timing) => {
+        const user = allUsers[sabun];
+        if (!user) return;
+        try {
+          const updates = {};
+          if (timing === "now") {
+            updates[`users/${sabun}/team`] = newTeam;
+            updates[`users/${sabun}/pendingTeam`] = null;
+          } else {
+            updates[`users/${sabun}/pendingTeam`] = { team: newTeam, fromMonth: realNextMonthKey };
+          }
+          await update(ref(db), updates);
+        } catch (e) { console.error(e); alert("팀 변경 실패"); }
+      };
+
+      // 재직 상태 변경
+      const applyStatus = async (sabun, status) => {
+        try {
+          await update(ref(db, `users/${sabun}`), { status: status });
+        } catch (e) { console.error(e); alert("상태 변경 실패"); }
       };
 
       return (
         <div className="modal-backdrop" onClick={onClose}>
           <div className="modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2 className="modal-title">연차/경력 관리</h2>
+              <h2 className="modal-title">연명부</h2>
               <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
             </div>
             <div className="duty-help" style={{ marginBottom: 14 }}>
-              연차는 1월 1일마다 +1년. 경력란에 이전 경력 년수를 입력하면 연차에 합산되어 정렬돼요.<br />
-              저장 후 다시 열면 새 순서로 표시됩니다.
+              연차는 1월 1일마다 +1. 경력 입력 시 합산 정렬돼요. 행을 누르면 팀변동·재직상태를 관리할 수 있어요.<br />
+              경력 저장은 하단 버튼, 팀·재직은 각자 즉시 반영됩니다.
             </div>
 
-            <div className="seniority-list">
+            <div className="roster-list">
               {sortedUsers.map(u => {
                 const total = previewTotal(u);
                 const yos = yearsOfService(u.hireDate);
-                const expVal = local[u.sabun];
-                const hasExp = expVal && expVal !== "0";
+                const expVal = expLocal[u.sabun];
+                const isExpanded = expandedSabun === u.sabun;
+                const st = u.status;
+                const inactive = st && st.type && !isActiveInMonth(u, curMonthKey);
+                const pending = u.pendingTeam;
+
+                let statusLabel = null;
+                if (st?.type === "leave") statusLabel = `휴직 ${st.from}~${st.to}`;
+                else if (st?.type === "resigned") statusLabel = `퇴사 ${st.from}~`;
+
                 return (
-                  <div key={u.sabun} className="seniority-row-v2">
-                    <div className="row-name">
-                      <span className="name">{u.name}</span>
-                      <span className="year-badge" title={hasExp ? `실근속 ${yos}년 + 경력 ${expVal}년` : `실근속 ${yos}년`}>
-                        {total}년차
-                      </span>
+                  <div key={u.sabun} className={`roster-item ${inactive ? "inactive" : ""}`}>
+                    <div className="roster-head" onClick={() => setExpandedSabun(isExpanded ? null : u.sabun)}>
+                      <span className="r-name">{u.name}</span>
+                      <span className="r-team">{teamForMonth(u, curMonthKey)}</span>
+                      <span className="r-year">{total}년차</span>
+                      {statusLabel && <span className="r-status">{statusLabel}</span>}
+                      {pending?.team && <span className="r-pending">→{pending.team}({pending.fromMonth})</span>}
+                      <span className="r-arrow">{isExpanded ? "▾" : "▸"}</span>
                     </div>
-                    <div className="row-input">
-                      <input
-                        type="tel" inputMode="numeric"
-                        value={expVal || ""}
-                        onChange={e => setVal(u.sabun, e.target.value)}
-                        placeholder="0" />
-                      <span className="input-label">년</span>
-                    </div>
-                    <div className="row-hire">{isoToHireDate(u.hireDate) || "—"}</div>
+
+                    {isExpanded && (
+                      <div className="roster-detail">
+                        {/* 경력 + 입사일 */}
+                        <div className="rd-row">
+                          <span className="rd-label">경력</span>
+                          <input className="rd-exp" type="tel" inputMode="numeric"
+                            value={expVal || ""} onChange={e => setExp(u.sabun, e.target.value)}
+                            placeholder="0" />
+                          <span className="rd-unit">년</span>
+                          <span className="rd-hire">입사 {isoToHireDate(u.hireDate) || "—"}</span>
+                        </div>
+
+                        {/* 팀 변경 */}
+                        <TeamChangeRow user={u} curTeam={teamForMonth(u, curMonthKey)}
+                          nextMonthKey={realNextMonthKey}
+                          onApply={(t, timing) => applyTeamChange(u.sabun, t, timing)} />
+
+                        {/* 재직 상태 */}
+                        <StatusRow user={u} onApply={(s) => applyStatus(u.sabun, s)} />
+                      </div>
+                    )}
                   </div>
                 );
               })}
             </div>
 
             <div className="modal-actions" style={{ marginTop: 18 }}>
-              <button className="btn-primary" onClick={save} disabled={busy}>
-                {busy ? "저장 중…" : (savedMsg || "저장")}
+              <button className="btn-primary" onClick={saveExp} disabled={busy}>
+                {busy ? "저장 중…" : (savedMsg || "경력 저장")}
               </button>
             </div>
           </div>
+        </div>
+      );
+    }
+
+    // 팀 변경 행
+    function TeamChangeRow({ user, curTeam, nextMonthKey, onApply }) {
+      const [newTeam, setNewTeam] = useState(curTeam);
+      const [timing, setTiming] = useState("now");
+      const changed = newTeam !== curTeam;
+      return (
+        <div className="rd-row">
+          <span className="rd-label">팀</span>
+          <select className="rd-select" value={newTeam} onChange={e => setNewTeam(e.target.value)}>
+            {TEAMS.map(t => <option key={t} value={t}>{t}</option>)}
+          </select>
+          {changed && (
+            <>
+              <div className="seg seg-2 rd-seg">
+                <button className={timing === "now" ? "active" : ""} onClick={() => setTiming("now")} type="button">즉시</button>
+                <button className={timing === "next" ? "active" : ""} onClick={() => setTiming("next")} type="button">다음달</button>
+              </div>
+              <button className="rd-apply" onClick={() => onApply(newTeam, timing)} type="button">적용</button>
+            </>
+          )}
+        </div>
+      );
+    }
+
+    // 재직 상태 행
+    function StatusRow({ user, onApply }) {
+      const st = user.status;
+      const initActive = !st || !st.type;
+      const [active, setActive] = useState(initActive);
+      const [type, setType] = useState(st?.type === "resigned" ? "resigned" : "leave");
+      const [leaveFrom, setLeaveFrom] = useState(st?.type === "leave" ? (st.from || "") : "");
+      const [leaveTo, setLeaveTo] = useState(st?.type === "leave" ? (st.to || "") : "");
+      const [resignFrom, setResignFrom] = useState(st?.type === "resigned" ? (st.from || "") : "");
+
+      const save = () => {
+        if (active) { onApply(null); return; }
+        if (type === "leave") {
+          if (!/^\d{4}-\d{2}$/.test(leaveFrom) || !/^\d{4}-\d{2}$/.test(leaveTo)) {
+            alert("휴직 기간을 YYYY-MM 형식으로 입력해 주세요."); return;
+          }
+          onApply({ type: "leave", from: leaveFrom, to: leaveTo });
+        } else {
+          if (!/^\d{4}-\d{2}$/.test(resignFrom)) {
+            alert("퇴사 시작월을 YYYY-MM 형식으로 입력해 주세요."); return;
+          }
+          onApply({ type: "resigned", from: resignFrom });
+        }
+      };
+
+      return (
+        <div className="rd-status">
+          <label className="rd-check">
+            <input type="checkbox" checked={active} onChange={e => setActive(e.target.checked)} />
+            <span>재직</span>
+          </label>
+          {!active && (
+            <div className="rd-status-detail">
+              <div className="seg seg-2 rd-seg">
+                <button className={type === "leave" ? "active" : ""} onClick={() => setType("leave")} type="button">휴직</button>
+                <button className={type === "resigned" ? "active" : ""} onClick={() => setType("resigned")} type="button">퇴사</button>
+              </div>
+              {type === "leave" ? (
+                <div className="rd-period">
+                  <input type="text" placeholder="2026-03" value={leaveFrom} onChange={e => setLeaveFrom(e.target.value)} />
+                  <span>~</span>
+                  <input type="text" placeholder="2026-08" value={leaveTo} onChange={e => setLeaveTo(e.target.value)} />
+                </div>
+              ) : (
+                <div className="rd-period">
+                  <input type="text" placeholder="2026-09" value={resignFrom} onChange={e => setResignFrom(e.target.value)} />
+                  <span>부터</span>
+                </div>
+              )}
+            </div>
+          )}
+          <button className="rd-apply" onClick={save} type="button">적용</button>
         </div>
       );
     }
@@ -6545,10 +6805,20 @@
       const monthKey = getMonthKey(year, month);
       const { daysInMonth, startWeekday } = getMonthInfo(year, month);
 
-      const groups = useMemo(
-        () => groupUsersByTeam(allUsers, seniority),
-        [allUsers, seniority]
-      );
+      // 그 달 기준 팀 그룹핑 (pendingTeam 반영) + 휴직/퇴사자 제외
+      const groups = useMemo(() => {
+        const g = {};
+        for (const t of TEAMS) g[t] = [];
+        Object.entries(allUsers).forEach(([sabun, user]) => {
+          if (!isActiveInMonth(user, monthKey)) return; // 휴직/퇴사 제외
+          const t = teamForMonth(user, monthKey);
+          if (g[t]) g[t].push({ sabun, ...user });
+        });
+        for (const t of TEAMS) {
+          g[t].sort((a, b) => compareUsersBySeniority(a, b, seniority));
+        }
+        return g;
+      }, [allUsers, seniority, monthKey]);
 
       // 헤더 행 (날짜)
       const headerRow = (
