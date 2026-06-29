@@ -934,6 +934,36 @@
       border: none; border-radius: 6px; cursor: pointer;
     }
 
+    /* 로그인된 기기 */
+    .device-list {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .device-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--border); border-radius: 10px;
+      background: var(--surface);
+    }
+    .device-item.current { border-color: var(--accent); }
+    .device-info { flex: 1; min-width: 0; }
+    .device-label {
+      font-size: 14px; font-weight: 600; color: var(--text);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .device-badge {
+      font-size: 10px; font-weight: 700; color: #fff;
+      background: var(--accent); padding: 1px 7px; border-radius: 999px;
+    }
+    .device-meta {
+      font-size: 11px; color: var(--text-soft); margin-top: 2px;
+    }
+    .device-kick {
+      padding: 6px 12px; font-size: 12px; font-weight: 600;
+      background: var(--surface-alt); color: var(--c-closed);
+      border: none; border-radius: 8px; cursor: pointer;
+      white-space: nowrap;
+    }
+
     /* 전체보기 helper 지정 모달 */
     .sheet-helper-grid {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
@@ -2093,6 +2123,47 @@
     const { createRoot } = ReactDOM;
 
     // ============================================================
+    // 기기 세션 (원격 로그아웃)
+    // ============================================================
+    function getDeviceId() {
+      let id = localStorage.getItem("61w-device-id");
+      if (!id) {
+        id = "dev-" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+        localStorage.setItem("61w-device-id", id);
+      }
+      return id;
+    }
+    function getDeviceLabel() {
+      const ua = navigator.userAgent || "";
+      let os = "기기";
+      if (/iPhone/.test(ua)) os = "iPhone";
+      else if (/iPad/.test(ua)) os = "iPad";
+      else if (/Android/.test(ua)) os = "Android";
+      else if (/Windows/.test(ua)) os = "Windows";
+      else if (/Macintosh|Mac OS/.test(ua)) os = "Mac";
+      else if (/Linux/.test(ua)) os = "Linux";
+      let br = "";
+      if (/Edg\//.test(ua)) br = "Edge";
+      else if (/CriOS|Chrome/.test(ua)) br = "Chrome";
+      else if (/FxiOS|Firefox/.test(ua)) br = "Firefox";
+      else if (/Safari/.test(ua)) br = "Safari";
+      else if (/KAKAOTALK/.test(ua)) br = "카카오톡";
+      return br ? `${os} · ${br}` : os;
+    }
+    // 세션 등록/갱신
+    async function registerSession(sabun) {
+      try {
+        const devId = getDeviceId();
+        const now = Date.now();
+        const existing = await get(ref(db, `sessions/${sabun}/${devId}`));
+        const loginAt = existing.exists() ? (existing.val().loginAt || now) : now;
+        await set(ref(db, `sessions/${sabun}/${devId}`), {
+          label: getDeviceLabel(), loginAt, lastSeen: now,
+        });
+      } catch (e) { console.error("세션 등록 실패", e); }
+    }
+
+    // ============================================================
     // <App>
     // ============================================================
     function App() {
@@ -2117,10 +2188,19 @@
             }
             const snap = await get(ref(db, `users/${sabun}`));
             if (snap.exists()) {
+              const devId = getDeviceId();
+              const sessSnap = await get(ref(db, `sessions/${sabun}/${devId}`));
               const isMasterSession = sessionStorage.getItem("61w-master-session") === "true";
+              // 이 기기 세션이 원격으로 삭제됐으면 조용히 로그아웃 (마스터 세션은 예외)
+              if (!sessSnap.exists() && !isMasterSession) {
+                localStorage.removeItem("61w-session");
+                setBootDone(true);
+                return;
+              }
               setMe({ sabun, ...snap.val(), isMasterSession });
               // 접속 시 만료 시점 갱신 (sliding window)
               localStorage.setItem("61w-session", JSON.stringify({ sabun, savedAt: Date.now() }));
+              registerSession(sabun); // lastSeen 갱신
             } else {
               localStorage.removeItem("61w-session");
             }
@@ -2138,14 +2218,36 @@
           sessionStorage.setItem("61w-master-session", "true");
         } else {
           sessionStorage.removeItem("61w-master-session");
+          registerSession(sabun); // 기기 세션 등록 (마스터 세션은 제외)
         }
         setMe({ sabun, ...userData });
       };
       const handleLogout = () => {
+        const saved = localStorage.getItem("61w-session");
+        if (saved && !sessionStorage.getItem("61w-master-session")) {
+          try {
+            const { sabun } = JSON.parse(saved);
+            remove(ref(db, `sessions/${sabun}/${getDeviceId()}`)).catch(() => {});
+          } catch (e) {}
+        }
         localStorage.removeItem("61w-session");
         sessionStorage.removeItem("61w-master-session");
         setMe(null);
       };
+
+      // 실시간 원격 로그아웃 감지 — 내 기기 세션이 삭제되면 조용히 로그인 화면으로
+      useEffect(() => {
+        if (!me || me.isMasterSession) return;
+        const devId = getDeviceId();
+        const r = ref(db, `sessions/${me.sabun}/${devId}`);
+        const unsub = onValue(r, snap => {
+          if (!snap.exists()) {
+            localStorage.removeItem("61w-session");
+            setMe(null);
+          }
+        });
+        return () => unsub();
+      }, [me?.sabun]);
       const handleProfileUpdate = (newData) => {
         setMe(prev => ({ ...prev, ...newData }));
       };
@@ -2918,6 +3020,9 @@
           )}
           {activeModal === "password" && (
             <PasswordChangeModal sabun={me.sabun} onClose={close} />
+          )}
+          {activeModal === "devices" && (
+            <DevicesModal sabun={me.sabun} onClose={close} />
           )}
           {activeModal === "clinic" && (
             <ClinicHoursEditor
@@ -5074,6 +5179,9 @@
               <button className="menu-item" onClick={() => onMenuSelect("password")}>
                 <span>비밀번호 변경</span><span style={{ color: "var(--text-soft)" }}>›</span>
               </button>
+              <button className="menu-item" onClick={() => onMenuSelect("devices")}>
+                <span>로그인된 기기</span><span style={{ color: "var(--text-soft)" }}>›</span>
+              </button>
               <button className="menu-item" onClick={() => onMenuSelect("stats")}>
                 <span>📊 듀티 통계</span><span style={{ color: "var(--text-soft)" }}>›</span>
               </button>
@@ -5277,6 +5385,83 @@
             {Object.values(byTeam).every(l => l.length === 0) && (
               <p className="contact-empty">아직 등록된 사람이 없어요.</p>
             )}
+          </div>
+        </div>
+      );
+    }
+
+    // ============================================================
+    // <DevicesModal> — 로그인된 기기 확인 + 원격 로그아웃
+    // ============================================================
+    function DevicesModal({ sabun, onClose }) {
+      const [sessions, setSessions] = useState(null);
+      const myDevId = getDeviceId();
+
+      useEffect(() => {
+        const r = ref(db, `sessions/${sabun}`);
+        const unsub = onValue(r, snap => setSessions(snap.val() || {}));
+        return () => unsub();
+      }, [sabun]);
+
+      const kick = async (devId) => {
+        try { await remove(ref(db, `sessions/${sabun}/${devId}`)); }
+        catch (e) { console.error(e); alert("로그아웃 실패"); }
+      };
+
+      const fmt = (ts) => {
+        if (!ts) return "—";
+        const d = new Date(ts);
+        const now = Date.now();
+        const diff = now - ts;
+        if (diff < 60000) return "방금 전";
+        if (diff < 3600000) return `${Math.floor(diff / 60000)}분 전`;
+        if (diff < 86400000) return `${Math.floor(diff / 3600000)}시간 전`;
+        return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+      };
+
+      const list = sessions
+        ? Object.entries(sessions).sort((a, b) => (b[1].lastSeen || 0) - (a[1].lastSeen || 0))
+        : [];
+
+      return (
+        <div className="modal-backdrop" onClick={onClose}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">로그인된 기기</h2>
+              <button className="modal-close" onClick={onClose} aria-label="닫기">×</button>
+            </div>
+            <p style={{ fontSize: 12, color: "var(--text-mute)", margin: "0 0 14px" }}>
+              다른 기기를 로그아웃하면 그 기기는 다음 접속 시(또는 켜져 있으면 곧바로) 로그인 화면으로 돌아가요.
+            </p>
+
+            {sessions === null && <div className="center-msg" style={{ padding: 20 }}>불러오는 중…</div>}
+            {sessions !== null && list.length === 0 && (
+              <div className="center-msg" style={{ padding: 20, color: "var(--text-soft)" }}>
+                기록된 기기가 없어요.
+              </div>
+            )}
+
+            <div className="device-list">
+              {list.map(([devId, s]) => {
+                const isMe = devId === myDevId;
+                return (
+                  <div key={devId} className={`device-item ${isMe ? "current" : ""}`}>
+                    <div className="device-info">
+                      <div className="device-label">
+                        {s.label || "기기"}
+                        {isMe && <span className="device-badge">이 기기</span>}
+                      </div>
+                      <div className="device-meta">최근 활동 {fmt(s.lastSeen)}</div>
+                    </div>
+                    {!isMe && (
+                      <button className="device-kick" onClick={() => kick(devId)} type="button">
+                        로그아웃
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       );
