@@ -2236,17 +2236,25 @@
       };
 
       // 실시간 원격 로그아웃 감지 — 내 기기 세션이 삭제되면 조용히 로그인 화면으로
+      // 구독 전에 registerSession을 먼저 완료해서, 로그인 직후 세션 쓰기 전에
+      // 구독이 "세션 없음"으로 읽고 튕기는 race를 방지
       useEffect(() => {
         if (!me || me.isMasterSession) return;
         const devId = getDeviceId();
-        const r = ref(db, `sessions/${me.sabun}/${devId}`);
-        const unsub = onValue(r, snap => {
-          if (!snap.exists()) {
-            localStorage.removeItem("61w-session");
-            setMe(null);
-          }
-        });
-        return () => unsub();
+        let cancelled = false;
+        let unsub = null;
+        (async () => {
+          await registerSession(me.sabun); // 세션 등록 완료 보장
+          if (cancelled) return;
+          const r = ref(db, `sessions/${me.sabun}/${devId}`);
+          unsub = onValue(r, snap => {
+            if (!snap.exists()) {
+              localStorage.removeItem("61w-session");
+              setMe(null);
+            }
+          });
+        })();
+        return () => { cancelled = true; if (unsub) unsub(); };
       }, [me?.sabun]);
       const handleProfileUpdate = (newData) => {
         setMe(prev => ({ ...prev, ...newData }));
