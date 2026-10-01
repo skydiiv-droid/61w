@@ -838,7 +838,7 @@
       flex: 0 0 auto; margin: -6px 2px -6px -4px; padding: 6px 5px;
       color: var(--text-soft); font-size: 16px; line-height: 1;
       cursor: grab; touch-action: none;
-      user-select: none; -webkit-user-select: none;
+      user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
     }
     .roster-head .r-handle:active { cursor: grabbing; }
     .roster-item.dragging .r-handle { color: var(--accent); }
@@ -1803,6 +1803,7 @@
         "s-616": "S-616", "s616": "S-616", "616": "S-616",
         "s-617": "S-617", "s617": "S-617", "617": "S-617",
         "s-act": "S-act", "sact": "S-act", "s액": "S-act", "에스액": "S-act",
+        "이송": "이송",
       };
       const team = teamLookup[teamPart];
       if (!team) throw new Error(`'(${raw})' 알 수 없는 팀 코드`);
@@ -1822,6 +1823,8 @@
 
       let i = 0;
       while (i < cleaned.length) {
+        // "_" = 빈 날 (자리만 차지, 저장 시 해당 날 비움)
+        if (cleaned[i] === "_") { result.push(null); i++; continue; }
         const ch = cleaned[i].toUpperCase();
         if (!ALL_SHIFTS.includes(ch)) {
           throw new Error(`'${cleaned[i]}'(${i + 1}번째)은 알 수 없는 코드. 가능: ${ALL_SHIFTS.join(", ")}`);
@@ -1876,7 +1879,8 @@
       const cap = Math.min(last, maxDay);
       for (let d = 1; d <= cap; d++) {
         const v = dutyMap[d];
-        if (!v) { out += " "; continue; }
+        // 빈 날은 "_"로 자리 유지 (공백은 파서가 지우므로 날짜가 당겨짐)
+        if (!v) { out += "_"; continue; }
         out += v.shift;
         if (v.role === "total") out += "0";
         else if (v.role === "front") out += "1";
@@ -1890,7 +1894,7 @@
           out += `(${h})`;
         }
       }
-      return out.trimEnd();
+      return out;
     }
 
     // ============================================================
@@ -2873,6 +2877,7 @@
           {switcherOpen && (
             <UserSwitcherDropdown
               me={me} allUsers={allUsers} seniority={seniority} orderMap={orderMap}
+              monthKey={monthKey}
               compareSabuns={compareSabuns}
               onClose={() => setSwitcherOpen(false)}
               onPickMe={() => { returnToMe(); setSwitcherOpen(false); }}
@@ -3394,11 +3399,15 @@
     // <UserSwitcherDropdown> — 상단 이름 드롭다운 (조회/비교 진입)
     // 짧게 탭 = 조회 모드 / 길게 탭 = 비교 모드
     // ============================================================
-    function UserSwitcherDropdown({ me, allUsers, seniority, orderMap, compareSabuns = [], onClose, onPickMe, onPickView, onPickCompare, onPickAllView }) {
-      const groups = useMemo(
-        () => groupUsersByTeam(allUsers, seniority, orderMap),
-        [allUsers, seniority, orderMap]
-      );
+    function UserSwitcherDropdown({ me, allUsers, seniority, orderMap, monthKey, compareSabuns = [], onClose, onPickMe, onPickView, onPickCompare, onPickAllView }) {
+      // 보고 있는 달 기준 휴직/퇴사자는 명단에서 제외 (본인은 항상 표시)
+      const groups = useMemo(() => {
+        const active = {};
+        Object.entries(allUsers).forEach(([sb, u]) => {
+          if (sb === me.sabun || isActiveInMonth(u, monthKey)) active[sb] = u;
+        });
+        return groupUsersByTeam(active, seniority, orderMap);
+      }, [allUsers, seniority, orderMap, monthKey, me.sabun]);
       const [openTeams, setOpenTeams] = useState(() => {
         const s = {};
         TEAMS.forEach(t => { s[t] = false; });
@@ -4824,8 +4833,8 @@
         for (let d = 1; d <= daysInMonth; d++) {
           const dKey = String(d).padStart(2, "0");
           const path = `duties/${monthKey}/${sabun}/${dKey}`;
-          if (d <= myCodes.length) {
-            const code = myCodes[d - 1];
+          const code = d <= myCodes.length ? myCodes[d - 1] : null;
+          if (code) {
             const payload = { shift: code.shift, team: myTeam };
             if (code.role) payload.role = code.role;
             if (code.helper) payload.helper = code.helper;
@@ -4873,6 +4882,7 @@
           for (let d = 1; d <= codes.length; d++) {
             const dKey = String(d).padStart(2, "0");
             const code = codes[d - 1];
+            if (!code) continue; // "_" 빈 날
             const payload = { shift: code.shift, team: uTeamForMonth };
             if (code.role) payload.role = code.role;
             if (code.helper) payload.helper = code.helper;
@@ -4943,7 +4953,7 @@
             <div className="modal-fields">
               <div className="duty-help">
                 1일부터 순서대로 한 글자씩 입력. 공백/줄바꿈 무시.<br />
-                <code>D</code> Day · <code>E</code> Evening · <code>N</code> Night · <code>O</code> Off
+                <code>D</code> Day · <code>E</code> Evening · <code>N</code> Night · <code>O</code> Off · <code>_</code> 빈 날
                 {teamHelp && <><br /><br />{teamHelp}</>}
                 <br /><br />
                 helper 근무: 시프트 뒤 괄호로 팀 표기. 예: <code>DD(c)O</code> = 2일차 D가 C팀 helper.
@@ -5061,6 +5071,8 @@
             fail.push({ line, name, reason: "등록된 사용자가 아니에요" });
             continue;
           }
+          // 줄이 텍스트에 있으면 실패하더라도 "삭제 대상" 아님 (실패 = 기존 데이터 유지)
+          matches.forEach(m => processedSabuns.add(m.sabun));
           if (matches.length > 1) {
             fail.push({ line, name, reason: `동명이인 ${matches.length}명 존재 — 사번으로 구분 필요` });
             continue;
@@ -5078,13 +5090,12 @@
             fail.push({ line, name, reason: `${daysInMonth}일을 초과 (${codes.length}일)` });
             continue;
           }
-          processedSabuns.add(user.sabun);
           // updates에 적용 — codes.length가 0이면 전부 null로 (해당 사용자 그 달 비움)
           for (let d = 1; d <= daysInMonth; d++) {
             const dKey = String(d).padStart(2, "0");
             const path = `duties/${monthKey}/${user.sabun}/${dKey}`;
-            if (d <= codes.length) {
-              const code = codes[d - 1];
+            const code = d <= codes.length ? codes[d - 1] : null;
+            if (code) {
               const payload = { shift: code.shift, team: userTeamForMonth };
               if (code.role) payload.role = code.role;
               if (code.helper) payload.helper = code.helper;
@@ -5138,7 +5149,7 @@
               <div className="duty-help">
                 한 줄 = 한 사람. 형식: <code>[팀] 이름 듀티</code> 또는 <code>이름 듀티</code><br />
                 대괄호 [팀]은 시각적 구분용 — 저장 시 무시. 첫 단어가 이름.<br />
-                각 사람의 팀에 맞는 입력 규칙 적용 (A팀 1/2/a, main M/V).<br />
+                각 사람의 팀에 맞는 입력 규칙 적용 (A팀 1/2/a, main M/V). <code>_</code> = 빈 날.<br />
                 <strong>helper 근무</strong>: 시프트 뒤 괄호로 팀 표기. 예: <code>DDD(c)ON</code> = 3일차 D는 C팀 helper. A팀 helper면 역할 가능: <code>D(a앞)</code>.
               </div>
               <textarea className="bulk-textarea" value={text}
@@ -6416,11 +6427,19 @@
       // Firebase에 저장할 전체 순서 = 활성(새 순서) + 휴직/퇴사(현재 순서)
       const commitOrder = (newActiveSabuns) => {
         const full = [...newActiveSabuns, ...inactiveUsers.map(u => u.sabun)];
-        set(ref(db, "rosterOrder"), full).catch(e => { console.error("순서 저장 실패", e); alert("순서 저장 실패"); });
+        set(ref(db, "rosterOrder"), full).catch(e => {
+          console.error("순서 저장 실패", e);
+          setDragOrder(null); // 실패 시 원래 순서로 복귀
+          alert("순서 저장 실패");
+        });
       };
+      // 윈도우 리스너는 드래그 내내 같은 함수여야 하므로, 매 렌더 바뀌는 값은 ref로 최신값만 참조
+      const commitOrderRef = useRef(commitOrder);
+      commitOrderRef.current = commitOrder;
+      const dragSabunRef = useRef(null);
 
-      // 드래그 중 포인터 위치로 목표 인덱스 계산 후 재배열
-      const reorderTo = (clientY) => {
+      // 드래그 중 포인터 위치로 목표 인덱스 계산 후 재배열 (ref만 사용 → 안정적)
+      const reorderTo = useCallback((clientY) => {
         const st = dragState.current;
         if (!st) return;
         const drag = dragSabunRef.current;
@@ -6439,14 +6458,12 @@
           st.moved = true;
           setDragOrder(next);
         }
-      };
-      const dragSabunRef = useRef(null);
+      }, []);
       const onDragMove = useCallback((e) => {
         if (!dragState.current) return;
         e.preventDefault();
-        const y = e.touches ? e.touches[0].clientY : e.clientY;
-        reorderTo(y);
-      }, []);
+        reorderTo(e.clientY);
+      }, [reorderTo]);
       const endDrag = useCallback(() => {
         window.removeEventListener("pointermove", onDragMove);
         window.removeEventListener("pointerup", endDrag);
@@ -6455,9 +6472,9 @@
         dragState.current = null;
         dragSabunRef.current = null;
         setDragSabun(null);
-        if (st && st.moved) commitOrder(st.order);
+        if (st && st.moved) commitOrderRef.current(st.order);
         else setDragOrder(null); // 안 움직였으면 임시순서 해제
-      }, [onDragMove, inactiveUsers]);
+      }, [onDragMove]);
       const beginDrag = (sabun) => {
         dragSabunRef.current = sabun;
         dragState.current = { order: activeSabuns.slice(), moved: false };
@@ -6479,11 +6496,13 @@
           if (lpTimer.current) { clearTimeout(lpTimer.current); lpTimer.current = null; }
           window.removeEventListener("pointermove", cancel);
           window.removeEventListener("pointerup", cancel);
+          window.removeEventListener("pointercancel", cancel);
         };
         window.addEventListener("pointermove", cancel);
         window.addEventListener("pointerup", cancel);
+        window.addEventListener("pointercancel", cancel);
       };
-      // 언마운트/순서 반영 시 정리
+      // 언마운트 시에만 정리 (onDragMove/endDrag는 안정적인 함수라 드래그 중 재렌더에 끊기지 않음)
       useEffect(() => () => {
         window.removeEventListener("pointermove", onDragMove);
         window.removeEventListener("pointerup", endDrag);
@@ -6536,6 +6555,7 @@
                           <span className="r-handle"
                             onPointerDown={e => handlePointerDown(e, u.sabun)}
                             onClick={e => e.stopPropagation()}
+                            onContextMenu={e => e.preventDefault()}
                             aria-label="순서 이동 손잡이">☰</span>
                         )}
                         <span className="r-name" onClick={() => setExpandedSabun(isExpanded ? null : u.sabun)}>{u.name}</span>
