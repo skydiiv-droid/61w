@@ -2130,10 +2130,12 @@
     }
 
     // 팀 → 정렬 순서로 사용자 그룹핑
-    function groupUsersByTeam(allUsers, seniorityMap, orderMap) {
+    // activeMonthKey를 주면 그 달 휴직/퇴사자 제외 (keepSabun은 항상 포함 — 보통 본인)
+    function groupUsersByTeam(allUsers, seniorityMap, orderMap, activeMonthKey, keepSabun) {
       const groups = {};
       for (const t of TEAMS) groups[t] = [];
       Object.entries(allUsers).forEach(([sabun, user]) => {
+        if (activeMonthKey && sabun !== keepSabun && !isActiveInMonth(user, activeMonthKey)) return;
         if (groups[user.team]) groups[user.team].push({ sabun, ...user });
       });
       for (const t of TEAMS) {
@@ -3873,7 +3875,7 @@
         const req = sabunData?.[dKey];
         if (!req) return;
         const user = allUsers[sabun];
-        if (!user) return;
+        if (!user || !isActiveInMonth(user, monthKey)) return; // 휴직/퇴사 제외
         if (teamFilter && user.team !== teamFilter) return;
         result.push({ sabun, ...req, name: user.name, team: user.team, hireDate: user.hireDate });
       });
@@ -3936,7 +3938,7 @@
             Object.keys(monthData).forEach(s => {
               if (s === targetSabun) return;
               const u = allUsers[s];
-              if (!u) return;
+              if (!u || !isActiveInMonth(u, mk)) return;
               const d = getDutyAt(allDuties, mk, s, day);
               if (!d) return;
               const sds = getDisplayShift(d.shift, iso, dow, clinicOverrides, dbHolidays);
@@ -3951,7 +3953,7 @@
             const monthData = allDuties?.[mk] || {};
             Object.keys(monthData).forEach(s => {
               if (s === targetSabun) return;
-              if (!allUsers[s]) return;
+              if (!allUsers[s] || !isActiveInMonth(allUsers[s], mk)) return;
               const d = getDutyAt(allDuties, mk, s, day);
               if (!d) return;
               const sds = getDisplayShift(d.shift, iso, dow, clinicOverrides, dbHolidays);
@@ -4137,7 +4139,7 @@
         const all = getPeopleByShift(allDuties, prevMK, prevDay, handover.prev.shift);
         prevPeople = all.filter(s => {
           const u = allUsers[s];
-          if (!u) return false;
+          if (!u || !isActiveInMonth(u, prevMK)) return false; // 휴직/퇴사 제외
           const d = getDutyAt(allDuties, prevMK, s, prevDay);
           return getEffectiveTeamForMonth(d, u, prevMK) === myEffectiveTeam;
         });
@@ -4148,7 +4150,7 @@
         const allN = getPeopleByShift(allDuties, nextMK, nextDay, handover.next.shift);
         nextPeople = allN.filter(s => {
           const u = allUsers[s];
-          if (!u) return false;
+          if (!u || !isActiveInMonth(u, nextMK)) return false; // 휴직/퇴사 제외
           const d = getDutyAt(allDuties, nextMK, s, nextDay);
           return getEffectiveTeamForMonth(d, u, nextMK) === myEffectiveTeam;
         });
@@ -5418,9 +5420,10 @@
     // ============================================================
     function ContactsModal({ allUsers, mySabun, seniority, orderMap, onClose }) {
       // 팀별 그룹핑 + seniority/입사일 정렬
+      const curMK = getMonthKey(todayInfo().year, todayInfo().month);
       const byTeam = useMemo(
-        () => groupUsersByTeam(allUsers, seniority, orderMap),
-        [allUsers, seniority, orderMap]
+        () => groupUsersByTeam(allUsers, seniority, orderMap, curMK, mySabun),
+        [allUsers, seniority, orderMap, curMK, mySabun]
       );
 
       return (
@@ -6974,8 +6977,8 @@
 
       // 팀별 사용자 그룹핑 (입사일 순 — 명세상)
       const groups = useMemo(
-        () => groupUsersByTeam(allUsers, seniority, orderMap),
-        [allUsers, seniority, orderMap]
+        () => groupUsersByTeam(allUsers, seniority, orderMap, nmk),
+        [allUsers, seniority, orderMap, nmk]
       );
 
       // 사람별 요약 — "7일 OFF, 8일 OFF, 16일 D" 형태
@@ -7088,9 +7091,10 @@
         [monthKeys, dutiesData, allUsers, targetSabun, clinicOverrides, dbHolidays]
       );
 
+      const curMK = getMonthKey(today.year, today.month);
       const userGroups = useMemo(
-        () => groupUsersByTeam(allUsers, seniority, orderMap),
-        [allUsers, seniority, orderMap]
+        () => groupUsersByTeam(allUsers, seniority, orderMap, curMK, me.sabun),
+        [allUsers, seniority, orderMap, curMK, me.sabun]
       );
 
       const targetUser = allUsers[targetSabun];
